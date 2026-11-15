@@ -1,0 +1,357 @@
+{
+  "_schema": "vandao.levels/v1",
+  "_description": "Cấu hình 10 màn chơi. Mỗi màn là tập hợp các wave, có reward riêng, và điều kiện mở khóa màn tiếp theo.",
+  "_version": "1.0.0",
+  "_updatedAt": "2026-11-16",
+
+  "levels": [
+    {
+      "id": "level-1",
+      "name": "Màn 1 — Khai Tâm",
+      "description": "Màn chơi đầu tiên. Dạy người chơi cách trồng Nguyễn Trãi (tạo Linh Khí) và Nguyễn Du (bắn đạn).",
+      "chapter": "Chương I — Nhập Môn",
+      "level_type": "tutorial",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/tutorial-garden.png",
+      "bgm": "res://assets/audio/bgm/calm-garden.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao"],
+      "max_plant_slots": 3,
+
+      "initial_sun": 150,
+      "waves": ["wave-1", "wave-2", "wave-3"],
+
+      "reward": {
+        "coins": 50,
+        "unlock_plant": null,
+        "unlock_level": "level-2",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 3 đợt sóng",
+          "target": 3
+        }
+      ]
+    },
+    {
+      "id": "level-2",
+      "name": "Màn 2 — Sương Mai",
+      "description": "Màn chơi giới thiệu cơ chế ghép cây. Hồ Xuân Hương sẽ xuất hiện trong thẻ bài.",
+      "chapter": "Chương I — Nhập Môn",
+      "level_type": "normal",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/misty-garden.png",
+      "bgm": "res://assets/audio/bgm/calm-garden.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong"],
+      "max_plant_slots": 4,
+
+      "initial_sun": 150,
+      "waves": ["wave-1", "wave-2", "wave-3", "wave-4"],
+
+      "reward": {
+        "coins": 80,
+        "unlock_plant": "ho-xuan-huong",
+        "unlock_level": "level-3",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 4 đợt sóng",
+          "target": 4
+        }
+      ]
+    },
+    {
+      "id": "level-3",
+      "name": "Màn 3 — Trúc Lâm",
+      "description": "Màn chơi giới thiệu Lý Bạch (Kiếm Tiên). Kẻ địch bắt đầu đa dạng hơn.",
+      "chapter": "Chương I — Nhập Môn",
+      "level_type": "normal",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/bamboo-forest.png",
+      "bgm": "res://assets/audio/bgm/bamboo.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach"],
+      "max_plant_slots": 5,
+
+      "initial_sun": 175,
+      "waves": ["wave-2", "wave-3", "wave-4", "wave-5"],
+
+      "reward": {
+        "coins": 100,
+        "unlock_plant": "ly-bach",
+        "unlock_level": "level-4",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 4 đợt sóng",
+          "target": 4
+        },
+        {
+          "type": "no_lawnmower_used",
+          "description": "Không dùng Bình Phong Hộ",
+          "target": 0
+        }
+      ]
+    },
+    {
+      "id": "level-4",
+      "name": "Màn 4 — Nguyệt Các",
+      "description": "Màn chơi ban đêm. Kẻ địch di chuyển nhanh hơn 20%.",
+      "chapter": "Chương II — Trưởng Thành",
+      "level_type": "normal",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/moon-pavilion.png",
+      "bgm": "res://assets/audio/bgm/night.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach"],
+      "max_plant_slots": 5,
+
+      "initial_sun": 175,
+      "waves": ["wave-3", "wave-4", "wave-5", "wave-6"],
+
+      "environment": {
+        "time_of_day": "night",
+        "enemy_speed_bonus": 1.2,
+        "sun_rain_reduced": true
+      },
+
+      "reward": {
+        "coins": 120,
+        "unlock_plant": null,
+        "unlock_level": "level-5",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 4 đợt sóng",
+          "target": 4
+        }
+      ]
+    },
+    {
+      "id": "level-5",
+      "name": "Màn 5 — Bách Hoa",
+      "description": "Màn chơi giới thiệu Hồ Chí Minh (Ánh Dương). Đây là màn giữa chặng đầu.",
+      "chapter": "Chương II — Trưởng Thành",
+      "level_type": "normal",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/flower-garden.png",
+      "bgm": "res://assets/audio/bgm/bamboo.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach", "ho-chi-minh"],
+      "max_plant_slots": 6,
+
+      "initial_sun": 200,
+      "waves": ["wave-4", "wave-5", "wave-6", "wave-7"],
+
+      "reward": {
+        "coins": 150,
+        "unlock_plant": "ho-chi-minh",
+        "unlock_level": "level-6",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 4 đợt sóng",
+          "target": 4
+        }
+      ]
+    },
+    {
+      "id": "level-6",
+      "name": "Màn 6 — Vô Thường",
+      "description": "Màn chơi khó dần. Quái nhảy hàng xuất hiện nhiều.",
+      "chapter": "Chương II — Trưởng Thành",
+      "level_type": "normal",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/bamboo-forest.png",
+      "bgm": "res://assets/audio/bgm/bamboo.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach", "ho-chi-minh"],
+      "max_plant_slots": 6,
+
+      "initial_sun": 200,
+      "waves": ["wave-5", "wave-6", "wave-7", "wave-8"],
+
+      "reward": {
+        "coins": 180,
+        "unlock_plant": null,
+        "unlock_level": "level-7",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 4 đợt sóng",
+          "target": 4
+        },
+        {
+          "type": "no_lawnmower_used",
+          "description": "Không dùng Bình Phong Hộ",
+          "target": 0
+        }
+      ]
+    },
+    {
+      "id": "level-7",
+      "name": "Màn 7 — Vọng Nguyệt",
+      "description": "Màn chơi đêm thứ 2. Đối mặt với Vô Tri Bay.",
+      "chapter": "Chương III — Thử Thách",
+      "level_type": "normal",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/moon-pavilion.png",
+      "bgm": "res://assets/audio/bgm/night.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach", "ho-chi-minh"],
+      "max_plant_slots": 6,
+
+      "initial_sun": 225,
+      "waves": ["wave-6", "wave-7", "wave-8", "wave-9"],
+
+      "environment": {
+        "time_of_day": "night",
+        "enemy_speed_bonus": 1.2
+      },
+
+      "reward": {
+        "coins": 200,
+        "unlock_plant": null,
+        "unlock_level": "level-8",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 4 đợt sóng",
+          "target": 4
+        }
+      ]
+    },
+    {
+      "id": "level-8",
+      "name": "Màn 8 — Cuồng Phong",
+      "description": "Màn chơi dày đặc. Sóng quái liên tục, không có thời gian nghỉ.",
+      "chapter": "Chương III — Thử Thách",
+      "level_type": "normal",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/misty-garden.png",
+      "bgm": "res://assets/audio/bgm/calm-garden.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach", "ho-chi-minh"],
+      "max_plant_slots": 6,
+
+      "initial_sun": 225,
+      "waves": ["wave-7", "wave-8", "wave-9"],
+
+      "reward": {
+        "coins": 250,
+        "unlock_plant": null,
+        "unlock_level": "level-9",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua 3 đợt sóng lớn",
+          "target": 3
+        }
+      ]
+    },
+    {
+      "id": "level-9",
+      "name": "Màn 9 — Trường Canh",
+      "description": "Màn chơi khó nhất trước boss. Đối mặt với mọi loại Vô Tri.",
+      "chapter": "Chương III — Thử Thách",
+      "level_type": "elite",
+      "is_boss_level": false,
+
+      "background": "res://assets/sprites/backgrounds/bamboo-forest.png",
+      "bgm": "res://assets/audio/bgm/bamboo.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach", "ho-chi-minh"],
+      "max_plant_slots": 6,
+
+      "initial_sun": 250,
+      "waves": ["wave-8", "wave-9", "wave-10"],
+
+      "reward": {
+        "coins": 300,
+        "unlock_plant": null,
+        "unlock_level": "level-10",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Sống sót qua đợt cuối cùng",
+          "target": 1
+        }
+      ]
+    },
+    {
+      "id": "level-10",
+      "name": "Màn 10 — Hắc Long Trận",
+      "description": "MÀN BOSS CUỐI CÙNG. Đối mặt với đội quân Vô Tri đông đảo nhất. Chiến thắng = mở khóa Endless Mode!",
+      "chapter": "Chương IV — Chung Cuộc",
+      "level_type": "boss",
+      "is_boss_level": true,
+
+      "background": "res://assets/sprites/backgrounds/final-battle.png",
+      "bgm": "res://assets/audio/bgm/epic.ogg",
+
+      "available_plants": ["nguyen-trai", "nguyen-du", "nam-cao", "ho-xuan-huong", "ly-bach", "ho-chi-minh"],
+      "max_plant_slots": 6,
+
+      "initial_sun": 300,
+      "waves": ["wave-10"],
+
+      "environment": {
+        "time_of_day": "night",
+        "enemy_speed_bonus": 1.3,
+        "sun_rain_reduced": true,
+        "screen_shake": true
+      },
+
+      "reward": {
+        "coins": 500,
+        "unlock_plant": null,
+        "unlock_level": "endless-mode",
+        "stars_max": 3
+      },
+
+      "objectives": [
+        {
+          "type": "survive",
+          "description": "Đánh bại đội quân Vô Tri cuối cùng",
+          "target": 1
+        }
+      ]
+    }
+  ]
+}
