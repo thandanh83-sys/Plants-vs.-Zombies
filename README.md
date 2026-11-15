@@ -8,7 +8,7 @@
 
 # 🌸 VĂN ĐẠO: BÚT TRẬN
 
-<img src="assets/icon.svg" alt="Văn Đạo Logo" width="140" />
+<img src="assets/favicon.svg" alt="Văn Đạo Logo" width="140" />
 
 ### *"Bút trận chi gian — Trí tuệ vi thành."*
 *(Trong trận chiến ngòi bút — Trí tuệ là thành trì.)*
