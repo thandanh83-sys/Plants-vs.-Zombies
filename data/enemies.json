@@ -1,0 +1,131 @@
+{
+  "_schema": "vandao.enemies/v1",
+  "_description": "Cấu hình 4 loại Vô Tri (kẻ địch). Mỗi loại có hành vi và chỉ số riêng, tương ứng với các loại Zombie trong PvZ.",
+  "_version": "1.0.0",
+  "_updatedAt": "2026-11-16",
+
+  "enemies": [
+    {
+      "id": "vo-tri-thuong",
+      "name": "Vô Tri",
+      "title": "Kẻ Lãng Quên",
+      "description": "Những kẻ đã lãng quên tri thức, đi lang thang không mục đích. Chúng di chuyển chậm và dễ bị đánh bại.",
+      "quote": "Kẻ không biết mình không biết — ấy là kẻ vô tri thật sự.",
+
+      "enemy_type": "basic",
+      "behavior": "walk_eat",
+      "hp": 100,
+      "speed": 35.0,
+      "damage": 20,
+      "attack_interval": 1.0,
+
+      "armor": 0,
+      "can_be_slowed": true,
+      "can_be_stunned": true,
+
+      "sprite_path": "res://assets/sprites/enemies/vo-tri-thuong.png",
+      "death_effect_path": "res://scenes/effects/InkSmoke.tscn",
+
+      "color": "#6B6B6B",
+      "threat_level": 1,
+      "spawn_weight": 10,
+      "score_on_death": 10
+    },
+    {
+      "id": "vo-tri-giap-sat",
+      "name": "Vô Tri Giáp Sắt",
+      "title": "Kẻ Cố Chấp",
+      "description": "Những kẻ bảo thủ, khoác lên mình lớp giáp sắt của sự cố chấp. Chúng di chuyển chậm hơn nhưng rất khó bị đánh bại.",
+      "quote": "Cố chấp là tấm giáp nặng nhất — nó bảo vệ sự ngu dốt khỏi ánh sáng.",
+
+      "enemy_type": "armored",
+      "behavior": "walk_eat",
+      "hp": 200,
+      "speed": 25.0,
+      "damage": 25,
+      "attack_interval": 1.2,
+
+      "armor": 400,
+      "armor_visual": "res://assets/sprites/enemies/giap-sat.png",
+      "armor_color": "#4A4A4A",
+      "can_be_slowed": true,
+      "can_be_stunned": true,
+
+      "sprite_path": "res://assets/sprites/enemies/vo-tri-giap-sat.png",
+      "death_effect_path": "res://scenes/effects/ArmorBreak.tscn",
+
+      "color": "#2C2C2C",
+      "threat_level": 3,
+      "spawn_weight": 5,
+      "score_on_death": 25
+    },
+    {
+      "id": "vo-tri-nhay-hang",
+      "name": "Vô Tri Nhảy Hàng",
+      "title": "Kẻ Bất Định",
+      "description": "Những kẻ không có lập trường, nhảy từ hàng này sang hàng khác. Chúng có thể vượt qua phòng tuyến của bạn bằng cách nhảy sang hàng khác.",
+      "quote": "Kẻ không có lập trường — như chiếc lá trôi, không biết mình về đâu.",
+
+      "enemy_type": "jumper",
+      "behavior": "walk_jump_eat",
+      "hp": 150,
+      "speed": 40.0,
+      "damage": 20,
+      "attack_interval": 1.0,
+
+      "jump_interval": 5.0,
+      "jump_distance": 1,
+
+      "armor": 0,
+      "can_be_slowed": true,
+      "can_be_stunned": true,
+
+      "sprite_path": "res://assets/sprites/enemies/vo-tri-nhay-hang.png",
+      "death_effect_path": "res://scenes/effects/InkSmoke.tscn",
+
+      "color": "#7A5A9E",
+      "threat_level": 4,
+      "spawn_weight": 3,
+      "score_on_death": 20
+    },
+    {
+      "id": "vo-tri-bay",
+      "name": "Vô Tri Bay",
+      "title": "Kẻ Hư Ảo",
+      "description": "Những kẻ sống trong ảo tưởng, bay lơ lửng trên cao. Chúng có thể bay qua tường chắn (Nam Cao), chỉ bị đánh bại bởi các cây tầm xa.",
+      "quote": "Ảo tưởng là đôi cánh — nâng bạn lên cao, rồi để bạn rơi xuống.",
+
+      "enemy_type": "flying",
+      "behavior": "fly_eat",
+      "hp": 120,
+      "speed": 45.0,
+      "damage": 15,
+      "attack_interval": 1.0,
+      "flight_height": 80,
+
+      "ignores_wall": true,
+      "armor": 0,
+      "can_be_slowed": true,
+      "can_be_stunned": true,
+
+      "sprite_path": "res://assets/sprites/enemies/vo-tri-bay.png",
+      "death_effect_path": "res://scenes/effects/InkSmoke.tscn",
+
+      "color": "#B5A56B",
+      "threat_level": 4,
+      "spawn_weight": 2,
+      "score_on_death": 30
+    }
+  ],
+
+  "config": {
+    "base_hp_multiplier": 1.0,
+    "difficulty_curve": [
+      { "level": 1, "hp_multiplier": 1.0, "speed_multiplier": 1.0 },
+      { "level": 5, "hp_multiplier": 1.2, "speed_multiplier": 1.0 },
+      { "level": 10, "hp_multiplier": 1.5, "speed_multiplier": 1.1 },
+      { "level": 15, "hp_multiplier": 2.0, "speed_multiplier": 1.2 },
+      { "level": 20, "hp_multiplier": 3.0, "speed_multiplier": 1.3 }
+    ]
+  }
+}
