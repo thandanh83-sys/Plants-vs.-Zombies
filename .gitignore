@@ -1,0 +1,86 @@
+# ============================================================
+# VĂN ĐẠO: BÚT TRẬN — Git Ignore Rules
+# ============================================================
+# Mục đích: Bỏ qua các file không cần thiết khi đẩy lên GitHub
+# - Thư mục .godot/ (bộ nhớ đệm editor, rất nặng)
+# - File build (.exe, .apk, .html)
+# - File IDE cá nhân (.vscode, .idea)
+# ============================================================
+
+# ------------------------------------------------------------
+# 1. Godot Editor Cache (BẮT BUỘC PHẢI IGNORE)
+# ------------------------------------------------------------
+# Thư mục .godot/ chứa hàng trăm MB dữ liệu đệm, được Godot
+# tự động tạo lại khi mở project. Nếu commit lên sẽ gây:
+# - Repo phình to hàng trăm MB
+# - Xung đột khi làm việc nhóm
+# - Lỗi "Corrupted project" khi clone về máy khác
+# ------------------------------------------------------------
+.godot/
+
+# ------------------------------------------------------------
+# 2. Godot Export Builds (Game đã build)
+# ------------------------------------------------------------
+# Khi export game ra .exe/.apk/.html, các file này không
+# nên đẩy lên Git (vì có thể build lại bất cứ lúc nào).
+# Nếu muốn lưu trữ bản build, dùng GitHub Releases.
+# ------------------------------------------------------------
+/build/
+/dist/
+/export/
+export_presets.cfg
+*.exe
+*.apk
+*.aab
+*.ipa
+*.dmg
+*.pck
+*.zip
+
+# ------------------------------------------------------------
+# 3. Imported/Generated Files
+# ------------------------------------------------------------
+# Godot tự động sinh ra các file này, không cần commit
+# ------------------------------------------------------------
+*.translation
+*.import
+
+# ------------------------------------------------------------
+# 4. System Files (Hệ điều hành tự sinh)
+# ------------------------------------------------------------
+# Những file "rác" từ macOS/Windows/Linux
+# ------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# ------------------------------------------------------------
+# 5. IDE/Editor (Cấu hình cá nhân)
+# ------------------------------------------------------------
+# Cấu hình riêng của từng người dùng editor
+# Không nên commit vì mỗi người cài đặt khác nhau
+# ------------------------------------------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# ------------------------------------------------------------
+# 6. Mono/C# (Dự phòng nếu sau này chuyển sang C#)
+# ------------------------------------------------------------
+.mono/
+mono_crash.*.json
+
+# ------------------------------------------------------------
+# 7. Logs & Debug
+# ------------------------------------------------------------
+*.log
+logs/
