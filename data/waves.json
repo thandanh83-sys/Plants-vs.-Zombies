@@ -1,0 +1,161 @@
+{
+  "_schema": "vandao.waves/v1",
+  "_description": "Cấu hình 10 đợt sóng quái. Mỗi wave có danh sách kẻ địch, thời gian, và cờ báo hiệu (final wave, boss wave).",
+  "_version": "1.0.0",
+  "_updatedAt": "2026-11-16",
+
+  "waves": [
+    {
+      "id": "wave-1",
+      "name": "Đợt 1 — Khai Mở",
+      "description": "Đợt quái đầu tiên, chỉ có Vô Tri Thường. Dạy người chơi cách trồng cây và bắn đạn.",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 8.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 3, "delay": 0.0 },
+        { "type": "vo-tri-thuong", "count": 2, "delay": 4.0 }
+      ]
+    },
+    {
+      "id": "wave-2",
+      "name": "Đợt 2 — Tăng Tốc",
+      "description": "Vô Tri xuất hiện dày đặc hơn. Người chơi cần trồng thêm Bút Phong (Nguyễn Du).",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 8.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 5, "delay": 0.0 }
+      ]
+    },
+    {
+      "id": "wave-3",
+      "name": "Đợt 3 — Bình Minh",
+      "description": "Đợt quái tiêu chuẩn. Có xen kẽ 1 con quái mạnh hơn để thử thách.",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 10.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 6, "delay": 0.0 },
+        { "type": "vo-tri-giap-sat", "count": 1, "delay": 6.0 }
+      ]
+    },
+    {
+      "id": "wave-4",
+      "name": "Đợt 4 — Sương Mù",
+      "description": "Đợt quái dày đặc. Người chơi cần dùng Hồ Xuân Hương (Mực Nổ) để dọn nhanh.",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 10.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 8, "delay": 0.0 },
+        { "type": "vo-tri-giap-sat", "count": 2, "delay": 5.0 }
+      ]
+    },
+    {
+      "id": "wave-5",
+      "name": "Đợt 5 — Đột Phá",
+      "description": "Đợt 5 — Đánh dấu mốc giữa trận. Quái bắt đầu đa dạng hơn.",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 12.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 5, "delay": 0.0 },
+        { "type": "vo-tri-giap-sat", "count": 2, "delay": 4.0 },
+        { "type": "vo-tri-nhay-hang", "count": 1, "delay": 8.0 }
+      ]
+    },
+    {
+      "id": "wave-6",
+      "name": "Đợt 6 — Hỗn Loạn",
+      "description": "Quái nhảy hàng xuất hiện nhiều hơn, buộc người chơi phải phân bổ cây đều các hàng.",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 12.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 6, "delay": 0.0 },
+        { "type": "vo-tri-nhay-hang", "count": 3, "delay": 5.0 }
+      ]
+    },
+    {
+      "id": "wave-7",
+      "name": "Đợt 7 — Bão Tố",
+      "description": "Sự kết hợp của Vô Tri Thường và Vô Tri Bay. Cần đến Lý Bạch (xuyên thấu).",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 12.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 5, "delay": 0.0 },
+        { "type": "vo-tri-bay", "count": 2, "delay": 6.0 },
+        { "type": "vo-tri-giap-sat", "count": 1, "delay": 10.0 }
+      ]
+    },
+    {
+      "id": "wave-8",
+      "name": "Đợt 8 — Tàn Phá",
+      "description": "Đợt quái khủng khiếp với đủ 4 loại Vô Tri cùng xuất hiện.",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 15.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 8, "delay": 0.0 },
+        { "type": "vo-tri-giap-sat", "count": 3, "delay": 3.0 },
+        { "type": "vo-tri-nhay-hang", "count": 2, "delay": 7.0 },
+        { "type": "vo-tri-bay", "count": 2, "delay": 10.0 }
+      ]
+    },
+    {
+      "id": "wave-9",
+      "name": "Đợt 9 — Hắc Ám",
+      "description": "Đợt áp đảo trước trận chiến cuối. Hàng chục Vô Tri cùng lao vào.",
+      "is_final_wave": false,
+      "is_boss_wave": false,
+      "delay_before_next": 15.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 10, "delay": 0.0 },
+        { "type": "vo-tri-giap-sat", "count": 4, "delay": 2.0 },
+        { "type": "vo-tri-nhay-hang", "count": 3, "delay": 5.0 },
+        { "type": "vo-tri-bay", "count": 3, "delay": 8.0 }
+      ]
+    },
+    {
+      "id": "wave-10",
+      "name": "Đợt 10 — Chung Cuộc",
+      "description": "Đợt quái CUỐI CÙNG. Đánh dấu bằng lá cờ đỏ của Vô Tri Vua. Chiến thắng = kết thúc màn chơi!",
+      "is_final_wave": true,
+      "is_boss_wave": true,
+      "delay_before_next": 0.0,
+
+      "enemies": [
+        { "type": "vo-tri-thuong", "count": 12, "delay": 0.0 },
+        { "type": "vo-tri-giap-sat", "count": 5, "delay": 2.0 },
+        { "type": "vo-tri-nhay-hang", "count": 4, "delay": 4.0 },
+        { "type": "vo-tri-bay", "count": 4, "delay": 6.0 }
+      ],
+
+      "boss_special": {
+        "spawn_banner": true,
+        "banner_text": "ĐỢT CUỐI CÙNG!",
+        "final_banner_color": "#9C3A3A",
+        "shake_screen": true,
+        "shake_duration": 2.0
+      }
+    }
+  ],
+
+  "config": {
+    "base_spawn_interval": 1.5,
+    "enemy_speed_multiplier": 1.0,
+    "wave_banner_duration": 3.0,
+    "final_wave_banner_duration": 5.0
+  }
+}
