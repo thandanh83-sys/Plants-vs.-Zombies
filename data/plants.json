@@ -1,0 +1,193 @@
+{
+  "_schema": "vandao.plants/v1",
+  "_description": "Cấu hình 6 Anh Hùng Văn Học (thẻ bài phòng thủ). Mỗi cây có vai trò riêng, tuân theo công thức cân bằng của Plants vs. Zombies.",
+  "_version": "1.0.0",
+  "_updatedAt": "2026-11-16",
+
+  "plants": [
+    {
+      "id": "nguyen-du",
+      "name": "Nguyễn Du",
+      "title": "Bút Phong",
+      "description": "Tác giả Truyện Kiều, bậc thầy về ngôn từ. Bắn ra những luồng kiếm khí từ ngòi bút, gây sát thương đều đặn mỗi giây.",
+      "quote": "Trăm năm trong cõi người ta — Chữ tài chữ mệnh khéo là ghét nhau.",
+
+      "plant_type": "shooter",
+      "role": "damage_dealer",
+      "cost": 100,
+      "hp": 300,
+      "damage": 20,
+      "attack_speed": 1.4,
+      "attack_range": 15,
+
+      "sprite_path": "res://assets/sprites/plants/nguyen-du.png",
+      "projectile_path": "res://scenes/entities/Bullet.tscn",
+
+      "color": "#2E8B57",
+      "era": "NHÀ TÂY SƠN",
+      "tags": ["thi_ca", "truyen_thong"],
+
+      "plant_food_skill": {
+        "name": "Truyện Kiều",
+        "description": "Bắn liên thanh 30 viên đạn trong 1.5 giây (sát thương xuyên thấu hàng dọc).",
+        "effect_type": "machine_gun",
+        "duration": 1.5,
+        "bullet_count": 30
+      }
+    },
+    {
+      "id": "ho-xuan-huong",
+      "name": "Hồ Xuân Hương",
+      "title": "Mực Nổ",
+      "description": "Nữ sĩ tài hoa, thơ trào phúng sắc sảo. Khi gặp kẻ địch, nàng tung ra một đòn mực nổ diện rộng 3x3, phá hủy mọi thứ xung quanh.",
+      "quote": "Thân em vừa trắng lại vừa tròn — Bảy nổi ba chìm với nước non.",
+
+      "plant_type": "explosive",
+      "role": "aoe_damage",
+      "cost": 150,
+      "hp": 300,
+      "damage": 1800,
+      "explosion_radius": 2.5,
+      "attack_speed": 999,
+      "attack_range": 0,
+
+      "sprite_path": "res://assets/sprites/plants/ho-xuan-huong.png",
+      "explosion_effect_path": "res://scenes/effects/InkExplosion.tscn",
+
+      "color": "#A86B6B",
+      "era": "THẾ KỶ XVIII",
+      "tags": ["trao_phung", "phu_nu"],
+
+      "plant_food_skill": {
+        "name": "Đả Kích",
+        "description": "Làm choáng tất cả kẻ địch trong bán kính 3x3 trong 3 giây.",
+        "effect_type": "stun",
+        "duration": 3.0,
+        "radius": 3.0
+      }
+    },
+    {
+      "id": "nam-cao",
+      "name": "Nam Cao",
+      "title": "Nghiên Mực",
+      "description": "Nhà văn hiện thực phê phán, ngòi bút sắc lạnh nhưng ẩn chứa tình yêu thương. Hóa thành một bức tường mực đen vững chắc, chặn đứng mọi đòn tấn công.",
+      "quote": "Sống đã, rồi hãy viết.",
+
+      "plant_type": "wall",
+      "role": "defender",
+      "cost": 50,
+      "hp": 4000,
+      "damage": 0,
+      "attack_speed": 0,
+      "attack_range": 0,
+
+      "sprite_path": "res://assets/sprites/plants/nam-cao.png",
+
+      "color": "#1A5232",
+      "era": "NĂM 1951",
+      "tags": ["hien_thuc", "nhan_dao"],
+
+      "plant_food_skill": {
+        "name": "Hiện Thực",
+        "description": "Hồi phục 50% máu và tạo một lớp giáp mực bảo vệ trong 10 giây.",
+        "effect_type": "heal_shield",
+        "heal_amount": 2000,
+        "duration": 10.0
+      }
+    },
+    {
+      "id": "nguyen-trai",
+      "name": "Nguyễn Trãi",
+      "title": "Ngòi Bút Thần",
+      "description": "Danh nhân văn hóa thế giới, tác giả Bình Ngô đại cáo. Mỗi 8 giây, ngòi bút của ông sinh ra một giọt Linh Khí tinh khiết, nuôi dưỡng toàn bộ đội hình.",
+      "quote": "Việc nhân nghĩa cốt ở yên dân — Quân điếu phạt trước lo trừ bạo.",
+
+      "plant_type": "producer",
+      "role": "resource_generator",
+      "cost": 50,
+      "hp": 300,
+      "damage": 0,
+      "attack_speed": 8.0,
+      "attack_range": 0,
+      "generate_amount": 25,
+
+      "sprite_path": "res://assets/sprites/plants/nguyen-trai.png",
+      "sun_prefab_path": "res://scenes/entities/Sun.tscn",
+
+      "color": "#C9A96E",
+      "era": "NHÀ LÊ",
+      "tags": ["chinh_luan", "nhan_nghia"],
+
+      "plant_food_skill": {
+        "name": "Bình Ngô",
+        "description": "Sinh ra ngay lập tức 150 Linh Khí và hồi chiêu nhanh hơn gấp đôi trong 10 giây.",
+        "effect_type": "instant_sun",
+        "sun_amount": 150,
+        "haste_duration": 10.0
+      }
+    },
+    {
+      "id": "ly-bach",
+      "name": "Lý Bạch",
+      "title": "Kiếm Tiên",
+      "description": "Thi tiên phóng khoáng, thơ hào hùng. Bắn ra những luồng kiếm khí xuyên thấu, có thể xuyên qua nhiều kẻ địch trên cùng một hàng.",
+      "quote": "Phi lưu trực há tam thiên xích — Nghi thị Ngân Hà lạc cửu thiên.",
+
+      "plant_type": "shooter",
+      "role": "piercing_damage",
+      "cost": 175,
+      "hp": 300,
+      "damage": 15,
+      "attack_speed": 1.8,
+      "attack_range": 20,
+      "pierce_count": 3,
+
+      "sprite_path": "res://assets/sprites/plants/ly-bach.png",
+      "projectile_path": "res://scenes/entities/PiercingBullet.tscn",
+
+      "color": "#4A7FB5",
+      "era": "THỜI ĐƯỜNG",
+      "tags": ["lang_man", "hao_hung"],
+
+      "plant_food_skill": {
+        "name": "Tương Tiến Tửu",
+        "description": "Bắn 1 luồng kiếm khí khổng lồ xuyên qua toàn bộ hàng, gây 500 sát thương.",
+        "effect_type": "piercing_beam",
+        "damage": 500
+      }
+    },
+    {
+      "id": "ho-chi-minh",
+      "name": "Hồ Chí Minh",
+      "title": "Ánh Dương",
+      "description": "Vị lãnh tụ vĩ đại, nhà thơ cách mạng. Tỏa ra ánh sáng ấm áp, làm chậm mọi kẻ địch trong hàng và tăng tốc độ hồi chiêu cho cây đồng minh xung quanh.",
+      "quote": "Không có gì quý hơn độc lập, tự do.",
+
+      "plant_type": "support",
+      "role": "buffer_debuffer",
+      "cost": 200,
+      "hp": 400,
+      "damage": 0,
+      "attack_speed": 5.0,
+      "attack_range": 5,
+      "slow_amount": 0.5,
+      "slow_duration": 3.0,
+      "aura_range": 3.0,
+      "buff_speed": 1.5,
+
+      "sprite_path": "res://assets/sprites/plants/ho-chi-minh.png",
+
+      "color": "#D4AF37",
+      "era": "THẾ KỶ XX",
+      "tags": ["cach_mang", "nhan_dao"],
+
+      "plant_food_skill": {
+        "name": "Độc Lập",
+        "description": "Tỏa sáng rực rỡ: Toàn bộ cây trong bán kính 5x5 được hồi đầy máu và bất tử trong 5 giây.",
+        "effect_type": "mass_heal_invuln",
+        "radius": 5.0,
+        "duration": 5.0
+      }
+    }
+  ]
+}
