@@ -5,11 +5,13 @@ signal data_loaded
 var plants_db: Dictionary = {}
 var zombies_db: Dictionary = {}
 var levels_db: Dictionary = {}
+var config_db: Dictionary = {}
 
 func _ready() -> void:
 	_scan_folder("res://data/plants/", plants_db)
 	_scan_folder("res://data/zombies/", zombies_db)
 	_scan_folder("res://data/levels/", levels_db)
+	config_db = _load_json("res://data/config/game-settings.json")
 	print("[DataLoader] Đã nạp: %d cây, %d zombie, %d màn" % [plants_db.size(), zombies_db.size(), levels_db.size()])
 	data_loaded.emit()
 
@@ -31,7 +33,7 @@ func _scan_folder(folder_path: String, target_dict: Dictionary) -> void:
 			var data := _load_json(folder_path + file_name)
 			if not data.is_empty():
 				data["id"] = id
-				target_dict[id] = data
+			target_dict[id] = data
 		file_name = dir.get_next()
 	dir.list_dir_end()
 
@@ -61,6 +63,9 @@ func get_zombie(id: String) -> Dictionary:
 
 func get_level(id: String) -> Dictionary:
 	return levels_db.get(id, {})
+
+func get_setting(key: String, default_value: Variant = null) -> Variant:
+	return config_db.get(key, default_value)
 
 func get_all_plant_ids() -> Array:
 	return plants_db.keys()
