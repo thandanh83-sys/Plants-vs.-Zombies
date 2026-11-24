@@ -1,0 +1,10 @@
+{
+  "name": "Kim Cang Thủ",
+  "cost": 125,
+  "hp": 800,
+  "type": "wall",
+  "damage": 0,
+  "description": "Chắn đường zombie bằng thể chất kiên cố.",
+  "category": "phong",
+  "sprite_scale": 1.0
+}

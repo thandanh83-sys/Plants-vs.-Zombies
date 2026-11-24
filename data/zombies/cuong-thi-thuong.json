@@ -1,0 +1,9 @@
+{
+  "name": "Cương Thi Thường",
+  "hp": 220,
+  "speed": 16.0,
+  "damage": 18,
+  "attack_rate": 1.0,
+  "type": "basic",
+  "sprite_scale": 1.0
+}
