@@ -1,0 +1,33 @@
+{
+  "name": "Thư Viện Cổ",
+  "background": "res://assets/backgrounds/thu-vien-co.png",
+  "environment": "day",
+  "available_plants": [
+    "nhat-nguyet-thao",
+    "truc-tien",
+    "kim-cang-thu",
+    "hong-lien-no"
+  ],
+  "waves": [
+    {
+      "wave_number": 1,
+      "zombies": ["cuong-thi-thuong"],
+      "count": 5,
+      "interval": 3.0
+    },
+    {
+      "wave_number": 2,
+      "zombies": ["cuong-thi-thuong", "cuong-thi-non"],
+      "count": 8,
+      "interval": 2.5
+    },
+    {
+      "wave_number": 3,
+      "zombies": ["cuong-thi-non", "cuong-thi-thuong"],
+      "count": 12,
+      "interval": 2.0,
+      "is_final": true
+    }
+  ],
+  "starting_sun": 50
+}
