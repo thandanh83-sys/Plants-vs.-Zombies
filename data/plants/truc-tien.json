@@ -1,0 +1,19 @@
+{
+  "name": "Trúc Tiễn",
+  "cost": 100,
+  "hp": 300,
+  "type": "shooter",
+  "damage": 20,
+  "fire_rate": 1.5,
+  "range": 9,
+  "projectile": "ink_bullet",
+  "plant_food": {
+    "type": "machine_gun",
+    "count": 30,
+    "interval": 0.05
+  },
+  "description": "Bắn giọt mực tấn công kẻ địch phía trước.",
+  "category": "van",
+  "sprite": "res://assets/plants/truc-tien.png",
+  "sprite_scale": 1.0
+}
