@@ -1,24 +1,22 @@
 extends Node
 
-signal card_selected(plant_id: String)
-
 var container: HBoxContainer
 var selected_id := ""
+var plant_food_ready := false
+
+signal card_selected(plant_id: String)
 
 func build_cards(parent: Control, plant_ids: Array) -> void:
 	if is_instance_valid(container):
 		container.queue_free()
-
 	container = HBoxContainer.new()
 	container.name = "PlantCards"
 	container.add_theme_constant_override("separation", 8)
 	parent.add_child(container)
-
 	for plant_id in plant_ids:
 		var data := DataLoader.get_plant(str(plant_id))
 		if data.is_empty():
 			continue
-
 		var button := Button.new()
 		button.name = str(plant_id)
 		button.custom_minimum_size = Vector2(132, 72)
