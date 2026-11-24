@@ -1,38 +1,50 @@
-# Vạn Giới Linh Viên
+# Vạn Giới Linh Viên — Godot 4.2+
 
-Game tower-defense viết bằng GDScript cho Godot 4.2+, lấy cảm hứng từ Plants vs. Zombies và văn hóa Việt Nam.
+Dự án tower-defense 2D viết bằng GDScript. Thiết kế hướng dữ liệu: thêm cây, zombie hoặc màn thường chỉ cần thêm JSON mới vào thư mục dữ liệu tương ứng, không sửa danh sách hard-code trong manager.
 
-## Mở game
+## Chạy
 
-1. Cài Godot 4.2 trở lên.
-2. Clone repository và mở thư mục chứa `project.godot` trong Godot Editor.
-3. Nhấn F5 hoặc nút Run để chạy game.
+1. Mở `project.godot` bằng Godot 4.2 trở lên.
+2. Nhấn F6/F5 để chạy scene/project.
+3. Nếu có lỗi, xem tab **Debugger → Errors** và **Output**. Repo chưa kèm kết quả chạy headless nên cần xác nhận bằng Godot Editor.
 
-## Nội dung hiện có
+## Thêm plant
 
-- `core/DataLoader.gd` nạp JSON từ `data/plants/`, `data/zombies/`, `data/levels/` và cấu hình chung.
-- `core/GridManager.gd` tạo lưới 5 × 9, `core/EntityFactory.gd` tạo thực thể.
-- `core/WaveManager.gd` phát sóng; các script trong `behaviors/` xử lý cây, zombie, đạn và hiệu ứng.
-- `core/SaveSystem.gd` lưu tiến trình vào `user://savegame.json`.
-- Scene chính nằm trong `scenes/Main.tscn`.
+Tạo `data/plants/<id>.json`. Ví dụ:
 
-## Thêm nội dung
+```json
+{
+  "name": "Trúc Tiễn",
+  "type": "shooter",
+  "cost": 100,
+  "hp": 300,
+  "damage": 20,
+  "fire_rate": 1.5,
+  "range": 9,
+  "sprite": "res://assets/plants/truc-tien.png",
+  "abilities": {"projectiles_per_attack": 1}
+}
+```
 
-- Cây: `data/plants/<id>.json`
-- Zombie: `data/zombies/<id>.json`
-- Màn chơi: `data/levels/<id>.json`
+Để màn dùng cây mới, thêm ID vào `available_plants` của level tương ứng. Sprite là tùy chọn; nếu bỏ qua, dùng hình dự phòng. Script hành vi tùy chỉnh có thể khai báo `behavior_script` trong JSON, kế thừa hành vi setup tương thích.
 
-Sprite tùy chọn:
+## Thêm zombie
 
-- Cây: `assets/plants/<id>.png`
-- Zombie: `assets/zombies/<id>.png`
+Tạo `data/zombies/<id>.json` với `name`, `type`, `hp`, `speed`, `damage`, `attack_rate`. Thêm ID vào danh sách `zombies` trong wave của màn. Sprite tùy chọn đặt ở `assets/zombies/<id>.png`. Có thể chỉ định `behavior_script` để dùng script riêng.
 
-Khi thiếu sprite, game tự dùng hình khối dự phòng.
+## Thêm màn
 
-## Tài nguyên hình ảnh UI
+Tạo `data/levels/<id>.json` gồm `name`, `environment`, `available_plants`, `waves`; mỗi wave có `zombies`, `count`, `interval`. DataLoader kiểm tra tham chiếu ID cây/quái và báo lỗi nếu sai.
 
-- `logo.png` → `assets/ui/logo.png`
-- `seed-packet.png` → `assets/ui/seed-packet.png`
-- `linh-khi.png` → `assets/ui/linh-khi.png`
+## Cấu trúc
 
-Cấu hình đường dẫn nằm trong `data/config/ui-assets.json`.
+- `data/plants`, `data/zombies`, `data/levels`: dữ liệu nội dung.
+- `core/DataLoader.gd`: tự quét JSON, nạp và kiểm tra tham chiếu.
+- `core/EntityFactory.gd`: tạo entity từ dữ liệu; script có thể override bằng JSON.
+- `core/WaveManager.gd`: phát wave từ JSON.
+- `behaviors/`: hành vi entity mặc định.
+- `assets/`: hình, âm thanh và UI.
+
+## Hạn chế hiện tại
+
+Cấu trúc JSON mới làm giảm việc sửa code khi thêm nội dung cùng loại. Các tính năng có hành vi hoàn toàn mới vẫn cần script hoặc capability tương ứng; khai báo một trường JSON tự nó không tự tạo ra cơ chế. Hình ảnh, âm thanh và hiệu ứng cần được cung cấp riêng. Kiểm tra cú pháp/runtime cuối cùng phải thực hiện trong Godot 4.2+.
