@@ -1,0 +1,10 @@
+{
+  "name": "Hồng Liên Nổ",
+  "cost": 150,
+  "hp": 100,
+  "type": "exploder",
+  "damage": 220,
+  "description": "Nổ và gây sát thương diện rộng.",
+  "category": "hoa",
+  "sprite_scale": 1.0
+}

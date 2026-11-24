@@ -1,0 +1,11 @@
+{
+  "name": "Nhật Nguyệt Thảo",
+  "cost": 50,
+  "hp": 180,
+  "type": "producer",
+  "sun_amount": 25,
+  "production_rate": 8.0,
+  "description": "Tạo Linh Khí theo chu kỳ.",
+  "category": "linh",
+  "sprite_scale": 1.0
+}

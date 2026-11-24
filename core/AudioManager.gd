@@ -1,2 +1,5 @@
 extends Node
-# TODO: Code sẽ được thêm sau
+
+func play(name: String) -> void:
+	# Dành chỗ cho các AudioStreamPlayer khi nội dung âm thanh được thêm.
+	print("[Audio] ", name)
