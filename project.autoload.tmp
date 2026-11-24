@@ -1,0 +1,6 @@
+[addons]
+
+[autoload]
+
+SaveSystem="*res://core/SaveSystem.gd"
+SunManager="*res://core/SunManager.gd"

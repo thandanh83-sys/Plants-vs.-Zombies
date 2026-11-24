@@ -1,0 +1,9 @@
+{
+  "name": "Vạn Giới Linh Viên",
+  "grid_rows": 5,
+  "grid_columns": 9,
+  "starting_sun": 50,
+  "sun_drop_interval": 8.0,
+  "sun_drop_amount": 25,
+  "language": "vi-VN"
+}

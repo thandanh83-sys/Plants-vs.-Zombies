@@ -1,32 +1,29 @@
 # Vạn Giới Linh Viên
 
-Một game tower-defense theo phong cách Plants vs. Zombies, lấy cảm hứng văn hóa Việt Nam và kiến trúc dữ liệu mở rộng.
+Godot 4 tower-defense prototype inspired by Plants vs. Zombies and Vietnamese culture.
 
-## Trạng thái hiện tại
+## Development
 
-Đã có bản nguyên mẫu chạy được trong Godot 4:
+Open `project.godot` in Godot 4.2 or newer and run `res://scenes/Main.tscn`.
 
-- Tải tự động cây, zombie và màn chơi từ thư mục `data/`
-- Lưới 5×9 bằng `GridManager.gd`
-- Thẻ Linh Phù bằng `CardManager.gd`
-- Sinh cây/zombie bằng `EntityFactory.gd`
-- Cây bắn, zombie di chuyển và tấn công, Linh Khí tăng/tiêu
-- Sinh sóng zombie theo JSON
-- Thắng/thua cơ bản
+## Asset organization
 
-## Chạy dự án
+Runtime assets should live under:
 
-1. Cài Godot 4.2 trở lên.
-2. Mở thư mục repo bằng Godot Editor.
-3. Nhấn **F6** hoặc **Run Project**.
+- `assets/ui/` — logo, seed packet and currency images
+- `assets/plants/` — plant sprites
+- `assets/zombies/` — zombie sprites
+- `assets/backgrounds/` — level backgrounds
 
-Scene khởi động là `res://scenes/Main.tscn`.
+To relocate the three currently uploaded UI source images, run:
 
-## Thêm nội dung
+```powershell
+python tools/rename_assets.py
+```
 
-- Thêm `data/plants/<id>.json` để đăng ký cây mới.
-- Thêm `data/zombies/<id>.json` để đăng ký zombie mới.
-- Thêm `data/levels/<id>.json` để đăng ký màn mới.
-- Đặt sprite tại `assets/plants/<id>.png` hoặc `assets/zombies/<id>.png`.
+## Data-driven content
 
-Core đọc dữ liệu tự động qua `DataLoader`; không cần hard-code thêm tên entity.
+- Plant definitions: `data/plants/*.json`
+- Zombie definitions: `data/zombies/*.json`
+- Level definitions: `data/levels/*.json`
+- Shared settings: `data/config/game-settings.json`
