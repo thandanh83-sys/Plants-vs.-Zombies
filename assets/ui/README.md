@@ -1,13 +1,3 @@
-# Local asset relocation
+# Tài nguyên UI
 
-Run this script after cloning the repository to move the three existing design images into the Godot asset folders:
-
-```powershell
-python tools/rename_assets.py
-```
-
-The script creates `assets/ui/` automatically and renames:
-
-- `Biểu tượng hoa sen mực thủy mặc.png` → `assets/ui/logo.png`
-- `Bùa Tre Trúc Ngọc Bích.png` → `assets/ui/seed-packet.png`
-- `Quả cầu ngọc linh sen vàng.png` → `assets/ui/linh-khi.png`
+Chạy `python tools/rename_assets.py` ở thư mục gốc repo để chuyển ba ảnh PNG nguồn thành `logo.png`, `seed-packet.png` và `linh-khi.png` trong thư mục này. Mở project bằng Godot sau khi chuyển ảnh để Godot import chúng.

@@ -1,6 +1,1 @@
-[addons]
-
-[autoload]
-
-SaveSystem="*res://core/SaveSystem.gd"
-SunManager="*res://core/SunManager.gd"
+; Các file .tmp không phải project config; project.godot là cấu hình duy nhất có hiệu lực.

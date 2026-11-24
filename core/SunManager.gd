@@ -5,8 +5,8 @@ var interval := 8.0
 var amount := 25
 
 func _ready() -> void:
-	if DataLoader.levels_db.has(GameManager.current_level_id):
-		interval = float(DataLoader.get_level(GameManager.current_level_id).get("sun_drop_interval", interval))
+	interval = max(0.1, float(DataLoader.get_setting("sun_drop_interval", interval)))
+	amount = int(DataLoader.get_setting("sun_drop_amount", amount))
 
 func _process(delta: float) -> void:
 	if GameManager.state != "playing":
