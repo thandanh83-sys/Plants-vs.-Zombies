@@ -1,36 +1,31 @@
 # Vạn Giới Linh Viên
 
-Một game tower-defense bằng Godot 4, lấy cảm hứng từ Plants vs. Zombies và văn hóa Việt Nam.
+Game tower-defense viết bằng GDScript cho Godot 4.2+, lấy cảm hứng từ Plants vs. Zombies và văn hóa Việt Nam.
 
-## Mở và chạy
+## Mở game
 
-1. Cài Godot 4.2 trở lên.
-2. Clone repo, mở `project.godot` bằng Godot Editor.
-3. Chạy scene `res://scenes/Main.tscn` bằng F6 hoặc **Run Project**.
+1. Clone repository và cài Godot 4.2 trở lên.
+2. Chạy `python tools/rename_assets.py` để chuyển ba ảnh thiết kế ở thư mục gốc vào `assets/ui/`.
+3. Mở `project.godot` trong Godot Editor và chạy project.
 
-## Chuẩn bị 3 ảnh UI đã tải lên
+## Nội dung hiện có
 
-Ba ảnh gốc đang ở thư mục gốc repo. Để đưa chúng vào đường dẫn mà Godot sử dụng, chạy tại thư mục repo:
+- `core/DataLoader.gd` nạp JSON từ `data/plants/`, `data/zombies/`, `data/levels/` và cấu hình chung.
+- `core/GridManager.gd` tạo lưới, `core/EntityFactory.gd` tạo entity.
+- `core/WaveManager.gd` phát sóng; các script `behaviors/` xử lý cây, zombie, đạn và hiệu ứng.
+- `core/SaveSystem.gd` lưu tiến trình vào `user://savegame.json`.
+- Main scene: `scenes/Main.tscn`.
 
-```bash
-python tools/rename_assets.py
-```
+## Thêm nội dung
 
-Script chuyển:
+Thêm JSON mới với ID riêng vào thư mục phù hợp. Sprite tùy chọn đặt theo ID trong `assets/plants/<id>.png` hoặc `assets/zombies/<id>.png`. Level khai báo ID trong `available_plants` và `waves`. Mỗi file JSON phải là một object JSON hợp lệ.
+
+## Tài nguyên hình ảnh
+
+Ảnh nguồn UI được chuyển theo quy tắc:
 
 - `Biểu tượng hoa sen mực thủy mặc.png` → `assets/ui/logo.png`
 - `Bùa Tre Trúc Ngọc Bích.png` → `assets/ui/seed-packet.png`
 - `Quả cầu ngọc linh sen vàng.png` → `assets/ui/linh-khi.png`
 
-Nếu đích đã tồn tại, script giữ nguyên cả ảnh nguồn và ảnh đích để tránh ghi đè. Sau khi chạy, commit các file trong `assets/ui/` nếu bạn muốn chúng được lưu trên GitHub.
-
-## Cấu trúc nội dung
-
-- `core/` — DataLoader, GameManager, CardManager, AudioManager, SaveSystem và các manager.
-- `behaviors/` — hành vi cây, zombie, đạn.
-- `scenes/` — scene và script giao diện game.
-- `data/plants/*.json`, `data/zombies/*.json`, `data/levels/*.json` — nội dung game theo dữ liệu.
-- `data/config/game-settings.json` — cài đặt dùng chung.
-- `assets/ui/`, `assets/plants/`, `assets/zombies/`, `assets/backgrounds/` — ảnh game.
-
-`DataLoader` tự quét JSON cho cây, zombie, màn và đọc cấu hình. Tiến trình mở màn được lưu ở `user://savegame.json` qua `SaveSystem`.
+Ảnh cây, zombie, nền và âm thanh là tài nguyên bổ sung; game dùng hình khối dự phòng khi thiếu sprite nhân vật.

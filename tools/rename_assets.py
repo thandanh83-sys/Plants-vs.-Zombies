@@ -10,18 +10,18 @@ MOVES = {
 }
 
 TARGET_DIR.mkdir(parents=True, exist_ok=True)
-failed = False
+missing = []
 for source_name, target_name in MOVES.items():
     source = ROOT / source_name
     target = TARGET_DIR / target_name
-    if target.exists():
-        print(f"Đã có, giữ nguyên cả hai file: {target.relative_to(ROOT)}")
-    elif not source.is_file():
-        print(f"Không tìm thấy ảnh nguồn: {source_name}")
-        failed = True
-    else:
+    if target.is_file():
+        print(f"Đã có: {target.relative_to(ROOT)}")
+    elif source.is_file():
         shutil.move(str(source), str(target))
-        print(f"Đã đổi tên: {source_name} -> {target.relative_to(ROOT)}")
+        print(f"Đã chuyển: {source_name} -> {target.relative_to(ROOT)}")
+    else:
+        print(f"Không tìm thấy ảnh nguồn hoặc ảnh đích: {source_name}")
+        missing.append(source_name)
 
-if failed:
-    raise SystemExit("Một số ảnh nguồn không tìm thấy. Kiểm tra tên file trong thư mục gốc repo.")
+if missing:
+    raise SystemExit("Hãy tải/copy ảnh thiếu vào thư mục gốc repo rồi chạy lại script.")

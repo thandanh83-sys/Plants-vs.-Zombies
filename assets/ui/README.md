@@ -1,9 +1,3 @@
-# UI assets
+# Tài nguyên UI
 
-Chạy `python tools/rename_assets.py` ở thư mục gốc repo để chuyển ba ảnh thiết kế đã tải lên sang tên/path dùng trong Godot:
-
-- `Biểu tượng hoa sen mực thủy mặc.png` → `logo.png`
-- `Bùa Tre Trúc Ngọc Bích.png` → `seed-packet.png`
-- `Quả cầu ngọc linh sen vàng.png` → `linh-khi.png`
-
-Các ảnh cần được import bởi Godot sau khi chúng nằm trong thư mục này.
+Chạy `python tools/rename_assets.py` ở thư mục gốc repo để chuyển ba ảnh PNG nguồn thành `logo.png`, `seed-packet.png` và `linh-khi.png` trong thư mục này. Mở project bằng Godot sau khi chuyển ảnh để Godot import chúng.

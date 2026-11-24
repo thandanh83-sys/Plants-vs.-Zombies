@@ -21,17 +21,24 @@ func start() -> void:
 func _run_waves() -> void:
 	var waves: Array = level_data.get("waves", [])
 	for wave_index in range(waves.size()):
+		if GameManager.state != "playing":
+			running = false
+			return
 		var wave: Dictionary = waves[wave_index]
 		wave_started.emit(int(wave.get("wave_number", wave_index + 1)))
 		var zombie_ids: Array = wave.get("zombies", [])
 		var count := int(wave.get("count", 1))
-		var interval := float(wave.get("interval", 2.5))
+		var interval := max(0.1, float(wave.get("interval", 2.5)))
 		for i in range(count):
+			if GameManager.state != "playing":
+				running = false
+				return
 			if zombie_ids.is_empty():
+				push_warning("Wave không có zombie ID")
 				break
-			var lane := i % 5
+			var lane := i % int(DataLoader.get_setting("grid_rows", 5))
 			var zombie_id := str(zombie_ids[i % zombie_ids.size()])
-			if factory:
+			if is_instance_valid(factory):
 				factory.spawn_zombie(zombie_id, lane)
 			await get_tree().create_timer(interval).timeout
 		await get_tree().create_timer(max(3.0, interval)).timeout

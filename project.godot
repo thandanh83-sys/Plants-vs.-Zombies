@@ -6,7 +6,6 @@ config/name="Van Gioi Linh Vien"
 config/description="Plants vs Zombies style Tower Defense with Vietnamese culture"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
-config/icon="res://assets/ui/logo.png"
 
 [autoload]
 DataLoader="*res://core/DataLoader.gd"
@@ -14,6 +13,7 @@ GameManager="*res://core/GameManager.gd"
 AudioManager="*res://core/AudioManager.gd"
 CardManager="*res://core/CardManager.gd"
 SaveSystem="*res://core/SaveSystem.gd"
+SunManager="*res://core/SunManager.gd"
 
 [display]
 window/size/viewport_width=1280

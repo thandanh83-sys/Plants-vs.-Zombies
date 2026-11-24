@@ -1,12 +1,13 @@
 extends Node
 
 const SAVE_PATH := "user://savegame.json"
-
-var save_data: Dictionary = {
+const DEFAULT_DATA := {
 	"unlocked_levels": ["level-01-thu-vien"],
 	"completed_levels": [],
 	"best_sun": 0
 }
+
+var save_data: Dictionary = DEFAULT_DATA.duplicate(true)
 
 func _ready() -> void:
 	load_game()
@@ -22,7 +23,9 @@ func load_game() -> Dictionary:
 	if json.parse(file.get_as_text()) != OK or not json.data is Dictionary:
 		push_warning("File lưu không hợp lệ; dùng dữ liệu mặc định.")
 		return save_data
-	save_data = json.data
+	save_data = DEFAULT_DATA.duplicate(true)
+	for key in json.data:
+		save_data[key] = json.data[key]
 	return save_data
 
 func save_game() -> bool:
@@ -41,4 +44,13 @@ func record_level_completed(level_id: String) -> void:
 	if level_id not in completed:
 		completed.append(level_id)
 	save_data["completed_levels"] = completed
+	var level_ids := DataLoader.get_all_level_ids()
+	level_ids.sort()
+	var current_index := level_ids.find(level_id)
+	if current_index >= 0 and current_index + 1 < level_ids.size():
+		var next_id := str(level_ids[current_index + 1])
+		var unlocked: Array = save_data.get("unlocked_levels", [])
+		if next_id not in unlocked:
+			unlocked.append(next_id)
+		save_data["unlocked_levels"] = unlocked
 	save_game()
