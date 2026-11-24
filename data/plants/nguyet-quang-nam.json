@@ -1,0 +1,11 @@
+{
+  "name": "Nguyệt Quang Nấm",
+  "cost": 25,
+  "hp": 300,
+  "type": "producer",
+  "sun_amount": 25,
+  "production_rate": 8.0,
+  "abilities": {"growth_stages": [25, 100]},
+  "description": "Tạo Linh Khí; cơ chế tăng sản lượng theo thời gian cần được lập trình.",
+  "category": "nam"
+}

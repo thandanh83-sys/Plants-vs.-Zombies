@@ -1,0 +1,10 @@
+{
+  "name": "Liên Diệp",
+  "cost": 25,
+  "hp": 300,
+  "type": "wall",
+  "damage": 0,
+  "abilities": {"supports_aquatic_plants": true, "water_only": true},
+  "description": "Tạo ô đặt cây trên nước; cần thêm loại ô địa hình nước.",
+  "category": "lien"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Liệt Hỏa Trụ",
+  "cost": 175,
+  "hp": 300,
+  "type": "wall",
+  "damage": 0,
+  "abilities": {"amplifies_projectiles": 2, "element": "fire"},
+  "description": "Cường hóa đạn đi qua; cần bổ sung kiểm tra projectile.",
+  "category": "tru"
+}

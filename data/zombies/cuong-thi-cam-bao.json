@@ -1,0 +1,10 @@
+{
+  "name": "Cương Thi Cầm Báo",
+  "hp": 200,
+  "speed": 16.0,
+  "damage": 20,
+  "attack_rate": 1.0,
+  "type": "newspaper",
+  "abilities": {"speed_after_newspaper_breaks": 32.0},
+  "description": "Tăng tốc khi mất báo; cần thêm logic chuyển trạng thái."
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Cương Thi Nhảy Phụ",
+  "hp": 200,
+  "speed": 16.0,
+  "damage": 20,
+  "attack_rate": 1.0,
+  "type": "basic",
+  "description": "Quái phụ được gọi bởi Cương Thi Vũ Công."
+}

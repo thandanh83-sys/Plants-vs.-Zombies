@@ -1,0 +1,10 @@
+{
+  "name": "Cương Thi Cầu Thủ",
+  "hp": 1600,
+  "speed": 32.0,
+  "damage": 20,
+  "attack_rate": 1.0,
+  "type": "armored",
+  "armor": {"hp": 800, "visual": "football_helmet"},
+  "description": "Quái chạy nhanh có giáp."
+}

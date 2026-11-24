@@ -1,0 +1,10 @@
+{
+  "name": "Kim Cang Đài",
+  "cost": 125,
+  "hp": 8000,
+  "type": "wall",
+  "damage": 0,
+  "abilities": {"plant_food": "restore_full_hp"},
+  "description": "Cây chắn có độ bền lớn; Linh Đan hồi đầy HP cần được lập trình.",
+  "category": "phong"
+}

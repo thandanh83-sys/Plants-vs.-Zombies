@@ -1,0 +1,12 @@
+{
+  "name": "Độc Vụ Nấm",
+  "cost": 75,
+  "hp": 300,
+  "type": "shooter",
+  "damage": 20,
+  "fire_rate": 1.5,
+  "range": 3,
+  "abilities": {"pierces_targets": true, "knockback": 12},
+  "description": "Phóng độc vụ xuyên mục tiêu; xuyên và đẩy lùi cần được lập trình.",
+  "category": "nam"
+}

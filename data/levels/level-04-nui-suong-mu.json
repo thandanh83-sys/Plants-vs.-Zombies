@@ -1,0 +1,13 @@
+{
+  "name": "Núi Sương Mù",
+  "environment": "fog",
+  "background": "res://assets/backgrounds/nui-suong-mu.png",
+  "starting_sun": 100,
+  "available_plants": ["nhat-nguyet-thao", "truc-tien", "doc-vu-nam", "tam-tien-truc", "hong-lien-no"],
+  "special_mechanics": ["fog_covers_three_right_columns"],
+  "waves": [
+    {"wave_number": 1, "zombies": ["cuong-thi-thuong", "cuong-thi-cam-co"], "count": 8, "interval": 2.6},
+    {"wave_number": 2, "zombies": ["cuong-thi-non", "cuong-thi-cam-bao"], "count": 10, "interval": 2.2},
+    {"wave_number": 3, "zombies": ["cuong-thi-doi-xo", "cuong-thi-vu-cong"], "count": 12, "interval": 1.9}
+  ]
+}

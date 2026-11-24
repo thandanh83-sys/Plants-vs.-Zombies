@@ -1,0 +1,12 @@
+{
+  "name": "Tam Tiễn Trúc",
+  "cost": 325,
+  "hp": 300,
+  "type": "shooter",
+  "damage": 20,
+  "fire_rate": 1.5,
+  "range": 9,
+  "abilities": {"shoot_adjacent_lanes": true},
+  "description": "Bắn vào làn của mình và hai làn kề; cần bổ sung logic đa làn.",
+  "category": "tien"
+}

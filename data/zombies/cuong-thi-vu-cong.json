@@ -1,0 +1,10 @@
+{
+  "name": "Cương Thi Vũ Công",
+  "hp": 500,
+  "speed": 16.0,
+  "damage": 20,
+  "attack_rate": 1.0,
+  "type": "dancer",
+  "abilities": {"summons": "cuong-thi-nhay-phu", "summon_count": 4},
+  "description": "Triệu hồi bốn quái nhảy phụ; cần thêm hành vi gọi viện binh."
+}

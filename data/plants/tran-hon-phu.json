@@ -1,0 +1,10 @@
+{
+  "name": "Trấn Hồn Phù",
+  "cost": 75,
+  "hp": 300,
+  "type": "wall",
+  "damage": 0,
+  "abilities": {"removes_obstacles": "grave", "max_targets": 3},
+  "description": "Xóa bia mộ; cần thêm hệ thống chướng ngại vật.",
+  "category": "phu"
+}

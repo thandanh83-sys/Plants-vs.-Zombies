@@ -1,0 +1,12 @@
+{
+  "name": "Hàn Băng Tiễn",
+  "cost": 175,
+  "hp": 300,
+  "type": "shooter",
+  "damage": 20,
+  "fire_rate": 1.5,
+  "range": 9,
+  "abilities": {"status": "slow", "slow_factor": 0.5, "duration": 3.0, "plant_food": "freeze_lane"},
+  "description": "Bắn tên băng làm chậm mục tiêu; Linh Đan đóng băng một làn.",
+  "category": "tien"
+}

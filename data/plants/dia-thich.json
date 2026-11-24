@@ -1,0 +1,10 @@
+{
+  "name": "Địa Thích",
+  "cost": 100,
+  "hp": 300,
+  "type": "wall",
+  "damage": 20,
+  "abilities": {"damage_per_second": 20, "damages_rolling_zombies": true},
+  "description": "Gai gây sát thương cho quái đi qua; cần thêm xử lý va chạm định kỳ.",
+  "category": "thich"
+}

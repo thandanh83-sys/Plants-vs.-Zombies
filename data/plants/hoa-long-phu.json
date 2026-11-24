@@ -1,0 +1,10 @@
+{
+  "name": "Hỏa Long Phù",
+  "cost": 125,
+  "hp": 300,
+  "type": "exploder",
+  "damage": 1800,
+  "abilities": {"area": "lane", "plant_food": "lane_explosion"},
+  "description": "Gây nổ toàn làn; cần bổ sung logic phạm vi làn.",
+  "category": "phu"
+}

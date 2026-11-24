@@ -1,0 +1,10 @@
+{
+  "name": "Cương Thi Đội Xô",
+  "hp": 1300,
+  "speed": 16.0,
+  "damage": 20,
+  "attack_rate": 1.0,
+  "type": "armored",
+  "armor": {"hp": 1100, "visual": "bucket"},
+  "description": "Giáp xô hấp thụ sát thương trước thân thể."
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Địa Lôi Phù",
+  "cost": 25,
+  "hp": 300,
+  "type": "exploder",
+  "damage": 1800,
+  "trigger_range": 50,
+  "abilities": {"armed_delay": 3.0, "area_radius": 55},
+  "description": "Phù địa lôi phát nổ khi quái đến gần.",
+  "category": "phu"
+}

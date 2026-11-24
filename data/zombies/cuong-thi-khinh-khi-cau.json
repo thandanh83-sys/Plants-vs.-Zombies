@@ -1,0 +1,10 @@
+{
+  "name": "Cương Thi Khinh Khí Cầu",
+  "hp": 200,
+  "speed": 24.0,
+  "damage": 20,
+  "attack_rate": 1.0,
+  "type": "balloon",
+  "abilities": {"flies_over_plants": true, "counter": "spikeweed"},
+  "description": "Bay qua cây; cơ chế bay và khắc chế cần được lập trình."
+}

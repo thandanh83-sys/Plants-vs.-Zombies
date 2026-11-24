@@ -1,0 +1,12 @@
+{
+  "name": "Dạ Quang Nấm",
+  "cost": 0,
+  "hp": 300,
+  "type": "shooter",
+  "damage": 20,
+  "fire_rate": 1.5,
+  "range": 2,
+  "abilities": {"night_only": true},
+  "description": "Cây bắn miễn phí, tầm bắn ngắn.",
+  "category": "nam"
+}

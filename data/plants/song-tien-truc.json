@@ -1,0 +1,12 @@
+{
+  "name": "Song Tiễn Trúc",
+  "cost": 200,
+  "hp": 300,
+  "type": "shooter",
+  "damage": 20,
+  "fire_rate": 1.5,
+  "range": 9,
+  "abilities": {"projectiles_per_attack": 2, "plant_food": {"projectiles": 4, "interval": 0.05}},
+  "description": "Bắn hai mũi tên mỗi lượt.",
+  "category": "tien"
+}

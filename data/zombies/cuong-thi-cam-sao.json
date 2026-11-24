@@ -1,0 +1,10 @@
+{
+  "name": "Cương Thi Cầm Sào",
+  "hp": 500,
+  "speed": 36.0,
+  "damage": 20,
+  "attack_rate": 1.0,
+  "type": "pole_vaulting",
+  "abilities": {"jumps_over_first_plant": true},
+  "description": "Nhảy qua cây đầu tiên; hiện tại hành vi nhảy chưa được lập trình."
+}
