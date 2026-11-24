@@ -14,7 +14,8 @@ func setup(id: String, data: Dictionary, row: int) -> void:
 	zombie_id = id
 	zombie_data = data
 	lane = row
-	hp = float(data.get("hp", 200))	speed = float(data.get("speed", 18.0))
+	hp = float(data.get("hp", 200))
+	speed = float(data.get("speed", 18.0))
 	damage = float(data.get("damage", 20))
 	attack_rate = max(0.1, float(data.get("attack_rate", 1.0)))
 	if data.get("armor", {}) is Dictionary:
