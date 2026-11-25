@@ -62,3 +62,18 @@ Trạng thái thực tế của lần chạy tương ứng với commit này ph�
 - Công cụ AI đã có kiểm thử schema/định tuyến; khả năng kết nối model thật phụ thuộc provider, model và biến môi trường, chưa được kiểm chứng khi không có khóa API.
 - CI kiểm tra parser, startup headless, data và HTML5 export; không mô phỏng một trận đấu hoàn chỉnh hoặc đánh giá cân bằng bằng người chơi.
 - Cần thử thao tác pause/speed, Linh Đan, hoàn thành màn, tải save và gameplay thực tế trong Godot Editor/Web export.
+
+
+## Bổ sung UI/UX từ bộ tham khảo PvZ
+
+- Chuyển các hành vi tham khảo từ Unity C# sang GDScript, không đưa mã Unity vào project Godot.
+- Thêm công cụ Xẻng: đào bỏ cây ở ô được chọn; ưu tiên cây phía trên bệ Liên Diệp, không hoàn lại Linh Khí.
+- Thêm ghost preview theo ô hợp lệ và sprite Plant đã có; dùng hình dự phòng khi chưa có sprite.
+- Mở rộng input đặt cây/xẻng để nhận cả InputEventMouseButton và InputEventScreenTouch.
+- Thêm Almanac tra cứu Plant/Zombie trực tiếp từ DataLoader, gồm ảnh, chỉ số và danh sách kỹ năng.
+- Thêm bản đồ màn chơi cuộn ngang, biểu thị màn đã hoàn thành/mở khóa/bị khóa.
+- Thêm thanh tiến độ wave và biểu ngữ cho boss, final wave và wave có số lượng đông.
+- Thêm hiệu ứng hit flash cho Plant và Zombie khi nhận sát thương.
+- Chưa thêm Zen Garden, Power-ups Pinch/Toss hoặc pre-battle seed chooser: các hệ thống này cần vòng lặp gameplay, dữ liệu tiến trình và UI độc lập; chưa nên giả lập bằng các nút không có logic thật.
+- Hệ thống cooldown thẻ chỉ nên kích hoạt khi dữ liệu Plant có thời gian hồi chiêu được cân bằng và khai báo rõ; hiện không tự gán thời gian mặc định.
+

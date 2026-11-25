@@ -21,6 +21,7 @@ var is_wave_leader := false
 var has_newspaper_broken := false
 var status_label: Label
 var _slow_factor := 0.5
+var _hit_flash_tween: Tween
 
 func setup(id: String, data: Dictionary, row: int) -> void:
 	zombie_id = id
@@ -188,6 +189,9 @@ func _summon_support() -> void:
 
 func take_damage(amount: float) -> void:
 	var remaining := maxf(0.0, amount)
+	if remaining <= 0.0:
+		return
+	_flash_damage()
 	var armor_before := armor_hp
 	if armor_hp > 0.0:
 		var absorbed := minf(armor_hp, remaining)
@@ -203,3 +207,10 @@ func take_damage(amount: float) -> void:
 	if hp <= 0.0:
 		remove_from_group("zombies")
 		queue_free()
+
+func _flash_damage() -> void:
+	if _hit_flash_tween != null and _hit_flash_tween.is_running():
+		_hit_flash_tween.kill()
+	_hit_flash_tween = create_tween()
+	_hit_flash_tween.tween_property(self, "modulate", Color(1.0, 0.62, 0.62, 1.0), 0.035)
+	_hit_flash_tween.tween_property(self, "modulate", Color.WHITE, 0.09)

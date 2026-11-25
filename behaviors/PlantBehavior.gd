@@ -21,6 +21,7 @@ var is_eating := false
 var eating_target: Node2D
 var is_platform := false
 var _food_busy := false
+var _hit_flash_tween: Tween
 
 func setup(id: String, data: Dictionary, row: int, grid_column: int) -> void:
 	plant_id = id
@@ -289,9 +290,20 @@ func activate_plant_food() -> bool:
 	return true
 
 func take_damage(amount: float) -> void:
-	hp -= maxf(0.0, amount)
+	var applied := maxf(0.0, amount)
+	if applied <= 0.0:
+		return
+	_flash_damage()
+	hp -= applied
 	if hp <= 0.0:
 		_remove_self()
+
+func _flash_damage() -> void:
+	if _hit_flash_tween != null and _hit_flash_tween.is_running():
+		_hit_flash_tween.kill()
+	_hit_flash_tween = create_tween()
+	_hit_flash_tween.tween_property(self, "modulate", Color(1.0, 0.62, 0.62, 1.0), 0.035)
+	_hit_flash_tween.tween_property(self, "modulate", Color.WHITE, 0.09)
 
 func _remove_self() -> void:
 	var grid := get_tree().current_scene.find_child("GridManager", true, false)
