@@ -14,11 +14,11 @@ func build_cards(parent: Control, plant_ids: Array) -> void:
 	container.add_theme_constant_override("separation", 8)
 	parent.add_child(container)
 	_buttons.clear()
-	var packet_path := DataLoader.get_ui_asset("seed_packet", "")
+	var packet_path: String = DataLoader.get_ui_asset("seed_packet", "")
 	var packet: Texture2D = load(packet_path) as Texture2D if not packet_path.is_empty() and ResourceLoader.exists(packet_path) else null
 	for raw_id in plant_ids:
 		var plant_id := str(raw_id)
-		var data := DataLoader.get_plant(plant_id)
+		var data: Dictionary = DataLoader.get_plant(plant_id)
 		if data.is_empty():
 			continue
 		var button := Button.new()
@@ -39,7 +39,7 @@ func build_cards(parent: Control, plant_ids: Array) -> void:
 func update_affordability(sun_amount: int) -> void:
 	for plant_id in _buttons:
 		var button: Button = _buttons[plant_id]
-		var data := DataLoader.get_plant(str(plant_id))
+		var data: Dictionary = DataLoader.get_plant(str(plant_id))
 		button.disabled = int(data.get("cost", 0)) > sun_amount and str(plant_id) != selected_id
 
 func _on_card_pressed(plant_id: String, pressed_button: Button) -> void:

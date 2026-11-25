@@ -1,3 +1,4 @@
+class_name GridManager
 extends Node2D
 
 signal grid_clicked(row: int, column: int)
@@ -72,7 +73,7 @@ func is_empty(row: int, column: int) -> bool:
 func can_place_plant(plant_id: String, row: int, column: int) -> bool:
 	if not is_empty(row, column):
 		return false
-	var data := DataLoader.get_plant(plant_id)
+	var data: Dictionary = DataLoader.get_plant(plant_id)
 	if data.is_empty():
 		return false
 	var abilities: Dictionary = data.get("abilities", {})
@@ -80,7 +81,7 @@ func can_place_plant(plant_id: String, row: int, column: int) -> bool:
 	var is_water := row in water_lanes
 	var is_platform := bool(abilities.get("supports_aquatic_plants", false))
 	var requires_water := bool(abilities.get("requires_water", false)) or bool(abilities.get("water_only", false))
-	var lily_pad_required := "lily_pad_required" in GameManager.current_level.get("special_mechanics", [])
+	var lily_pad_required: bool = "lily_pad_required" in GameManager.current_level.get("special_mechanics", [])
 	var key := Vector2i(row, column)
 	if bool(abilities.get("night_only", false)) and str(GameManager.current_level.get("environment", "")) != "night":
 		return false
@@ -102,7 +103,7 @@ func set_occupied(row: int, column: int, entity: Node, is_platform: bool = false
 		platforms[key] = weakref(entity)
 	else:
 		var water_lanes: Array = GameManager.current_level.get("water_lanes", [])
-		var lily_pad_required := "lily_pad_required" in GameManager.current_level.get("special_mechanics", [])
+		var lily_pad_required: bool = "lily_pad_required" in GameManager.current_level.get("special_mechanics", [])
 		if row in water_lanes and lily_pad_required and not platforms.has(key):
 			return false
 		occupied[key] = weakref(entity)

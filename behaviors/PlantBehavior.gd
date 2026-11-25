@@ -36,7 +36,7 @@ func setup(id: String, data: Dictionary, row: int, grid_column: int) -> void:
 	shape.radius = 28.0
 	collision.shape = shape
 	add_child(collision)
-	var texture := DataLoader.get_plant_sprite(id)
+	var texture: Texture2D = DataLoader.get_plant_sprite(id)
 	if texture != null:
 		var sprite := Sprite2D.new()
 		sprite.texture = texture

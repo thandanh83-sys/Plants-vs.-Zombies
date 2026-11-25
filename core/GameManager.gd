@@ -18,20 +18,20 @@ func _ready() -> void:
 
 func _on_data_loaded() -> void:
 	if current_level_id.is_empty() and not DataLoader.levels_db.is_empty():
-		var level_ids := DataLoader.get_all_level_ids()
+		var level_ids: Array = DataLoader.get_all_level_ids()
 		level_ids.sort()
 		current_level_id = str(level_ids[0])
 		_set_state("menu")
 
 func start_level(level_id: String) -> bool:
-	var level := DataLoader.get_level(level_id)
+	var level: Dictionary = DataLoader.get_level(level_id)
 	if level.is_empty():
 		push_error("Không tìm thấy màn: " + level_id)
 		return false
 	current_level_id = level_id
 	current_level = level
 	sun = int(level.get("starting_sun", DataLoader.get_setting("starting_sun", 50)))
-	plant_food_charges = maxi(0, int(level.get("starting_plant_food", 1)))
+	plant_food_charges = maxi(0, int(level.get("starting_plant_food", DataLoader.get_setting("starting_plant_food", 1))))
 	_set_state("playing")
 	sun_changed.emit(sun)
 	plant_food_changed.emit(plant_food_charges)

@@ -32,9 +32,9 @@ func _scan_folder(folder_path: String, target: Dictionary) -> void:
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	files.sort()
-	for file_name in files:
-		var id := file_name.get_basename()
-		var data := _load_json(folder_path.path_join(file_name))
+	for json_file_name in files:
+		var id := json_file_name.get_basename()
+		var data: Dictionary = _load_json(folder_path.path_join(json_file_name))
 		if data.is_empty():
 			continue
 		data["id"] = id
@@ -111,27 +111,27 @@ func get_ui_asset(key: String, default_value: String = "") -> String:
 	return str(ui_assets_db.get(key, default_value))
 
 func get_all_plant_ids() -> Array:
-	var ids := plants_db.keys()
+	var ids: Array = plants_db.keys()
 	ids.sort()
 	return ids
 
 func get_all_zombie_ids() -> Array:
-	var ids := zombies_db.keys()
+	var ids: Array = zombies_db.keys()
 	ids.sort()
 	return ids
 
 func get_all_level_ids() -> Array:
-	var ids := levels_db.keys()
+	var ids: Array = levels_db.keys()
 	ids.sort()
 	return ids
 
 func get_plant_sprite(id: String) -> Texture2D:
-	var data := plants_db.get(id, {})
+	var data: Dictionary = plants_db.get(id, {})
 	var path := str(data.get("sprite", "res://assets/plants/%s.png" % id))
 	return _load_sprite(path)
 
 func get_zombie_sprite(id: String) -> Texture2D:
-	var data := zombies_db.get(id, {})
+	var data: Dictionary = zombies_db.get(id, {})
 	var path := str(data.get("sprite", "res://assets/zombies/%s.png" % id))
 	return _load_sprite(path)
 

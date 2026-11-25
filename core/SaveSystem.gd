@@ -50,9 +50,9 @@ func record_level_completed(level_id: String) -> void:
 	if level_id not in completed:
 		completed.append(level_id)
 	save_data["completed_levels"] = completed
-	var level_ids := DataLoader.get_all_level_ids()
+	var level_ids: Array = DataLoader.get_all_level_ids()
 	level_ids.sort()
-	var current_index := level_ids.find(level_id)
+	var current_index: int = level_ids.find(level_id)
 	if current_index >= 0 and current_index + 1 < level_ids.size():
 		var next_id := str(level_ids[current_index + 1])
 		var unlocked: Array = save_data.get("unlocked_levels", [])

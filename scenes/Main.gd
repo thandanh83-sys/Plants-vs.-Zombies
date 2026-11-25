@@ -87,10 +87,10 @@ func _build_hud() -> void:
 
 func _populate_levels() -> void:
 	level_selector.clear()
-	var ids := DataLoader.get_all_level_ids()
+	var ids: Array = DataLoader.get_all_level_ids()
 	ids.sort()
 	for level_id in ids:
-		var level := DataLoader.get_level(str(level_id))
+		var level: Dictionary = DataLoader.get_level(str(level_id))
 		var index := level_selector.item_count
 		level_selector.add_item(str(level.get("name", level_id)))
 		level_selector.set_item_metadata(index, str(level_id))
@@ -103,7 +103,7 @@ func _populate_levels() -> void:
 				break
 
 func _first_unlocked_level() -> String:
-	var ids := DataLoader.get_all_level_ids()
+	var ids: Array = DataLoader.get_all_level_ids()
 	ids.sort()
 	for level_id in ids:
 		if SaveSystem.is_level_unlocked(str(level_id)):
@@ -174,11 +174,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if selected_plant_id.is_empty():
 		return
-	var cell := grid.world_to_grid(event.position)
+	var cell: Vector2i = grid.world_to_grid(event.position)
 	if cell.x < 0 or not grid.can_place_plant(selected_plant_id, cell.x, cell.y):
 		state_label.text = "Ô này không phù hợp với loại cây đã chọn."
 		return
-	var data := DataLoader.get_plant(selected_plant_id)
+	var data: Dictionary = DataLoader.get_plant(selected_plant_id)
 	var cost := int(data.get("cost", 0))
 	if not GameManager.spend_sun(cost):
 		state_label.text = "Không đủ Linh Khí"
@@ -215,6 +215,7 @@ func _on_linh_khi_dropped(world_position: Vector2, amount: int) -> void:
 func _on_card_selected(plant_id: String) -> void:
 	selected_plant_id = plant_id
 	plant_food_mode = false
+	plant_food_button.button_pressed = false
 
 func _on_sun_changed(value: int) -> void:
 	sun_label.text = "Linh Khí: %d" % value

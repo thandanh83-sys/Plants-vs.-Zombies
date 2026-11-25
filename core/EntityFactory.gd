@@ -5,7 +5,7 @@ const DEFAULT_PLANT_SCRIPT := "res://behaviors/PlantBehavior.gd"
 const DEFAULT_ZOMBIE_SCRIPT := "res://behaviors/ZombieBehavior.gd"
 
 func spawn_plant(plant_id: String, row: int, column: int, world_position: Vector2) -> Node2D:
-	var data := DataLoader.get_plant(plant_id)
+	var data: Dictionary = DataLoader.get_plant(plant_id)
 	if data.is_empty():
 		push_warning("Unknown plant ID: " + plant_id)
 		return null
@@ -23,7 +23,7 @@ func spawn_plant(plant_id: String, row: int, column: int, world_position: Vector
 	return plant
 
 func spawn_zombie(zombie_id: String, lane: int, spawn_position: Vector2 = Vector2(-1, -1)) -> Node2D:
-	var data := DataLoader.get_zombie(zombie_id)
+	var data: Dictionary = DataLoader.get_zombie(zombie_id)
 	if data.is_empty():
 		push_warning("Unknown zombie ID: " + zombie_id)
 		return null
