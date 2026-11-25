@@ -55,6 +55,10 @@ jobs:
       - name: Install Godot 4.2.2 export templates
         shell: bash
         run: |
+          if ! command -v curl >/dev/null 2>&1 || ! command -v unzip >/dev/null 2>&1; then
+            apt-get update
+            apt-get install -y --no-install-recommends curl unzip
+          fi
           TEMPLATE_DIR="$HOME/.local/share/godot/export_templates/4.2.2.stable"
           mkdir -p "$TEMPLATE_DIR"
           if [ ! -f "$TEMPLATE_DIR/web_release.zip" ] || [ ! -f "$TEMPLATE_DIR/web_debug.zip" ]; then
