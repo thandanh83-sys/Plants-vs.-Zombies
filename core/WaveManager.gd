@@ -83,10 +83,10 @@ func _run_waves(token: int) -> void:
 					spawned.set_boss_mode()
 				zombie_spawned.emit(zombie_id, lane)
 			if spawn_index + 1 < count:
-				await get_tree().create_timer(interval).timeout
+				await get_tree().create_timer(interval, false).timeout
 		var rest := maxf(float(wave.get("rest_after", interval)), 0.0)
 		if rest > 0.0:
-			await get_tree().create_timer(rest).timeout
+			await get_tree().create_timer(rest, false).timeout
 	if _is_run_active(token):
 		running = false
 		all_waves_finished.emit()

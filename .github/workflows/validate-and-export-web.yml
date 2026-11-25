@@ -22,6 +22,11 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Test AI development tools
+        env:
+          PYTHONPATH: tools
+        run: python -m unittest discover -s tools/tests -v
+
       - name: Validate JSON and references
         run: python tools/validate_project.py
 

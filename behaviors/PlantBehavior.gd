@@ -61,7 +61,7 @@ func _ready() -> void:
 			grid.remove_obstacles(str(abilities.get("removes_obstacles", "grave")), int(abilities.get("max_targets", 1)))
 	if abilities.has("armed_delay"):
 		armed = false
-		await get_tree().create_timer(maxf(0.0, float(abilities.get("armed_delay", 3.0)))).timeout
+		await get_tree().create_timer(maxf(0.0, float(abilities.get("armed_delay", 3.0))), false).timeout
 		if is_inside_tree():
 			armed = true
 
@@ -212,7 +212,7 @@ func _try_eat_zombie() -> void:
 		if zombie.lane == lane and _is_zombie_visible(zombie) and absf(zombie.global_position.x - global_position.x) <= 58.0:
 			is_eating = true
 			eating_target = zombie
-			await get_tree().create_timer(maxf(0.1, float(_abilities().get("eat_time", 5.0)))).timeout
+			await get_tree().create_timer(maxf(0.1, float(_abilities().get("eat_time", 5.0))), false).timeout
 			if is_inside_tree() and is_instance_valid(eating_target):
 				eating_target.take_damage(999999.0)
 			is_eating = false
@@ -239,8 +239,11 @@ func _explode(amount: float, radius: float, area: String) -> void:
 				target.take_damage(amount)
 	_remove_self()
 
+func can_activate_plant_food() -> bool:
+	return not _food_busy and is_inside_tree()
+
 func activate_plant_food() -> bool:
-	if _food_busy or not is_inside_tree():
+	if not can_activate_plant_food():
 		return false
 	_food_busy = true
 	var abilities := _abilities()
@@ -252,7 +255,7 @@ func activate_plant_food() -> bool:
 			if not is_inside_tree():
 				break
 			_shoot()
-			await get_tree().create_timer(interval).timeout
+			await get_tree().create_timer(interval, false).timeout
 	elif food is String:
 		match str(food):
 			"restore_full_hp":
@@ -279,7 +282,7 @@ func activate_plant_food() -> bool:
 				if not is_inside_tree():
 					break
 				_shoot()
-				await get_tree().create_timer(0.06).timeout
+				await get_tree().create_timer(0.06, false).timeout
 		else:
 			hp = max_hp
 	_food_busy = false

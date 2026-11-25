@@ -14,6 +14,10 @@ var background_texture: TextureRect
 var restart_button: Button
 var _starting_level := false
 var _level_run_id := 0
+var pause_button: Button
+var speed_button: Button
+var _speed_index := 0
+const GAME_SPEEDS := [1.0, 1.5, 2.0]
 
 func _ready() -> void:
 	_build_background()
@@ -86,6 +90,22 @@ func _build_hud() -> void:
 	level_start_button.pressed.connect(_start_selected_level)
 	add_child(level_start_button)
 
+	pause_button = Button.new()
+	pause_button.position = Vector2(20, 96)
+	pause_button.size = Vector2(105, 38)
+	pause_button.text = "Tạm dừng"
+	pause_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	pause_button.pressed.connect(_toggle_pause)
+	add_child(pause_button)
+
+	speed_button = Button.new()
+	speed_button.position = Vector2(132, 96)
+	speed_button.size = Vector2(125, 38)
+	speed_button.text = "Tốc độ: 1.0x"
+	speed_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	speed_button.pressed.connect(_cycle_game_speed)
+	add_child(speed_button)
+
 func _populate_levels() -> void:
 	level_selector.clear()
 	var ids: Array = DataLoader.get_all_level_ids()
@@ -114,6 +134,32 @@ func _first_unlocked_level() -> String:
 func _on_level_selected(_index: int) -> void:
 	pass
 
+func _toggle_pause() -> void:
+	if GameManager.state != "playing":
+		return
+	get_tree().paused = not get_tree().paused
+	pause_button.text = "Tiếp tục" if get_tree().paused else "Tạm dừng"
+
+func _cycle_game_speed() -> void:
+	if GameManager.state != "playing" or get_tree().paused:
+		return
+	_speed_index = (_speed_index + 1) % GAME_SPEEDS.size()
+	Engine.time_scale = float(GAME_SPEEDS[_speed_index])
+	speed_button.text = "Tốc độ: %.1fx" % Engine.time_scale
+
+func _reset_game_time() -> void:
+	get_tree().paused = false
+	Engine.time_scale = 1.0
+	_speed_index = 0
+	if is_instance_valid(pause_button):
+		pause_button.text = "Tạm dừng"
+	if is_instance_valid(speed_button):
+		speed_button.text = "Tốc độ: 1.0x"
+
+func _exit_tree() -> void:
+	Engine.time_scale = 1.0
+	get_tree().paused = false
+
 func _start_selected_level() -> void:
 	var index := level_selector.selected
 	if index < 0 or index >= level_selector.item_count:
@@ -129,6 +175,7 @@ func _clear_sun_pickups() -> void:
 func _start_level(level_id: String) -> void:
 	if _starting_level or not GameManager.start_level(level_id):
 		return
+	_reset_game_time()
 	_starting_level = true
 	_level_run_id += 1
 	_clear_sun_pickups()
@@ -173,11 +220,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if plant_food_mode:
 		for plant in get_tree().get_nodes_in_group("plants"):
 			if plant.global_position.distance_to(event.position) <= 42.0:
+				if not plant.can_activate_plant_food():
+					state_label.text = "Cây đang thực hiện Linh Đan."
+					return
 				if GameManager.spend_plant_food():
 					plant.activate_plant_food()
-				plant_food_mode = false
-				plant_food_button.button_pressed = false
-				_on_plant_food_changed(GameManager.plant_food_charges)
+					plant_food_mode = false
+					plant_food_button.button_pressed = false
+					_on_plant_food_changed(GameManager.plant_food_charges)
 				return
 		return
 	if selected_plant_id.is_empty():
@@ -216,7 +266,7 @@ func _on_linh_khi_dropped(world_position: Vector2, amount: int) -> void:
 		button.queue_free()
 	)
 	add_child(button)
-	var timer := get_tree().create_timer(8.0)
+	var timer := get_tree().create_timer(8.0, false)
 	timer.timeout.connect(func():
 		if is_instance_valid(button):
 			button.queue_free()
@@ -237,6 +287,8 @@ func _on_plant_food_changed(charges: int) -> void:
 		plant_food_button.button_pressed = false
 
 func _on_state_changed(new_state: String) -> void:
+	if new_state != "playing":
+		_reset_game_time()
 	match new_state:
 		"lost":
 			AudioManager.play("lose")
@@ -268,6 +320,6 @@ func _on_all_waves_finished() -> void:
 	var run_id := _level_run_id
 	var level_id := GameManager.current_level_id
 	while run_id == _level_run_id and GameManager.state == "playing" and not get_tree().get_nodes_in_group("zombies").is_empty():
-		await get_tree().create_timer(0.25).timeout
+		await get_tree().create_timer(0.25, false).timeout
 	if run_id == _level_run_id and GameManager.state == "playing" and GameManager.current_level_id == level_id:
 		GameManager.win_level()
