@@ -17,12 +17,20 @@ Game tower-defense 2D viết bằng GDScript cho **Godot 4.2+**. Dự án dùng 
 - Dùng cây chắn để giữ cương thi; cây bắn sẽ tự tìm mục tiêu trong tầm và cùng làn (một số cây có thể bắn làn kề).
 - Dùng nút Tạm dừng và Tốc độ để tạm dừng hoặc chuyển giữa 1.0x, 1.5x và 2.0x.
 
+## Giao diện tra cứu và bản đồ
+
+- **Almanac** hiển thị danh sách Plant/Zombie, hình đã có và chỉ số/khả năng đọc trực tiếp từ JSON.
+- **Bản đồ Vạn Giới** hiển thị các màn theo hàng ngang, trạng thái khóa, mở khóa và hoàn thành.
+- Input đặt cây và dùng xẻng hỗ trợ cả click chuột và chạm màn hình.
+- HUD được sắp xếp theo kích thước viewport; dự án sử dụng chế độ stretch `canvas_items` với aspect `expand`.
+
 ## Cơ chế hiện có
 
 - Cây sản xuất Linh Khí; Nguyệt Quang Nấm tăng sản lượng theo các mốc trưởng thành trong JSON.
 - Cây bắn hỗ trợ nhiều đạn, xuyên mục tiêu, làm chậm, đóng băng và đẩy lùi.
 - Trúc Tiễn có kiểu đạn mực riêng.
 - Cây nổ, cây nuốt mục tiêu, cây chắn, Linh Đan và bệ Liên Diệp.
+- Cây và cương thi nhấp sáng khi nhận sát thương để phản hồi trận đấu rõ hơn.
 - Cương thi có giáp, nhảy qua cây, bay, gọi viện binh, dẫn đầu đợt và tăng tốc khi lớp báo bị phá.
 - Màn hồ sen có ô nước và yêu cầu bệ Liên Diệp; màn đêm không có Linh Khí rơi từ trời; màn sương che tầm nhìn ở ba cột phải.
 - Màn mái nhà hiện có bộ ô mái ngói riêng về mặt hình ảnh; chưa có cơ chế chậu trồng/độ dốc riêng.

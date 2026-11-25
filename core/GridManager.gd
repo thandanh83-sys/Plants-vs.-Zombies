@@ -121,6 +121,39 @@ func set_occupied(row: int, column: int, entity: Node, is_platform: bool = false
 		occupied[key] = weakref(entity)
 	return true
 
+func get_plant_at(row: int, column: int) -> Node2D:
+	if not _is_valid_cell(row, column):
+		return null
+	var key := Vector2i(row, column)
+	if occupied.has(key):
+		var occupied_reference: WeakRef = occupied[key]
+		var occupied_node: Node = occupied_reference.get_ref()
+		if occupied_node is Node2D:
+			return occupied_node
+	if platforms.has(key):
+		var platform_reference: WeakRef = platforms[key]
+		var platform_node: Node = platform_reference.get_ref()
+		if platform_node is Node2D:
+			return platform_node
+	return null
+
+func remove_plant_at(row: int, column: int) -> Node2D:
+	if not _is_valid_cell(row, column):
+		return null
+	var key := Vector2i(row, column)
+	# Remove the top plant first; the aquatic platform underneath remains.
+	if occupied.has(key):
+		var occupied_reference: WeakRef = occupied[key]
+		occupied.erase(key)
+		var occupied_node: Node = occupied_reference.get_ref()
+		return occupied_node if occupied_node is Node2D else null
+	if platforms.has(key):
+		var platform_reference: WeakRef = platforms[key]
+		platforms.erase(key)
+		var platform_node: Node = platform_reference.get_ref()
+		return platform_node if platform_node is Node2D else null
+	return null
+
 func clear_cell(row: int, column: int, is_platform: bool = false) -> void:
 	var key := Vector2i(row, column)
 	if is_platform:
