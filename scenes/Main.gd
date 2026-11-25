@@ -665,8 +665,6 @@ func _show_wave_banner(message: String, tint: Color) -> void:
 
 func _on_all_waves_finished() -> void:
 	wave_progress.value = wave_progress.max_value
-
-func _on_all_waves_finished() -> void:
 	var run_id := _level_run_id
 	var level_id := GameManager.current_level_id
 	while run_id == _level_run_id and GameManager.state == "playing" and not get_tree().get_nodes_in_group("zombies").is_empty():
