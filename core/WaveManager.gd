@@ -34,7 +34,11 @@ func _run_waves(token: int) -> void:
 	for wave_index in range(waves.size()):
 		if not _is_run_active(token):
 			return
-		var wave: Dictionary = waves[wave_index]
+		var wave_value: Variant = waves[wave_index]
+		if not wave_value is Dictionary:
+			push_error("Wave %d is not a JSON object" % (wave_index + 1))
+			continue
+		var wave: Dictionary = wave_value
 		var wave_number := int(wave.get("wave_number", wave_index + 1))
 		wave_started.emit(wave_number)
 		var zombie_ids: Array = wave.get("zombies", [])
@@ -47,11 +51,15 @@ func _run_waves(token: int) -> void:
 				push_error("Wave %d has no zombie IDs" % wave_number)
 				break
 			var lane := spawn_index % row_count
-			if wave.has("lanes") and wave["lanes"] is Array and not wave["lanes"].is_empty():
-				lane = int(wave["lanes"][spawn_index % wave["lanes"].size()])
+			if wave.get("lanes", []) is Array and not wave.get("lanes", []).is_empty():
+				var lanes: Array = wave.get("lanes", [])
+				lane = int(lanes[spawn_index % lanes.size()])
 			lane = clampi(lane, 0, row_count - 1)
 			var zombie_id := str(zombie_ids[spawn_index % zombie_ids.size()])
-			if factory.spawn_zombie(zombie_id, lane) != null:
+			var spawned := factory.spawn_zombie(zombie_id, lane)
+			if spawned != null:
+				if bool(wave.get("boss", false)) and spawned.has_method("set_boss_mode"):
+					spawned.set_boss_mode()
 				zombie_spawned.emit(zombie_id, lane)
 			if spawn_index + 1 < count:
 				await get_tree().create_timer(interval).timeout

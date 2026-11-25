@@ -1,0 +1,37 @@
+name: Validate and export Web
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-export:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.2.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate JSON and references
+        run: python3 tools/validate_project.py
+
+      - name: Import project resources
+        run: godot --headless --editor --path . --quit
+
+      - name: Export HTML5 build
+        run: mkdir -p build/web && godot --headless --path . --export-release "Web" build/web/index.html
+
+      - name: Upload playable Web export
+        uses: actions/upload-artifact@v4
+        with:
+          name: van-gioi-linh-vien-web
+          path: build/web/
+          if-no-files-found: error
+          retention-days: 14

@@ -1,50 +1,89 @@
-# Vạn Giới Linh Viên — Godot 4.2+
+# Vạn Giới Linh Viên
 
-Dự án tower-defense 2D viết bằng GDScript. Thiết kế hướng dữ liệu: thêm cây, zombie hoặc màn thường chỉ cần thêm JSON mới vào thư mục dữ liệu tương ứng, không sửa danh sách hard-code trong manager.
+Game tower-defense 2D viết bằng GDScript cho **Godot 4.2+**. Dự án dùng JSON để khai báo cây, cương thi và màn chơi; sprite có thể bổ sung sau mà không cần thay đổi code nếu giữ đúng tên file.
 
-## Chạy
+## Chạy bằng Godot
 
-1. Mở `project.godot` bằng Godot 4.2 trở lên.
-2. Nhấn F6/F5 để chạy scene/project.
-3. Nếu có lỗi, xem tab **Debugger → Errors** và **Output**. Repo chưa kèm kết quả chạy headless nên cần xác nhận bằng Godot Editor.
+1. Tải Godot 4.2.2 hoặc bản Godot 4 tương thích.
+2. Import thư mục chứa `project.godot`.
+3. Chờ Godot import tài nguyên, sau đó nhấn **F5**.
+4. Chọn màn đã mở khóa ở góc trên bên phải và nhấn **Vào màn**.
 
-## Thêm plant
+## Điều khiển
 
-Tạo `data/plants/<id>.json`. Ví dụ:
+- Chọn thẻ cây ở thanh phía trên, sau đó nhấp ô trống để trồng.
+- Nhấp vào Linh Khí rơi để thu thập.
+- Nhấn **Linh Đan**, sau đó nhấp vào cây để kích hoạt kỹ năng.
+- Dùng thẻ chắn để giữ cương thi; cây bắn sẽ tự tấn công mục tiêu trong làn.
 
-```json
-{
-  "name": "Trúc Tiễn",
-  "type": "shooter",
-  "cost": 100,
-  "hp": 300,
-  "damage": 20,
-  "fire_rate": 1.5,
-  "range": 9,
-  "sprite": "res://assets/plants/truc-tien.png",
-  "abilities": {"projectiles_per_attack": 1}
-}
+## Xuất bản Web (HTML5)
+
+Repository đã có preset **Web** và HTML shell tại `web/custom_shell.html`.
+
+### Xuất trên máy
+
+1. Mở project bằng Godot 4.2+.
+2. Cài **Export Templates** tương ứng trong Godot Editor.
+3. Chạy lệnh:
+
+```bash
+godot --headless --editor --path . --quit
+godot --headless --path . --export-release "Web" build/web/index.html
 ```
 
-Để màn dùng cây mới, thêm ID vào `available_plants` của level tương ứng. Sprite là tùy chọn; nếu bỏ qua, dùng hình dự phòng. Script hành vi tùy chỉnh có thể khai báo `behavior_script` trong JSON, kế thừa hành vi setup tương thích.
+4. Mở game qua một web server tĩnh (không mở trực tiếp bằng `file://`). Thư mục `build/web/` là bản xuất; không cần đưa vào Git.
 
-## Thêm zombie
+### Tải bản Web từ GitHub Actions
 
-Tạo `data/zombies/<id>.json` với `name`, `type`, `hp`, `speed`, `damage`, `attack_rate`. Thêm ID vào danh sách `zombies` trong wave của màn. Sprite tùy chọn đặt ở `assets/zombies/<id>.png`. Có thể chỉ định `behavior_script` để dùng script riêng.
+Workflow **Validate and export Web** tự kiểm tra JSON, import project và thử xuất HTML5 mỗi khi push lên `main`. Khi workflow thành công:
 
-## Thêm màn
+1. Mở tab **Actions** của repository.
+2. Chọn lần chạy mới nhất.
+3. Tải artifact `van-gioi-linh-vien-web`.
+4. Giải nén và phục vụ thư mục đó bằng web server tĩnh.
 
-Tạo `data/levels/<id>.json` gồm `name`, `environment`, `available_plants`, `waves`; mỗi wave có `zombies`, `count`, `interval`. DataLoader kiểm tra tham chiếu ID cây/quái và báo lỗi nếu sai.
+Nếu bước export thất bại, xem log workflow để biết lỗi Godot cụ thể. Chưa có bản Web được xác nhận cho tới khi workflow chạy thành công.
 
-## Cấu trúc
+## Bổ sung ảnh thủ công
 
-- `data/plants`, `data/zombies`, `data/levels`: dữ liệu nội dung.
-- `core/DataLoader.gd`: tự quét JSON, nạp và kiểm tra tham chiếu.
-- `core/EntityFactory.gd`: tạo entity từ dữ liệu; script có thể override bằng JSON.
-- `core/WaveManager.gd`: phát wave từ JSON.
-- `behaviors/`: hành vi entity mặc định.
-- `assets/`: hình, âm thanh và UI.
+Tên file mặc định:
 
-## Hạn chế hiện tại
+- Cây: `assets/plants/<id-cây>.png`
+- Cương thi: `assets/zombies/<id-cương-thi>.png`
+- Nền màn: đường dẫn trong trường `background` của JSON màn, hiện ở `assets/backgrounds/`.
 
-Cấu trúc JSON mới làm giảm việc sửa code khi thêm nội dung cùng loại. Các tính năng có hành vi hoàn toàn mới vẫn cần script hoặc capability tương ứng; khai báo một trường JSON tự nó không tự tạo ra cơ chế. Hình ảnh, âm thanh và hiệu ứng cần được cung cấp riêng. Kiểm tra cú pháp/runtime cuối cùng phải thực hiện trong Godot 4.2+.
+Ví dụ:
+- `assets/plants/truc-tien.png`
+- `assets/zombies/cuong-thi-thuong.png`
+- `assets/backgrounds/thu-vien-co.png`
+
+Giữ nguyên ID trong tên file JSON. Nếu ảnh chưa có, game dùng hình đa giác dự phòng; không cần tạo ảnh trước để kiểm tra logic.
+
+## Cấu trúc chính
+
+- `core/DataLoader.gd`: quét JSON, kiểm tra dữ liệu và tham chiếu.
+- `core/EntityFactory.gd`: tạo cây/cương thi theo dữ liệu.
+- `core/GridManager.gd`: lưới và trạng thái ô.
+- `core/CardManager.gd`: thẻ cây và kiểm tra chi phí.
+- `core/WaveManager.gd`: sinh cương thi theo wave.
+- `behaviors/`: hành vi cây, cương thi, đạn và hiệu ứng.
+- `data/`: dữ liệu cây, cương thi, màn và cấu hình.
+- `tools/validate_project.py`: kiểm tra JSON và đường dẫn tham chiếu.
+- `docs/reports/BASELINE_GODOT.md`: báo cáo baseline ban đầu.
+
+## Kiểm thử
+
+Chạy kiểm tra dữ liệu:
+
+```bash
+python3 tools/validate_project.py
+```
+
+Kiểm tra import/runtime bằng Godot:
+
+```bash
+godot --headless --editor --path . --quit
+godot --headless --path . --quit
+```
+
+Kiểm tra runtime thực tế vẫn cần mở game và thử thao tác trong Godot hoặc chạy bản Web đã export. Các trường JSON mô tả cơ chế chưa được hỗ trợ sẽ không tự hoạt động chỉ vì được khai báo.

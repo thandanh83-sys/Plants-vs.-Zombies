@@ -12,8 +12,9 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if GameManager.state != "playing":
+		timer = 0.0
 		return
-	if str(GameManager.current_level.get("environment", "day")) == "night":
+	if str(GameManager.current_level.get("environment", "day")) == "night" or "no_sky_sun" in GameManager.current_level.get("special_mechanics", []):
 		return
 	timer += delta
 	if timer >= interval:

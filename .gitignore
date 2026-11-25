@@ -1,12 +1,14 @@
-# Godot
+# Godot editor/import cache
 .godot/
+*.import
+
+# Exported builds
 export/
-*.tmp
+build/
+web/export/
 
 # OS/editor
 .DS_Store
 Thumbs.db
 *.blend1
-
-# Binary assets created locally
-*.import
+*.tmp

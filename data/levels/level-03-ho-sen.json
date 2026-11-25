@@ -3,6 +3,7 @@
   "environment": "pool",
   "background": "res://assets/backgrounds/ho-sen-tinh-do.png",
   "starting_sun": 75,
+  "water_lanes": [1, 2],
   "available_plants": ["nhat-nguyet-thao", "truc-tien", "lien-diep", "thuy-nam", "han-bang-tien"],
   "special_mechanics": ["two_water_lanes", "lily_pad_required"],
   "waves": [

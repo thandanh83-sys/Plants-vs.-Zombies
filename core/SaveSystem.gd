@@ -14,18 +14,24 @@ func _ready() -> void:
 
 func load_game() -> Dictionary:
 	if not FileAccess.file_exists(SAVE_PATH):
+		save_data = DEFAULT_DATA.duplicate(true)
 		return save_data
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if file == null:
 		push_warning("Không đọc được file lưu; dùng dữ liệu mặc định.")
+		save_data = DEFAULT_DATA.duplicate(true)
 		return save_data
 	var json := JSON.new()
 	if json.parse(file.get_as_text()) != OK or not json.data is Dictionary:
 		push_warning("File lưu không hợp lệ; dùng dữ liệu mặc định.")
+		save_data = DEFAULT_DATA.duplicate(true)
 		return save_data
 	save_data = DEFAULT_DATA.duplicate(true)
-	for key in json.data:
-		save_data[key] = json.data[key]
+	for key in DEFAULT_DATA:
+		if json.data.has(key) and typeof(json.data[key]) == typeof(DEFAULT_DATA[key]):
+			save_data[key] = json.data[key]
+	if save_data["unlocked_levels"].is_empty():
+		save_data["unlocked_levels"] = ["level-01-thu-vien"]
 	return save_data
 
 func save_game() -> bool:

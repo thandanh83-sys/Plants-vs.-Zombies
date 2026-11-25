@@ -21,7 +21,7 @@ func _ready() -> void:
 func _scan_folder(folder_path: String, target: Dictionary) -> void:
 	var dir := DirAccess.open(folder_path)
 	if dir == null:
-		push_warning("Cannot open data folder: " + folder_path)
+		push_error("Cannot open data folder: " + folder_path)
 		return
 	var files: Array[String] = []
 	dir.list_dir_begin()
@@ -42,7 +42,7 @@ func _scan_folder(folder_path: String, target: Dictionary) -> void:
 
 func _load_json(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
-		push_warning("Optional or missing JSON file: " + path)
+		push_error("Missing JSON file: " + path)
 		return {}
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
@@ -61,20 +61,25 @@ func _load_json(path: String) -> Dictionary:
 func _validate_database() -> void:
 	for id in plants_db:
 		var data: Dictionary = plants_db[id]
-		if not data.has("name") or not data.has("type"):
-			push_warning("Plant %s should define name and type" % id)
-		if int(data.get("cost", -1)) < 0:
-			push_warning("Plant %s has missing/negative cost" % id)
-		if float(data.get("hp", 0)) <= 0.0:
-			push_warning("Plant %s should have hp > 0" % id)
+		if str(data.get("name", "")).is_empty() or str(data.get("type", "")).is_empty():
+			push_error("Plant %s must define name and type" % id)
+		if int(data.get("cost", -1)) < 0 or float(data.get("hp", 0)) <= 0.0:
+			push_error("Plant %s has invalid cost or hp" % id)
+		if data.has("abilities") and not data["abilities"] is Dictionary:
+			push_error("Plant %s abilities must be an object" % id)
 	for id in zombies_db:
 		var data: Dictionary = zombies_db[id]
-		if not data.has("name") or not data.has("type"):
-			push_warning("Zombie %s should define name and type" % id)
-		if float(data.get("hp", 0)) <= 0.0 or float(data.get("speed", 0)) < 0.0:
-			push_warning("Zombie %s has invalid hp or speed" % id)
+		if str(data.get("name", "")).is_empty() or str(data.get("type", "")).is_empty():
+			push_error("Zombie %s must define name and type" % id)
+		if float(data.get("hp", 0)) <= 0.0 or float(data.get("speed", -1)) < 0.0:
+			push_error("Zombie %s has invalid hp or speed" % id)
+		if data.has("armor") and not data["armor"] is Dictionary:
+			push_error("Zombie %s armor must be an object" % id)
 	for level_id in levels_db:
 		var level: Dictionary = levels_db[level_id]
+		if not level.get("available_plants", []) is Array or not level.get("waves", []) is Array:
+			push_error("Level %s must define available_plants and waves arrays" % level_id)
+			continue
 		for plant_id in level.get("available_plants", []):
 			if not plants_db.has(str(plant_id)):
 				push_error("Level %s references unknown plant %s" % [level_id, plant_id])
@@ -85,6 +90,10 @@ func _validate_database() -> void:
 			for zombie_id in wave.get("zombies", []):
 				if not zombies_db.has(str(zombie_id)):
 					push_error("Level %s references unknown zombie %s" % [level_id, zombie_id])
+	for key in ["logo", "seed_packet", "linh_khi"]:
+		var asset_path := str(ui_assets_db.get(key, ""))
+		if not asset_path.is_empty() and not ResourceLoader.exists(asset_path):
+			push_warning("Configured UI asset is missing: " + asset_path)
 
 func get_plant(id: String) -> Dictionary:
 	return plants_db.get(id, {}).duplicate(true)

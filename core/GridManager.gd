@@ -7,6 +7,8 @@ var columns := 9
 var cell_width := 88.0
 var cell_height := 80.0
 var occupied: Dictionary = {}
+var platforms: Dictionary = {}
+var obstacles: Dictionary = {}
 
 func _ready() -> void:
 	position = Vector2(
@@ -19,15 +21,36 @@ func _ready() -> void:
 	cell_height = maxf(1.0, float(DataLoader.get_setting("cell_height", cell_height)))
 	queue_redraw()
 
+func configure_level() -> void:
+	obstacles.clear()
+	var mechanics: Array = GameManager.current_level.get("special_mechanics", [])
+	if "graves" in mechanics:
+		for row in [0, 2, 4]:
+			if row < rows:
+				obstacles[Vector2i(row, 4)] = "grave"
+	queue_redraw()
+
 func _draw() -> void:
+	var water_lanes: Array = GameManager.current_level.get("water_lanes", [])
+	var mechanics: Array = GameManager.current_level.get("special_mechanics", [])
+	var environment := str(GameManager.current_level.get("environment", "day"))
 	for row in range(rows):
+		var is_water := row in water_lanes
 		for column in range(columns):
 			var rect := Rect2(column * cell_width, row * cell_height, cell_width, cell_height)
-			var color := Color(0.18, 0.55, 0.38, 0.28)
-			if (row + column) % 2 == 1:
-				color = Color(0.22, 0.62, 0.46, 0.30)
+			var base := Color("7fbac5") if is_water else Color("b8d5ae")
+			if environment == "roof":
+				base = Color("c9b7a0")
+			var color := base.darkened(0.04) if (row + column) % 2 == 1 else base
 			draw_rect(rect, color)
-			draw_rect(rect, Color(0.12, 0.38, 0.28, 0.9), false, 1.0)
+			draw_rect(rect, Color(0.12, 0.38, 0.28, 0.65), false, 1.0)
+	for key in obstacles:
+		var center := Vector2((key.y + 0.5) * cell_width, (key.x + 0.5) * cell_height)
+		draw_circle(center, 21.0, Color("77756c"))
+		draw_arc(center, 21.0, 0.0, TAU, 24, Color("514f49"), 3.0)
+	if "fog_covers_three_right_columns" in mechanics:
+		var fog_x := maxf(0.0, (columns - 3) * cell_width)
+		draw_rect(Rect2(fog_x, 0.0, 3.0 * cell_width, rows * cell_height), Color(0.72, 0.78, 0.82, 0.32))
 
 func get_grid_position(row: int, column: int) -> Vector2:
 	if not _is_valid_cell(row, column):
@@ -43,16 +66,79 @@ func world_to_grid(world_position: Vector2) -> Vector2i:
 	return Vector2i(row, column)
 
 func is_empty(row: int, column: int) -> bool:
-	return _is_valid_cell(row, column) and not occupied.has(Vector2i(row, column))
+	var key := Vector2i(row, column)
+	return _is_valid_cell(row, column) and not occupied.has(key) and not obstacles.has(key)
 
-func set_occupied(row: int, column: int, entity: Node) -> bool:
-	if not _is_valid_cell(row, column) or not is_empty(row, column):
+func can_place_plant(plant_id: String, row: int, column: int) -> bool:
+	if not is_empty(row, column):
 		return false
-	occupied[Vector2i(row, column)] = weakref(entity)
+	var data := DataLoader.get_plant(plant_id)
+	if data.is_empty():
+		return false
+	var abilities: Dictionary = data.get("abilities", {})
+	var water_lanes: Array = GameManager.current_level.get("water_lanes", [])
+	var is_water := row in water_lanes
+	var is_platform := bool(abilities.get("supports_aquatic_plants", false))
+	var requires_water := bool(abilities.get("requires_water", false)) or bool(abilities.get("water_only", false))
+	var lily_pad_required := "lily_pad_required" in GameManager.current_level.get("special_mechanics", [])
+	var key := Vector2i(row, column)
+	if bool(abilities.get("night_only", false)) and str(GameManager.current_level.get("environment", "")) != "night":
+		return false
+	if requires_water and not is_water:
+		return false
+	if is_platform:
+		return is_water and not platforms.has(key)
+	if is_water:
+		return platforms.has(key) if lily_pad_required else true
+	return not requires_water
+
+func set_occupied(row: int, column: int, entity: Node, is_platform: bool = false) -> bool:
+	var key := Vector2i(row, column)
+	if not is_empty(row, column):
+		return false
+	if is_platform:
+		if platforms.has(key):
+			return false
+		platforms[key] = weakref(entity)
+	else:
+		var water_lanes: Array = GameManager.current_level.get("water_lanes", [])
+		var lily_pad_required := "lily_pad_required" in GameManager.current_level.get("special_mechanics", [])
+		if row in water_lanes and lily_pad_required and not platforms.has(key):
+			return false
+		occupied[key] = weakref(entity)
 	return true
 
-func clear_cell(row: int, column: int) -> void:
-	occupied.erase(Vector2i(row, column))
+func clear_cell(row: int, column: int, is_platform: bool = false) -> void:
+	var key := Vector2i(row, column)
+	if is_platform:
+		platforms.erase(key)
+		if occupied.has(key):
+			var reference: WeakRef = occupied[key]
+			if reference.get_ref() != null:
+				reference.get_ref().queue_free()
+			occupied.erase(key)
+	else:
+		occupied.erase(key)
+
+func remove_obstacles(kind: String = "grave", max_targets: int = 3) -> int:
+	var removed := 0
+	for key in obstacles.keys():
+		if removed >= max_targets:
+			break
+		if str(obstacles[key]) == kind:
+			obstacles.erase(key)
+			removed += 1
+	queue_redraw()
+	return removed
+
+func clear_all() -> void:
+	for collection in [occupied, platforms]:
+		for key in collection.keys():
+			var reference: WeakRef = collection[key]
+			if reference.get_ref() != null:
+				reference.get_ref().queue_free()
+		collection.clear()
+	obstacles.clear()
 
 func _is_valid_cell(row: int, column: int) -> bool:
 	return row >= 0 and row < rows and column >= 0 and column < columns
