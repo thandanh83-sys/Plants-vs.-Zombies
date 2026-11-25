@@ -13,6 +13,7 @@ var level_start_button: Button
 var background_texture: TextureRect
 var restart_button: Button
 var _starting_level := false
+var _level_run_id := 0
 
 func _ready() -> void:
 	_build_background()
@@ -121,10 +122,17 @@ func _start_selected_level() -> void:
 	if SaveSystem.is_level_unlocked(level_id):
 		_start_level(level_id)
 
+func _clear_sun_pickups() -> void:
+	for pickup in get_tree().get_nodes_in_group("sun_pickups"):
+		pickup.queue_free()
+
 func _start_level(level_id: String) -> void:
 	if _starting_level or not GameManager.start_level(level_id):
 		return
 	_starting_level = true
+	_level_run_id += 1
+	_clear_sun_pickups()
+	SunManager.reset()
 	wave_manager.stop()
 	grid.clear_all()
 	grid.configure_level()
@@ -201,8 +209,10 @@ func _on_linh_khi_dropped(world_position: Vector2, amount: int) -> void:
 	button.position = world_position - Vector2(22, 22)
 	button.size = Vector2(44, 44)
 	button.tooltip_text = "%d Linh Khí" % amount
+	button.add_to_group("sun_pickups")
 	button.pressed.connect(func():
 		GameManager.add_sun(amount)
+		AudioManager.play("collect")
 		button.queue_free()
 	)
 	add_child(button)
@@ -229,9 +239,11 @@ func _on_plant_food_changed(charges: int) -> void:
 func _on_state_changed(new_state: String) -> void:
 	match new_state:
 		"lost":
+			AudioManager.play("lose")
 			state_label.text = "Thất bại — Cương Thi đã đột nhập!"
 			_show_restart_button("Thử lại")
 		"won":
+			AudioManager.play("win")
 			state_label.text = "Chiến thắng! Tiến trình đã được lưu."
 			_populate_levels()
 			_show_restart_button("Chơi lại màn")
@@ -253,7 +265,9 @@ func _on_wave_started(wave_number: int) -> void:
 	state_label.text = "%s — Sóng %d" % [str(GameManager.current_level.get("name", "")), wave_number]
 
 func _on_all_waves_finished() -> void:
-	while GameManager.state == "playing" and not get_tree().get_nodes_in_group("zombies").is_empty():
+	var run_id := _level_run_id
+	var level_id := GameManager.current_level_id
+	while run_id == _level_run_id and GameManager.state == "playing" and not get_tree().get_nodes_in_group("zombies").is_empty():
 		await get_tree().create_timer(0.25).timeout
-	if GameManager.state == "playing":
+	if run_id == _level_run_id and GameManager.state == "playing" and GameManager.current_level_id == level_id:
 		GameManager.win_level()

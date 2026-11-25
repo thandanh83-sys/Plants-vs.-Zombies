@@ -6,5 +6,5 @@
   "attack_rate": 1.0,
   "type": "balloon",
   "abilities": {"flies_over_plants": true, "counter": "spikeweed"},
-  "description": "Bay qua cây; cơ chế bay và khắc chế cần được lập trình."
+  "description": "Bay qua cây và bị khắc chế bởi cây có khả năng gây sát thương cho mục tiêu bay."
 }

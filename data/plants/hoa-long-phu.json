@@ -5,6 +5,6 @@
   "type": "exploder",
   "damage": 1800,
   "abilities": {"area": "lane", "plant_food": "lane_explosion"},
-  "description": "Gây nổ toàn làn; cần bổ sung logic phạm vi làn.",
+  "description": "Gây sát thương trên toàn bộ làn khi phát nổ; Linh Đan kích hoạt một đòn nổ toàn làn.",
   "category": "phu"
 }

@@ -7,6 +7,6 @@
   "fire_rate": 1.5,
   "range": 1,
   "abilities": {"attack": "eat_zombie", "eat_time": 5.0, "plant_food": "eat_three_zombies"},
-  "description": "Cần bổ sung cơ chế nuốt quái trong PlantBehavior.",
+  "description": "Nuốt cương thi ở gần; Linh Đan có thể nuốt tối đa ba mục tiêu cùng làn.",
   "category": "hoa"
 }

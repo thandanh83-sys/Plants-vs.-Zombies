@@ -10,11 +10,16 @@ func _ready() -> void:
 	interval = maxf(0.1, float(DataLoader.get_setting("sun_drop_interval", interval)))
 	amount = maxi(0, int(DataLoader.get_setting("sun_drop_amount", amount)))
 
+func reset() -> void:
+	timer = 0.0
+
 func _process(delta: float) -> void:
 	if GameManager.state != "playing":
-		timer = 0.0
+		reset()
 		return
-	if str(GameManager.current_level.get("environment", "day")) == "night" or "no_sky_sun" in GameManager.current_level.get("special_mechanics", []):
+	var mechanics: Array = GameManager.current_level.get("special_mechanics", [])
+	if str(GameManager.current_level.get("environment", "day")) == "night" or mechanics.has("no_sky_sun"):
+		reset()
 		return
 	timer += delta
 	if timer >= interval:

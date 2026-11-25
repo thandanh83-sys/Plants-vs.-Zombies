@@ -17,6 +17,8 @@ var has_vaulted := false
 var is_vaulting := false
 var has_summoned := false
 var is_boss := false
+var is_wave_leader := false
+var has_newspaper_broken := false
 var status_label: Label
 var _slow_factor := 0.5
 
@@ -49,8 +51,8 @@ func setup(id: String, data: Dictionary, row: int) -> void:
 	else:
 		_draw_fallback()
 	status_label = Label.new()
-	status_label.position = Vector2(-32, -48)
-	status_label.size = Vector2(64, 18)
+	status_label.position = Vector2(-42, -48)
+	status_label.size = Vector2(84, 18)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(status_label)
 
@@ -58,7 +60,7 @@ func _draw_fallback() -> void:
 	var fallback := Polygon2D.new()
 	fallback.polygon = PackedVector2Array([Vector2(-18, -30), Vector2(18, -30), Vector2(20, 30), Vector2(-20, 30)])
 	match str(zombie_data.get("type", "basic")):
-		"armored": fallback.color = Color("70808f")
+		"armored", "newspaper": fallback.color = Color("70808f")
 		"balloon": fallback.color = Color("6f84a4")
 		"dancer": fallback.color = Color("a65e84")
 		"pole_vaulting": fallback.color = Color("c08a4d")
@@ -78,6 +80,11 @@ func set_boss_mode() -> void:
 	armor_hp *= multiplier
 	if is_instance_valid(status_label):
 		status_label.text = "BOSS"
+
+func set_wave_leader() -> void:
+	is_wave_leader = true
+	if is_instance_valid(status_label) and not is_boss:
+		status_label.text = "DẪN ĐẦU"
 
 func _process(delta: float) -> void:
 	if GameManager.state != "playing":
@@ -122,7 +129,7 @@ func _update_status(delta: float) -> void:
 		status_label.text = "BOSS"
 	else:
 		speed = base_speed
-		status_label.text = ""
+		status_label.text = "DẪN ĐẦU" if is_wave_leader else ""
 
 func apply_status(status: String, duration: float, factor: float = 0.5) -> void:
 	if status == "freeze":
@@ -181,13 +188,15 @@ func _summon_support() -> void:
 
 func take_damage(amount: float) -> void:
 	var remaining := maxf(0.0, amount)
+	var armor_before := armor_hp
 	if armor_hp > 0.0:
 		var absorbed := minf(armor_hp, remaining)
 		armor_hp -= absorbed
 		remaining -= absorbed
 	if remaining > 0.0:
 		hp -= remaining
-	if armor_hp <= 0.0:
+	if zombie_id == "cuong-thi-cam-bao" and armor_before > 0.0 and armor_hp <= 0.0 and not has_newspaper_broken:
+		has_newspaper_broken = true
 		var faster_speed := float(_abilities().get("speed_after_newspaper_breaks", 0.0))
 		if faster_speed > 0.0:
 			base_speed = faster_speed

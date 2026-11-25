@@ -12,6 +12,10 @@ var damage := 20.0
 var fire_rate := 1.5
 var shoot_timer := 0.0
 var producer_timer := 0.0
+var producer_interval := 8.0
+var producer_amount := 25
+var plant_age_seconds := 0.0
+var growth_stage_index := 0
 var armed := false
 var is_eating := false
 var eating_target: Node2D
@@ -27,6 +31,8 @@ func setup(id: String, data: Dictionary, row: int, grid_column: int) -> void:
 	max_hp = hp
 	damage = maxf(0.0, float(data.get("damage", 20)))
 	fire_rate = maxf(0.1, float(data.get("fire_rate", 1.5)))
+	producer_interval = maxf(0.1, float(data.get("production_rate", 8.0)))
+	producer_amount = maxi(0, int(data.get("sun_amount", 25)))
 	var abilities: Dictionary = data.get("abilities", {})
 	is_platform = bool(abilities.get("supports_aquatic_plants", false))
 	collision_layer = 2
@@ -47,7 +53,7 @@ func setup(id: String, data: Dictionary, row: int, grid_column: int) -> void:
 
 func _ready() -> void:
 	add_to_group("plants")
-	producer_timer = maxf(0.1, float(plant_data.get("production_rate", 8.0)))
+	producer_timer = producer_interval
 	var abilities := _abilities()
 	if abilities.has("removes_obstacles"):
 		var grid := get_tree().current_scene.find_child("GridManager", true, false)
@@ -74,12 +80,14 @@ func _draw_fallback() -> void:
 func _process(delta: float) -> void:
 	if GameManager.state != "playing":
 		return
+	plant_age_seconds += delta
+	_update_growth_stage()
 	var plant_type := str(plant_data.get("type", "shooter"))
 	if plant_type == "producer" or plant_type == "sun":
 		producer_timer -= delta
 		if producer_timer <= 0.0:
-			GameManager.add_sun(maxi(0, int(plant_data.get("sun_amount", 25))))
-			producer_timer = maxf(0.1, float(plant_data.get("production_rate", 8.0)))
+			GameManager.add_sun(producer_amount)
+			producer_timer = producer_interval
 	if plant_type == "shooter":
 		shoot_timer -= delta
 		if shoot_timer <= 0.0:
@@ -90,6 +98,23 @@ func _process(delta: float) -> void:
 			shoot_timer = fire_rate
 	_process_contact_abilities(delta)
 
+func _update_growth_stage() -> void:
+	var stages: Variant = _abilities().get("growth_stages", [])
+	if not stages is Array:
+		return
+	while growth_stage_index < stages.size():
+		var stage_value: Variant = stages[growth_stage_index]
+		if not stage_value is Dictionary:
+			growth_stage_index += 1
+			continue
+		var stage: Dictionary = stage_value
+		if plant_age_seconds < float(stage.get("after_seconds", INF)):
+			break
+		producer_amount = maxi(0, int(stage.get("sun_amount", producer_amount)))
+		producer_interval = maxf(0.1, float(stage.get("production_rate", producer_interval)))
+		producer_timer = minf(producer_timer, producer_interval)
+		growth_stage_index += 1
+
 func _abilities() -> Dictionary:
 	var value: Variant = plant_data.get("abilities", {})
 	return value if value is Dictionary else {}
@@ -97,10 +122,12 @@ func _abilities() -> Dictionary:
 func _process_contact_abilities(delta: float) -> void:
 	var abilities := _abilities()
 	var nearest := _nearest_zombie()
-	if abilities.has("armed_delay") and armed and nearest != null:
-		if absf(nearest.global_position.x - global_position.x) <= float(plant_data.get("trigger_range", 50.0)):
-			_explode(damage, float(abilities.get("area_radius", 55.0)), "radius")
+	if abilities.has("armed_delay"):
+		if not armed:
 			return
+		if nearest != null and absf(nearest.global_position.x - global_position.x) <= float(plant_data.get("trigger_range", 50.0)):
+			_explode(damage, float(abilities.get("area_radius", 55.0)), str(abilities.get("area", "radius")))
+		return
 	if str(plant_data.get("type", "")) == "exploder" and nearest != null:
 		if absf(nearest.global_position.x - global_position.x) <= float(plant_data.get("trigger_range", 95.0)):
 			var target_mode := str(abilities.get("target", ""))
@@ -116,11 +143,27 @@ func _process_contact_abilities(delta: float) -> void:
 			if zombie.lane == lane and absf(zombie.global_position.x - global_position.x) <= 42.0:
 				zombie.take_damage(contact_damage * delta)
 
+func _is_zombie_visible(zombie: Node2D) -> bool:
+	var grid := get_tree().current_scene.find_child("GridManager", true, false)
+	if grid != null and grid.has_method("is_obscured_by_fog"):
+		return not grid.is_obscured_by_fog(zombie.global_position)
+	return true
+
+func _target_lanes() -> Array[int]:
+	var result: Array[int] = [lane]
+	if bool(_abilities().get("shoot_adjacent_lanes", false)):
+		var row_count := maxi(1, int(DataLoader.get_setting("grid_rows", 5)))
+		result.clear()
+		for target_lane in range(maxi(0, lane - 1), mini(row_count - 1, lane + 1) + 1):
+			result.append(target_lane)
+	return result
+
 func _has_zombie_in_range() -> bool:
 	var range_cells := maxf(0.0, float(plant_data.get("range", 9)))
 	var cell_width := maxf(1.0, float(DataLoader.get_setting("cell_width", 88.0)))
+	var target_lanes := _target_lanes()
 	for zombie in get_tree().get_nodes_in_group("zombies"):
-		if zombie.lane == lane and zombie.global_position.x > global_position.x and zombie.global_position.x - global_position.x <= range_cells * cell_width:
+		if zombie.lane in target_lanes and _is_zombie_visible(zombie) and zombie.global_position.x > global_position.x and zombie.global_position.x - global_position.x <= range_cells * cell_width:
 			return true
 	return false
 
@@ -128,7 +171,7 @@ func _nearest_zombie() -> Node2D:
 	var nearest: Node2D
 	var nearest_distance := INF
 	for zombie in get_tree().get_nodes_in_group("zombies"):
-		if zombie.lane == lane:
+		if zombie.lane == lane and _is_zombie_visible(zombie):
 			var distance := absf(zombie.global_position.x - global_position.x)
 			if distance < nearest_distance:
 				nearest = zombie
@@ -138,12 +181,7 @@ func _nearest_zombie() -> Node2D:
 func _shoot() -> void:
 	var abilities := _abilities()
 	var projectile_count := maxi(1, int(abilities.get("projectiles_per_attack", 1)))
-	var lanes: Array[int] = [lane]
-	if bool(abilities.get("shoot_adjacent_lanes", false)):
-		lanes.clear()
-		var row_count := maxi(1, int(DataLoader.get_setting("grid_rows", 5)))
-		for target_lane in range(maxi(0, lane - 1), mini(row_count - 1, lane + 1) + 1):
-			lanes.append(target_lane)
+	var lanes := _target_lanes()
 	var projectile_script := load("res://behaviors/ProjectileBehavior.gd") as Script
 	if projectile_script == null:
 		push_error("Không tải được ProjectileBehavior.gd")
@@ -153,6 +191,7 @@ func _shoot() -> void:
 	var slow_factor := float(abilities.get("slow_factor", 0.5))
 	var duration := float(abilities.get("duration", 3.0))
 	var knockback := float(abilities.get("knockback", 0.0))
+	var projectile_style := str(plant_data.get("projectile", "basic"))
 	var color := Color("1f2424")
 	if effect in ["slow", "freeze"]:
 		color = Color("91cdf3")
@@ -163,14 +202,14 @@ func _shoot() -> void:
 			var projectile := Area2D.new()
 			projectile.set_script(projectile_script)
 			get_tree().current_scene.add_child(projectile)
-			projectile.setup(damage, target_lane, piercing, effect, color, knockback, slow_factor, duration)
+			projectile.setup(damage, target_lane, piercing, effect, color, knockback, slow_factor, duration, projectile_style)
 			projectile.global_position = global_position + Vector2(28, -6 + shot_index * 5)
 
 func _try_eat_zombie() -> void:
 	if is_eating:
 		return
 	for zombie in get_tree().get_nodes_in_group("zombies"):
-		if zombie.lane == lane and absf(zombie.global_position.x - global_position.x) <= 58.0:
+		if zombie.lane == lane and _is_zombie_visible(zombie) and absf(zombie.global_position.x - global_position.x) <= 58.0:
 			is_eating = true
 			eating_target = zombie
 			await get_tree().create_timer(maxf(0.1, float(_abilities().get("eat_time", 5.0)))).timeout
@@ -182,6 +221,14 @@ func _try_eat_zombie() -> void:
 			return
 
 func _explode(amount: float, radius: float, area: String) -> void:
+	AudioManager.play("explosion")
+	var effect_script := load("res://behaviors/EffectBehavior.gd") as Script
+	if effect_script != null:
+		var effect_controller := Node.new()
+		effect_controller.set_script(effect_script)
+		get_tree().current_scene.add_child(effect_controller)
+		effect_controller.connect("finished", Callable(effect_controller, "queue_free"))
+		effect_controller.call("play_effect", get_tree().current_scene, global_position, Color("f08b45"))
 	if area == "lane":
 		for target in get_tree().get_nodes_in_group("zombies"):
 			if target.lane == lane:

@@ -5,6 +5,6 @@
   "type": "wall",
   "damage": 0,
   "abilities": {"removes_obstacles": "grave", "max_targets": 3},
-  "description": "Xóa bia mộ; cần thêm hệ thống chướng ngại vật.",
+  "description": "Loại bỏ tối đa ba bia mộ trên sân.",
   "category": "phu"
 }

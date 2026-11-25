@@ -67,6 +67,23 @@ func _validate_database() -> void:
 			push_error("Plant %s has invalid cost or hp" % id)
 		if data.has("abilities") and not data["abilities"] is Dictionary:
 			push_error("Plant %s abilities must be an object" % id)
+		var abilities: Dictionary = data.get("abilities", {})
+		var growth_stages: Variant = abilities.get("growth_stages", [])
+		if not growth_stages is Array:
+			push_error("Plant %s growth_stages must be an array" % id)
+		else:
+			var previous_time := -1.0
+			for stage_value in growth_stages:
+				if not stage_value is Dictionary:
+					push_error("Plant %s growth stage must be an object" % id)
+					continue
+				var stage: Dictionary = stage_value
+				var stage_time := float(stage.get("after_seconds", -1.0))
+				if stage_time <= previous_time or stage_time < 0.0:
+					push_error("Plant %s growth stages must have increasing after_seconds" % id)
+				if int(stage.get("sun_amount", -1)) < 0 or float(stage.get("production_rate", 0.0)) <= 0.0:
+					push_error("Plant %s growth stage has invalid production values" % id)
+				previous_time = stage_time
 	for id in zombies_db:
 		var data: Dictionary = zombies_db[id]
 		if str(data.get("name", "")).is_empty() or str(data.get("type", "")).is_empty():

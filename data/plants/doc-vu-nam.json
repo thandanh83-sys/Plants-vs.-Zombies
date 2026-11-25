@@ -7,6 +7,6 @@
   "fire_rate": 1.5,
   "range": 3,
   "abilities": {"pierces_targets": true, "knockback": 12},
-  "description": "Phóng độc vụ xuyên mục tiêu; xuyên và đẩy lùi cần được lập trình.",
+  "description": "Phóng độc vụ xuyên mục tiêu và đẩy lùi cương thi.",
   "category": "nam"
 }

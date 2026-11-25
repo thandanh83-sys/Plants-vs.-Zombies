@@ -7,6 +7,6 @@
   "fire_rate": 1.5,
   "range": 9,
   "abilities": {"aquatic": true, "requires_water": true},
-  "description": "Bắn miễn phí; cần thêm bản đồ nước và quy tắc đặt cây dưới nước.",
+  "description": "Nấm bắn miễn phí, chỉ có thể trồng trên ô nước.",
   "category": "nam"
 }

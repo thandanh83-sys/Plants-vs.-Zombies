@@ -42,6 +42,16 @@ func _run_waves(token: int) -> void:
 		var wave_number := int(wave.get("wave_number", wave_index + 1))
 		wave_started.emit(wave_number)
 		var zombie_ids: Array = wave.get("zombies", [])
+		var leader_ids: Array[String] = []
+		var regular_ids: Array[String] = []
+		for raw_id in zombie_ids:
+			var candidate_id := str(raw_id)
+			var candidate_data: Dictionary = DataLoader.get_zombie(candidate_id)
+			var candidate_abilities: Dictionary = candidate_data.get("abilities", {})
+			if bool(candidate_abilities.get("wave_leader", false)) and leader_ids.is_empty():
+				leader_ids.append(candidate_id)
+			else:
+				regular_ids.append(candidate_id)
 		var count := maxi(0, int(wave.get("count", 1)))
 		var interval := maxf(0.1, float(wave.get("interval", 2.5)))
 		for spawn_index in range(count):
@@ -55,9 +65,20 @@ func _run_waves(token: int) -> void:
 				var lanes: Array = wave.get("lanes", [])
 				lane = int(lanes[spawn_index % lanes.size()])
 			lane = clampi(lane, 0, row_count - 1)
-			var zombie_id := str(zombie_ids[spawn_index % zombie_ids.size()])
+			var zombie_id := ""
+			if spawn_index == 0 and not leader_ids.is_empty():
+				zombie_id = leader_ids[0]
+			elif not regular_ids.is_empty():
+				var regular_index := spawn_index - (1 if not leader_ids.is_empty() else 0)
+				zombie_id = regular_ids[regular_index % regular_ids.size()]
+			else:
+				zombie_id = str(zombie_ids[spawn_index % zombie_ids.size()])
 			var spawned := factory.spawn_zombie(zombie_id, lane)
 			if spawned != null:
+				var zombie_data: Dictionary = DataLoader.get_zombie(zombie_id)
+				var zombie_abilities: Dictionary = zombie_data.get("abilities", {})
+				if bool(zombie_abilities.get("wave_leader", false)) and spawned.has_method("set_wave_leader"):
+					spawned.set_wave_leader()
 				if bool(wave.get("boss", false)) and spawned.has_method("set_boss_mode"):
 					spawned.set_boss_mode()
 				zombie_spawned.emit(zombie_id, lane)

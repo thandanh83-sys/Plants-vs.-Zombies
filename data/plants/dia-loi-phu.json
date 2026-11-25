@@ -6,6 +6,6 @@
   "damage": 1800,
   "trigger_range": 50,
   "abilities": {"armed_delay": 3.0, "area_radius": 55},
-  "description": "Phù địa lôi phát nổ khi quái đến gần.",
+  "description": "Phù địa lôi cần thời gian kích hoạt trước khi phát nổ khi cương thi đến gần.",
   "category": "phu"
 }

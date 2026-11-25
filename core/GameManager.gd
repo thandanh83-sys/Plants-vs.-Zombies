@@ -64,8 +64,8 @@ func spend_plant_food() -> bool:
 func win_level() -> void:
 	if state != "playing":
 		return
-	_set_state("won")
 	SaveSystem.record_level_completed(current_level_id)
+	_set_state("won")
 
 func lose_level() -> void:
 	if state == "playing":

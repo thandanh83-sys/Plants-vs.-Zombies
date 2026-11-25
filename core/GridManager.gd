@@ -45,6 +45,11 @@ func _draw() -> void:
 			var color := base.darkened(0.04) if (row + column) % 2 == 1 else base
 			draw_rect(rect, color)
 			draw_rect(rect, Color(0.12, 0.38, 0.28, 0.65), false, 1.0)
+			if environment == "roof":
+				var seam_y := rect.position.y + cell_height * 0.72
+				draw_line(Vector2(rect.position.x + 5.0, seam_y), Vector2(rect.position.x + cell_width - 5.0, seam_y - 5.0), Color("a28d76"), 2.0)
+				if (row + column) % 2 == 0:
+					draw_line(Vector2(rect.position.x + cell_width * 0.5, rect.position.y + 5.0), Vector2(rect.position.x + cell_width * 0.5 - 4.0, seam_y - 5.0), Color("ad9880"), 1.0)
 	for key in obstacles:
 		var center := Vector2((key.y + 0.5) * cell_width, (key.x + 0.5) * cell_height)
 		draw_circle(center, 21.0, Color("77756c"))
@@ -52,6 +57,13 @@ func _draw() -> void:
 	if "fog_covers_three_right_columns" in mechanics:
 		var fog_x := maxf(0.0, (columns - 3) * cell_width)
 		draw_rect(Rect2(fog_x, 0.0, 3.0 * cell_width, rows * cell_height), Color(0.72, 0.78, 0.82, 0.32))
+
+func is_obscured_by_fog(world_position: Vector2) -> bool:
+	var mechanics: Array = GameManager.current_level.get("special_mechanics", [])
+	if not mechanics.has("fog_covers_three_right_columns"):
+		return false
+	var cell := world_to_grid(world_position)
+	return cell.x >= 0 and cell.y >= columns - 3
 
 func get_grid_position(row: int, column: int) -> Vector2:
 	if not _is_valid_cell(row, column):

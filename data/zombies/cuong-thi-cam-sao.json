@@ -6,5 +6,5 @@
   "attack_rate": 1.0,
   "type": "pole_vaulting",
   "abilities": {"jumps_over_first_plant": true},
-  "description": "Nhảy qua cây đầu tiên; hiện tại hành vi nhảy chưa được lập trình."
+  "description": "Dùng sào nhảy qua cây đầu tiên trên đường đi."
 }

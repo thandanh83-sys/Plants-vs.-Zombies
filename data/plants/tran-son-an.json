@@ -5,6 +5,6 @@
   "type": "exploder",
   "damage": 1800,
   "abilities": {"target": "nearest_zombie", "plant_food": "heavy_smash"},
-  "description": "Đập mục tiêu gần nhất; cần bổ sung cơ chế chọn và nhảy tới mục tiêu.",
+  "description": "Đánh trúng cương thi gần nhất; Linh Đan tăng sức mạnh đòn đánh.",
   "category": "an"
 }

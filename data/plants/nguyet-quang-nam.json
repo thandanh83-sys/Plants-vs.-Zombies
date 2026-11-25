@@ -5,7 +5,12 @@
   "type": "producer",
   "sun_amount": 25,
   "production_rate": 8.0,
-  "abilities": {"growth_stages": [25, 100]},
-  "description": "Tạo Linh Khí; cơ chế tăng sản lượng theo thời gian cần được lập trình.",
+  "abilities": {
+    "growth_stages": [
+      {"after_seconds": 25, "sun_amount": 35, "production_rate": 7.0},
+      {"after_seconds": 100, "sun_amount": 50, "production_rate": 6.0}
+    ]
+  },
+  "description": "Tạo Linh Khí và tăng sản lượng qua các giai đoạn trưởng thành.",
   "category": "nam"
 }

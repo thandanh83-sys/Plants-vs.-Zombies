@@ -6,5 +6,5 @@
   "attack_rate": 1.0,
   "type": "flag",
   "abilities": {"wave_leader": true},
-  "description": "Quái dẫn đầu đợt; tốc độ cao hơn quái thường."
+  "description": "Cương thi dẫn đầu, được ưu tiên xuất hiện đầu tiên trong wave."
 }

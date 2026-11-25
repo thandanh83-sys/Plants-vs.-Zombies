@@ -7,6 +7,6 @@
   "fire_rate": 1.5,
   "range": 9,
   "abilities": {"shoot_adjacent_lanes": true},
-  "description": "Bắn vào làn của mình và hai làn kề; cần bổ sung logic đa làn.",
+  "description": "Bắn vào làn của mình và hai làn liền kề khi có mục tiêu trong tầm.",
   "category": "tien"
 }
