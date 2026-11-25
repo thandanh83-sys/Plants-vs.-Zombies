@@ -15,6 +15,7 @@ Game tower-defense 2D viết bằng GDScript cho **Godot 4.2+**. Dự án dùng 
 - Nhấp vào Linh Khí rơi để thu thập.
 - Nhấn **Linh Đan**, sau đó nhấp vào cây để kích hoạt kỹ năng.
 - Dùng cây chắn để giữ cương thi; cây bắn sẽ tự tìm mục tiêu trong tầm và cùng làn (một số cây có thể bắn làn kề).
+- Dùng nút Tạm dừng và Tốc độ để tạm dừng hoặc chuyển giữa 1.0x, 1.5x và 2.0x.
 
 ## Cơ chế hiện có
 
@@ -25,6 +26,10 @@ Game tower-defense 2D viết bằng GDScript cho **Godot 4.2+**. Dự án dùng 
 - Cương thi có giáp, nhảy qua cây, bay, gọi viện binh, dẫn đầu đợt và tăng tốc khi lớp báo bị phá.
 - Màn hồ sen có ô nước và yêu cầu bệ Liên Diệp; màn đêm không có Linh Khí rơi từ trời; màn sương che tầm nhìn ở ba cột phải.
 - Màn mái nhà hiện có bộ ô mái ngói riêng về mặt hình ảnh; chưa có cơ chế chậu trồng/độ dốc riêng.
+
+## Thẻ cây
+
+Khi có sprite Plant tương ứng, thẻ chọn cây sẽ dùng hình của Plant đó; nếu chưa có ảnh, game tiếp tục dùng biểu tượng dự phòng. Giữ nguyên ID và đường dẫn asset trong JSON khi bổ sung hình.
 
 ## Âm thanh
 
@@ -93,9 +98,31 @@ Giữ nguyên ID trong tên file JSON. Nếu ảnh chưa có, game dùng hình �
 - `tools/validate_project.py`: kiểm tra JSON, schema và tham chiếu.
 - `docs/reports/CURRENT_STATUS.md`: trạng thái và giới hạn đã rà soát.
 
+## AI Content Studio
+
+Repository có bộ công cụ AI hỗ trợ phát triển nội dung, lấy cảm hứng từ kiến trúc Multi-Agent của Văn Hiến và bộ quy tắc/validator của Prompt. Công cụ gồm MasterAI, 12 Agent chuyên môn, DataHub, bộ tạo prompt, QA Reviewer, validator dữ liệu và bộ nhớ cục bộ. Công cụ chỉ dùng trong quy trình phát triển, không chạy trong trận đấu và không được đóng gói vào Web export.
+
+Tài liệu: docs/AI_CONTENT_STUDIO.md.
+
+Liệt kê Agent và kiểm tra dữ liệu:
+
+~~~bash
+python tools/game_ai_studio.py agents
+python tools/game_ai_studio.py inspect --kind plants
+python tools/game_ai_studio.py lint "Tạo Plant mới cho Godot, xuất JSON, không đổi ID"
+~~~
+
+Muốn gọi AI, cấu hình GAME_AI_API_KEY, GAME_AI_MODEL và tùy chọn GAME_AI_BASE_URL trong môi trường máy phát triển. Không lưu khóa trong Git. AI tạo bản nháp trước; chỉ cài vào data/ sau khi đã xem xét kết quả.
+
 ## Kiểm thử
 
-Chạy kiểm tra dữ liệu:
+Chạy bộ kiểm thử AI và dữ liệu:
+
+~~~bash
+python -m unittest discover -s tools/tests -v
+python3 tools/validate_project.py
+~~~
+
 
 ```bash
 python3 tools/validate_project.py

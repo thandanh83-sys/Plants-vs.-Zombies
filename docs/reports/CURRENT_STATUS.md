@@ -42,3 +42,23 @@ Workflow GitHub Actions chạy:
 5. Xuất bản HTML5 và tải artifact.
 
 Trạng thái thực tế của lần chạy tương ứng với commit này phải được đối chiếu trong tab Actions sau khi push.
+
+
+## Bổ sung vòng phát triển hiện tại
+
+- Thêm nút tạm dừng và điều chỉnh tốc độ trận đấu 1.0x / 1.5x / 2.0x; các timer gameplay và timer hết hạn vật phẩm được cấu hình để dừng khi pause.
+- Sửa luồng Linh Đan để không trừ lượt khi cây đang bận thực hiện kỹ năng.
+- Thẻ chọn cây ưu tiên sprite riêng của Plant khi ảnh đã được bổ sung, fallback khi chưa có.
+- Lưu kỷ lục Linh Khí còn lại khi hoàn thành màn.
+- Bỏ tham chiếu logo bị thiếu khỏi cấu hình UI; seed packet và Linh Khí vẫn được cấu hình riêng.
+- Thêm AI Content Studio chạy ngoài runtime Godot: 12 Agent, MasterAI, DataHub, PromptBuilder, QA Reviewer, validator và memory cục bộ.
+- Bản nháp AI mặc định lưu trong .game_ai/drafts/; chỉ cài vào data/ khi có cờ --install và đã qua validator/QA.
+- Tích hợp kiểm thử unittest cho công cụ AI vào GitHub Actions. Kiểm thử không gọi API bên ngoài.
+- Không có khóa API trong repository; việc gọi model trực tuyến cần người phát triển cấu hình biến môi trường cục bộ.
+
+## Giới hạn cần kiểm tra trực tiếp
+
+- Chưa có sprite cho các Plant, Zombie và background đang chờ người dùng tạo.
+- Công cụ AI đã có kiểm thử schema/định tuyến; khả năng kết nối model thật phụ thuộc provider, model và biến môi trường, chưa được kiểm chứng khi không có khóa API.
+- CI kiểm tra parser, startup headless, data và HTML5 export; không mô phỏng một trận đấu hoàn chỉnh hoặc đánh giá cân bằng bằng người chơi.
+- Cần thử thao tác pause/speed, Linh Đan, hoàn thành màn, tải save và gameplay thực tế trong Godot Editor/Web export.

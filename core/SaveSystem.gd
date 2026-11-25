@@ -45,11 +45,12 @@ func save_game() -> bool:
 func is_level_unlocked(level_id: String) -> bool:
 	return level_id in save_data.get("unlocked_levels", [])
 
-func record_level_completed(level_id: String) -> void:
+func record_level_completed(level_id: String, remaining_sun: int = 0) -> void:
 	var completed: Array = save_data.get("completed_levels", [])
 	if level_id not in completed:
 		completed.append(level_id)
 	save_data["completed_levels"] = completed
+	save_data["best_sun"] = maxi(int(save_data.get("best_sun", 0)), maxi(0, remaining_sun))
 	var level_ids: Array = DataLoader.get_all_level_ids()
 	level_ids.sort()
 	var current_index: int = level_ids.find(level_id)

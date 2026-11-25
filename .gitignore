@@ -12,3 +12,11 @@ web/export/
 Thumbs.db
 *.blend1
 *.tmp
+
+# Local AI drafts, memory, secrets, and Python cache
+.game_ai/
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*

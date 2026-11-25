@@ -26,9 +26,12 @@ func build_cards(parent: Control, plant_ids: Array) -> void:
 		button.custom_minimum_size = Vector2(132, 72)
 		button.text = "%s\n%s Linh Khí" % [str(data.get("name", plant_id)), str(data.get("cost", 0))]
 		button.toggle_mode = true
-		if packet != null:
-			button.icon = packet
+		var plant_texture: Texture2D = DataLoader.get_plant_sprite(plant_id)
+		var card_icon: Texture2D = plant_texture if plant_texture != null else packet
+		if card_icon != null:
+			button.icon = card_icon
 			button.expand_icon = true
+		button.tooltip_text = str(data.get("description", data.get("name", plant_id)))
 		button.pressed.connect(_on_card_pressed.bind(plant_id, button))
 		container.add_child(button)
 		_buttons[plant_id] = button
