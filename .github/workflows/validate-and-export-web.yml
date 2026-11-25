@@ -58,7 +58,7 @@ jobs:
           TEMPLATE_DIR="$HOME/.local/share/godot/export_templates/4.2.2.stable"
           mkdir -p "$TEMPLATE_DIR"
           if [ ! -f "$TEMPLATE_DIR/web_release.zip" ] || [ ! -f "$TEMPLATE_DIR/web_debug.zip" ]; then
-            curl -L --fail --retry 3 -o /tmp/godot-export-templates.tpz https://github.com/godotengine/godot/releases/download/4.2.2-stable/Godot_v4.2.2-stable_export_templates.tpz
+            curl -L --fail --retry 3 -o /tmp/godot-export-templates.tpz https://github.com/godotengine/godot-builds/releases/download/4.2.2-stable/Godot_v4.2.2-stable_export_templates.tpz
             mkdir -p /tmp/godot-export-templates
             unzip -q /tmp/godot-export-templates.tpz -d /tmp/godot-export-templates
             cp /tmp/godot-export-templates/templates/web_*.zip "$TEMPLATE_DIR/"
