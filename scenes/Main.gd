@@ -20,6 +20,7 @@ var shovel_button: Button
 var almanac_button: Button
 var map_button: Button
 var wave_progress: ProgressBar
+var progress_caption: Label
 var wave_banner: Label
 var overlay_panel: PanelContainer
 var ghost_preview: Node2D
@@ -28,11 +29,16 @@ var ghost_fallback: Polygon2D
 var shovel_mode := false
 var _speed_index := 0
 var _banner_tween: Tween
+var _safe_left := 0.0
+var _safe_right := 0.0
+var _safe_top := 0.0
+var _safe_bottom := 0.0
 const GAME_SPEEDS := [1.0, 1.5, 2.0]
 
 func _ready() -> void:
 	_build_background()
 	_build_hud()
+	call_deferred("_apply_safe_area")
 	grid = GridManager.new()
 	grid.name = "GridManager"
 	add_child(grid)
@@ -150,7 +156,7 @@ func _build_hud() -> void:
 	wave_progress.value = 0.0
 	add_child(wave_progress)
 
-	var progress_caption := Label.new()
+	progress_caption = Label.new()
 	progress_caption.position = Vector2(940, 640)
 	progress_caption.size = Vector2(300, 22)
 	progress_caption.text = "TIẾN ĐỘ ĐỢT CƯƠNG THI"
@@ -191,6 +197,45 @@ func _build_placement_preview() -> void:
 	])
 	ghost_fallback.color = Color(0.25, 0.85, 0.42, 0.5)
 	ghost_preview.add_child(ghost_fallback)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED and is_node_ready():
+		call_deferred("_apply_safe_area")
+
+func _apply_safe_area() -> void:
+	var viewport_size: Vector2 = get_viewport_rect().size
+	var screen_index: int = DisplayServer.window_get_current_screen()
+	var screen_size: Vector2i = DisplayServer.screen_get_size(screen_index)
+	if screen_size.x <= 0 or screen_size.y <= 0 or viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+	var safe_rect: Rect2i = DisplayServer.get_display_safe_area()
+	var scale_x := viewport_size.x / float(screen_size.x)
+	var scale_y := viewport_size.y / float(screen_size.y)
+	_safe_left = maxf(0.0, float(safe_rect.position.x) * scale_x)
+	_safe_top = maxf(0.0, float(safe_rect.position.y) * scale_y)
+	_safe_right = maxf(0.0, float(screen_size.x - safe_rect.end.x) * scale_x)
+	_safe_bottom = maxf(0.0, float(screen_size.y - safe_rect.end.y) * scale_y)
+
+	sun_label.position = Vector2(20.0 + _safe_left, 16.0 + _safe_top)
+	plant_food_button.position = Vector2(175.0 + _safe_left, 12.0 + _safe_top)
+	state_label.position = Vector2(20.0 + _safe_left, 56.0 + _safe_top)
+	pause_button.position = Vector2(20.0 + _safe_left, 96.0 + _safe_top)
+	speed_button.position = Vector2(132.0 + _safe_left, 96.0 + _safe_top)
+	shovel_button.position = Vector2(264.0 + _safe_left, 96.0 + _safe_top)
+	almanac_button.position = Vector2(viewport_size.x - _safe_right - 640.0, 12.0 + _safe_top)
+	map_button.position = Vector2(viewport_size.x - _safe_right - 535.0, 12.0 + _safe_top)
+	level_selector.position = Vector2(viewport_size.x - _safe_right - 430.0, 12.0 + _safe_top)
+	level_start_button.position = Vector2(viewport_size.x - _safe_right - 175.0, 12.0 + _safe_top)
+	wave_progress.position = Vector2(viewport_size.x - _safe_right - 340.0, viewport_size.y - _safe_bottom - 55.0)
+	progress_caption.position = Vector2(viewport_size.x - _safe_right - 340.0, viewport_size.y - _safe_bottom - 80.0)
+	wave_banner.position = Vector2(viewport_size.x * 0.5 - 280.0, viewport_size.y * 0.5 - 45.0)
+	if is_instance_valid(grid):
+		grid.position = Vector2(
+			float(DataLoader.get_setting("grid_x", 285.0)) + _safe_left,
+			float(DataLoader.get_setting("grid_y", 148.0)) + _safe_top
+		)
+	if is_instance_valid(CardManager.container):
+		CardManager.container.position = Vector2(330.0 + _safe_left, 62.0 + _safe_top)
 
 func _process(_delta: float) -> void:
 	_update_placement_preview()
