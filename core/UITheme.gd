@@ -39,7 +39,10 @@ static func _panel_style() -> StyleBoxFlat:
 	style.border_color = Color("#c6a85b")
 	style.set_border_width_all(2)
 	style.set_corner_radius_all(16)
-	style.set_content_margin_all(12)
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.content_margin_top = 14
+	style.content_margin_bottom = 14
 	style.shadow_color = Color(0.02, 0.04, 0.025, 0.38)
 	style.shadow_size = 8
 	style.shadow_offset = Vector2(0, 3)
