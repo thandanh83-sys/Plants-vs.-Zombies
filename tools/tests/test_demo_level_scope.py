@@ -120,8 +120,8 @@ class DemoLevelScopeTests(unittest.TestCase):
     def test_entity_behaviors_do_not_branch_on_specific_entity_ids(self) -> None:
         plant_source = (ROOT / "behaviors/PlantBehavior.gd").read_text(encoding="utf-8")
         zombie_source = (ROOT / "behaviors/ZombieBehavior.gd").read_text(encoding="utf-8")
-        self.assertNotRegex(plant_source, r"plant_id\\s*==")
-        self.assertNotRegex(zombie_source, r"zombie_id\\s*==")
+        self.assertNotRegex(plant_source, r"plant_id\s*==")
+        self.assertNotRegex(zombie_source, r"zombie_id\s*==")
         self.assertIn('plant_data.get("type"', plant_source)
         self.assertIn('zombie_data.get("abilities"', zombie_source)
 
