@@ -119,13 +119,38 @@ for zombie_id, zombie in zombies.items():
         WARNINGS.append(f"Zombie sprite not supplied yet: {sprite}")
 
 for level_id, level in levels.items():
-    if not isinstance(level.get("available_plants"), list):
+    available_plants = level.get("available_plants", [])
+    if not isinstance(available_plants, list):
         ERRORS.append(f"Level {level_id}: available_plants must be an array")
-    if not isinstance(level.get("waves"), list):
-        ERRORS.append(f"Level {level_id}: waves must be an array")
-    for plant_id in level.get("available_plants", []):
+        available_plants = []
+    if len(available_plants) != len(set(available_plants)):
+        ERRORS.append(f"Level {level_id}: available_plants contains duplicate IDs")
+    for plant_id in available_plants:
         if plant_id not in plants:
             ERRORS.append(f"Level {level_id}: unknown plant '{plant_id}'")
+
+    required_plants = level.get("required_plants", [])
+    if not isinstance(required_plants, list):
+        ERRORS.append(f"Level {level_id}: required_plants must be an array")
+        required_plants = []
+    if len(required_plants) != len(set(required_plants)):
+        ERRORS.append(f"Level {level_id}: required_plants contains duplicate IDs")
+    for plant_id in required_plants:
+        if plant_id not in available_plants:
+            ERRORS.append(f"Level {level_id}: required Plant '{plant_id}' is not in available_plants")
+        elif plant_id not in plants:
+            ERRORS.append(f"Level {level_id}: unknown required Plant '{plant_id}'")
+
+    if isinstance(settings, dict):
+        try:
+            slots = int(settings.get("seed_slots", 6))
+            if len(required_plants) > slots:
+                ERRORS.append(f"Level {level_id}: required_plants exceeds configured seed_slots")
+        except (TypeError, ValueError):
+            pass
+
+    if not isinstance(level.get("waves"), list):
+        ERRORS.append(f"Level {level_id}: waves must be an array")
     wave_list = level.get("waves", [])
     has_boss_wave = False
     for wave_number, wave in enumerate(wave_list, start=1):
