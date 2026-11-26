@@ -18,7 +18,7 @@ var is_vaulting := false
 var has_summoned := false
 var is_boss := false
 var is_wave_leader := false
-var has_newspaper_broken := false
+var has_armor_break_speed_applied := false
 var status_label: Label
 var _slow_factor := 0.5
 var _hit_flash_tween: Tween
@@ -199,9 +199,14 @@ func take_damage(amount: float) -> void:
 		remaining -= absorbed
 	if remaining > 0.0:
 		hp -= remaining
-	if zombie_id == "cuong-thi-cam-bao" and armor_before > 0.0 and armor_hp <= 0.0 and not has_newspaper_broken:
-		has_newspaper_broken = true
-		var faster_speed := float(_abilities().get("speed_after_newspaper_breaks", 0.0))
+	var armor_was_broken := armor_before > 0.0 and armor_hp <= 0.0
+	if armor_was_broken and not has_armor_break_speed_applied:
+		has_armor_break_speed_applied = true
+		var abilities := _abilities()
+		var faster_speed := float(abilities.get(
+			"speed_after_armor_breaks",
+			abilities.get("speed_after_newspaper_breaks", 0.0)
+		))
 		if faster_speed > 0.0:
 			base_speed = faster_speed
 	if hp <= 0.0:
