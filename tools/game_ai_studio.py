@@ -24,7 +24,8 @@ PLANT_ABILITIES = {
 }
 ZOMBIE_ABILITIES = {
     "wave_leader", "flies_over_plants", "counter", "jumps_over_first_plant",
-    "summons", "summon_count", "speed_after_newspaper_breaks",
+    "summons", "summon_count", "speed_after_armor_breaks",
+    "speed_after_newspaper_breaks",  # Deprecated alias kept for existing drafts.
 }
 FOOD_ACTIONS = {"restore_full_hp", "freeze_lane", "eat_three_zombies", "lane_explosion", "heavy_smash"}
 REWRITE_SECTIONS = [
