@@ -115,9 +115,9 @@ func _build_hud() -> void:
 	state_label.add_theme_font_size_override("font_size", 16)
 	add_child(state_label)
 	coins_label = Label.new()
-	coins_label.position = Vector2(390, 16)
-	coins_label.size = Vector2(140, 34)
-	coins_label.add_theme_font_size_override("font_size", 20)
+	coins_label.position = Vector2(380, 16)
+	coins_label.size = Vector2(105, 34)
+	coins_label.add_theme_font_size_override("font_size", 18)
 	add_child(coins_label)
 	zen_garden_button = Button.new()
 	zen_garden_button.position = Vector2(490, 12)
@@ -248,7 +248,7 @@ func _apply_safe_area() -> void:
 	sun_label.position = Vector2(20.0 + _safe_left, 16.0 + _safe_top)
 	plant_food_button.position = Vector2(175.0 + _safe_left, 12.0 + _safe_top)
 	state_label.position = Vector2(20.0 + _safe_left, 56.0 + _safe_top)
-	coins_label.position = Vector2(390.0 + _safe_left, 16.0 + _safe_top)
+	coins_label.position = Vector2(380.0 + _safe_left, 16.0 + _safe_top)
 	zen_garden_button.position = Vector2(490.0 + _safe_left, 12.0 + _safe_top)
 	pause_button.position = Vector2(20.0 + _safe_left, 96.0 + _safe_top)
 	speed_button.position = Vector2(132.0 + _safe_left, 96.0 + _safe_top)
@@ -434,6 +434,10 @@ func _cycle_game_speed() -> void:
 func _reset_game_time() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
+	if _shake_tween != null and _shake_tween.is_running():
+		_shake_tween.kill()
+	if is_instance_valid(world_layer):
+		world_layer.position = Vector2.ZERO
 	_speed_index = 0
 	if is_instance_valid(pause_button):
 		pause_button.text = "Tạm dừng"
