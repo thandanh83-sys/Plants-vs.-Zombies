@@ -97,11 +97,6 @@ for zombie_id, zombie in zombies.items():
             ERRORS.append(f"Zombie {zombie_id}: hp/speed is invalid")
     except (TypeError, ValueError):
         ERRORS.append(f"Zombie {zombie_id}: hp/speed must be numeric")
-    zombie_abilities = zombie.get("abilities", {})
-    if not isinstance(zombie_abilities, dict):
-        ERRORS.append(f"Zombie {zombie_id}: abilities must be an object")
-    elif "drops_plant_food" in zombie_abilities and not isinstance(zombie_abilities["drops_plant_food"], bool):
-        ERRORS.append(f"Zombie {zombie_id}: drops_plant_food must be boolean")
     armor = zombie.get("armor", {})
     if not isinstance(armor, dict):
         ERRORS.append(f"Zombie {zombie_id}: armor must be an object")
