@@ -97,22 +97,7 @@ func _build_background() -> void:
 	add_child(background_texture)
 
 func _build_hud() -> void:
-	_build_logo()
 	sun_label = Label.new()
-
-func _build_logo() -> void:
-	var logo_path: String = DataLoader.get_ui_asset("logo", "")
-	if logo_path.is_empty() or not ResourceLoader.exists(logo_path):
-		return
-	logo_texture_rect = TextureRect.new()
-	logo_texture_rect.name = "GameLogo"
-	logo_texture_rect.position = Vector2(36, 205)
-	logo_texture_rect.size = Vector2(210, 210)
-	logo_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	logo_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	logo_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	logo_texture_rect.texture = load(logo_path) as Texture2D
-	add_child(logo_texture_rect)
 	sun_label.position = Vector2(20, 16)
 	sun_label.size = Vector2(160, 34)
 	sun_label.add_theme_font_size_override("font_size", 22)
@@ -221,6 +206,21 @@ func _build_logo() -> void:
 	wave_banner.modulate.a = 0.0
 	wave_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(wave_banner)
+	_build_logo()
+
+func _build_logo() -> void:
+	var logo_path: String = DataLoader.get_ui_asset("logo", "")
+	if logo_path.is_empty() or not ResourceLoader.exists(logo_path):
+		return
+	logo_texture_rect = TextureRect.new()
+	logo_texture_rect.name = "GameLogo"
+	logo_texture_rect.position = Vector2(36, 205)
+	logo_texture_rect.size = Vector2(210, 210)
+	logo_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	logo_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	logo_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	logo_texture_rect.texture = load(logo_path) as Texture2D
+	add_child(logo_texture_rect)
 
 func _build_placement_preview() -> void:
 	ghost_preview = Node2D.new()
