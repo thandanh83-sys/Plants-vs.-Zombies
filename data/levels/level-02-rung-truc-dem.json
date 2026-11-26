@@ -15,7 +15,7 @@
     "doc-vu-nam"
   ],
   "required_plants": [
-    "da-quang-nam"
+    "nguyet-quang-nam"
   ],
   "special_mechanics": [
     "no_sky_sun",
