@@ -6,6 +6,6 @@
   "attack_rate": 1.0,
   "type": "newspaper",
   "armor": {"hp": 150, "visual": "newspaper"},
-  "abilities": {"speed_after_newspaper_breaks": 32.0},
+  "abilities": {"speed_after_armor_breaks": 32.0},
   "description": "Có lớp báo hấp thụ sát thương; tăng tốc sau khi lớp báo bị phá."
 }
