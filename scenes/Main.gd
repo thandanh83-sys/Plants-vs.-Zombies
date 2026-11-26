@@ -482,7 +482,7 @@ func _start_level(level_id: String, selected_plant_ids: Array = []) -> void:
 	if level_preview.is_empty():
 		return
 	var plant_pool: Array = level_preview.get("available_plants", [])
-	var seed_slots := maxi(1, int(DataLoader.get_setting("seed_slots", 6)))
+	var seed_slots := maxi(1, int(level_preview.get("seed_slots", DataLoader.get_setting("seed_slots", 6))))
 	var required_values: Array = level_preview.get("required_plants", [])
 	var normalized_selection: Array[String] = []
 	for raw_required in required_values:
@@ -770,7 +770,7 @@ func _open_seed_selection(level_id: String) -> void:
 		return
 
 	_loadout_level_id = level_id
-	_loadout_required = mini(maxi(1, int(DataLoader.get_setting("seed_slots", 6))), candidates.size())
+	_loadout_required = mini(maxi(1, int(level.get("seed_slots", DataLoader.get_setting("seed_slots", 6))), candidates.size())
 	_loadout_selection.clear()
 	_loadout_buttons.clear()
 	_required_seed_ids.clear()
