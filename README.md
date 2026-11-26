@@ -49,7 +49,7 @@ Bản thử nghiệm đang tập trung vào **một màn duy nhất — Thư Vi�
 - Màn có 3 đợt tấn công tăng dần áp lực; chỉ sử dụng hai loại Zombie trên.
 - Thanh chọn có đúng 2 thẻ Plant; giới hạn này được cấu hình riêng trong JSON của màn, không làm thay đổi số thẻ của các màn khác.
 - Màn khởi đầu với 250 Linh Khí và 1 lượt Linh Đan. Linh Khí tiếp tục rơi theo chu kỳ để người chơi xây dựng đội hình trên sân.
-- Hai Plant và hai Zombie đều có đường dẫn sprite trong repository. Nền màn chưa có tranh riêng, nên bản demo dùng nền màu dự phòng và lưới chiến đấu của Godot.
+- Bốn sprite của hai Plant và hai Zombie đã có trong repository. Ảnh thẻ Trúc Tiễn đã có; ảnh thẻ Hồng Liên Nổ và nền Thư Viện Cổ vẫn còn thiếu, nên hiện dùng sprite Plant và nền màu/lưới mặc định làm phương án dự phòng.
 - Bốn màn còn lại được giữ nguyên dữ liệu hiện có; chưa phải trọng tâm kiểm thử của bản demo này.
 
 Sau khi vòng chơi của màn mẫu ổn định, mới mở rộng thêm Plant, Zombie, màn chơi và chế độ phụ.
@@ -67,7 +67,7 @@ Sau khi vòng chơi của màn mẫu ổn định, mới mở rộng thêm Plant
 
 ## Thẻ cây
 
-Khi có sprite Plant tương ứng, thẻ chọn cây sẽ dùng hình của Plant đó; nếu chưa có ảnh, game tiếp tục dùng biểu tượng dự phòng. Giữ nguyên ID và đường dẫn asset trong JSON khi bổ sung hình.
+Thẻ chọn cây ưu tiên `card_sprite` trong JSON, tiếp đến `assets/ui/seed-packet/<plant-id>.png`, sprite Plant, rồi ảnh thẻ dùng chung nếu đã cấu hình hợp lệ. Nhờ vậy có thể thêm ảnh thẻ mới mà không cần sửa code theo từng ID. Giữ nguyên ID và đường dẫn asset trong JSON khi bổ sung hình.
 
 ## Âm thanh
 
@@ -133,7 +133,7 @@ Giữ nguyên ID trong tên file JSON. Nếu ảnh chưa có, game dùng hình �
 - `core/AudioManager.gd`: phát OGG hoặc âm thanh tổng hợp.
 - `behaviors/`: hành vi cây, cương thi và đạn.
 - `data/`: dữ liệu cây, cương thi, màn và cấu hình.
-- `tools/validate_project.py`: kiểm tra JSON, schema và tham chiếu.
+- `tools/validate_project.py`: kiểm tra JSON, trường bắt buộc, tham chiếu và các đường dẫn tài nguyên đã khai báo.
 - `docs/reports/CURRENT_STATUS.md`: trạng thái và giới hạn đã rà soát.
 
 ## AI Content Studio
@@ -177,7 +177,7 @@ Kiểm thử gameplay trực tiếp vẫn cần mở game và thử thao tác. C
 - Vườn Thiền có ba chậu lưu cây, giai đoạn phát triển và nhu cầu chăm sóc. Dùng đúng công cụ mới tăng trưởng và nhận xu.
 - Tutorial lần đầu hướng dẫn chọn thẻ rồi đặt cây; có thể bỏ qua.
 - Save JSON được mở rộng để lưu xu, cây đã mở khóa, trạng thái Vườn Thiền và Tutorial; lưu khi ứng dụng tạm dừng/thoát.
-- EventBus dùng Godot signals để gửi yêu cầu rung, thay đổi nhạc theo wave và cập nhật xu mà không buộc gameplay tham chiếu trực tiếp đến HUD.
+- `core/GameEvents.gd` dùng Godot signals cho sự kiện liên hệ thống như rung màn hình, cường độ wave và cập nhật xu. `GameManager` phát signal riêng cho trạng thái trận và tài nguyên; không tạo EventBus trùng lặp.
 
 ### Nhạc nền thích ứng (tùy chọn)
 
