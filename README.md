@@ -35,13 +35,24 @@ Game tower-defense 2D có runtime hiện tại chạy trên **Godot 4.2+ / GDScr
 - Input đặt cây và dùng xẻng hỗ trợ cả click chuột và chạm màn hình.
 - HUD được sắp xếp theo kích thước viewport; dự án sử dụng chế độ stretch `canvas_items` với aspect `expand`.
 
-## Vòng chơi, đội hình và hồi chiêu
+## Phạm vi bản demo hiện tại
 
-- Trước khi vào mỗi màn, chọn đội hình gồm tối đa 6 cây từ danh sách màn cung cấp. Cây được đánh dấu **BẮT BUỘC** là điều kiện chiến thuật của màn (ví dụ cây tạo Linh Khí ở màn đêm, Liên Diệp ở màn hồ sen).
-- Bộ cây đã chọn được lưu và gợi ý lại ở màn kế tiếp; có thể thay đổi trước khi bắt đầu.
-- Sau khi đặt, thẻ cây bước vào hồi chiêu. Thời gian mặc định được phân tầng theo vai trò (cây miễn phí nhanh hơn, cây chắn chậm hơn, cây nổ/đặc biệt lâu hơn); dữ liệu từng Plant có thể ghi đè bằng trường `recharge_time`.
-- Cương Thi dẫn đầu có thể rơi Linh Đan. Nhấp vật phẩm để nhặt và cộng lượt dùng; vật phẩm biến mất sau một khoảng thời gian nếu không thu thập.
-- Đây là các cơ chế nền tảng theo hướng PVZ; chỉ số hồi chiêu, giá cây, sát thương và nhịp wave vẫn cần cân bằng qua chơi thử thực tế.
+Bản thử nghiệm đang tập trung vào **một màn duy nhất — Thư Viện Cổ** — với đúng hai Plant và hai Zombie:
+
+| Vai trò | Nhân vật | Cơ chế chính |
+|---|---|---|
+| Plant tấn công | Trúc Tiễn | Bắn đạn mực theo làn; Linh Đan tạo loạt bắn nhanh |
+| Plant nổ | Hồng Liên Nổ | Nổ diện rộng khi Cương Thi đến gần; Linh Đan gây đại bạo phá dọc một làn |
+| Zombie cơ bản | Cương Thi Thường | Di chuyển và tấn công theo làn |
+| Zombie có giáp | Cương Thi Đội Nón | Lớp giáp hấp thụ sát thương trước khi mất sinh lực |
+
+- Màn có 3 đợt tấn công tăng dần áp lực; chỉ sử dụng hai loại Zombie trên.
+- Thanh chọn có đúng 2 thẻ Plant; giới hạn này được cấu hình riêng trong JSON của màn, không làm thay đổi số thẻ của các màn khác.
+- Màn khởi đầu với 250 Linh Khí và 1 lượt Linh Đan. Linh Khí tiếp tục rơi theo chu kỳ để người chơi xây dựng đội hình trên sân.
+- Hai Plant và hai Zombie đều có đường dẫn sprite trong repository. Nền màn chưa có tranh riêng, nên bản demo dùng nền màu dự phòng và lưới chiến đấu của Godot.
+- Bốn màn còn lại được giữ nguyên dữ liệu hiện có; chưa phải trọng tâm kiểm thử của bản demo này.
+
+Sau khi vòng chơi của màn mẫu ổn định, mới mở rộng thêm Plant, Zombie, màn chơi và chế độ phụ.
 
 ## Cơ chế hiện có
 
@@ -50,7 +61,7 @@ Game tower-defense 2D có runtime hiện tại chạy trên **Godot 4.2+ / GDScr
 - Trúc Tiễn có kiểu đạn mực riêng.
 - Cây nổ, cây nuốt mục tiêu, cây chắn, Linh Đan và bệ Liên Diệp.
 - Cây và cương thi nhấp sáng khi nhận sát thương để phản hồi trận đấu rõ hơn.
-- Cương thi có giáp, nhảy qua cây, bay, gọi viện binh, dẫn đầu đợt và tăng tốc khi lớp báo bị phá.
+- Bộ dữ liệu toàn game có các biến thể Cương Thi có giáp, nhảy, bay, gọi viện binh và dẫn đầu; bản demo hiện chỉ dùng Cương Thi Thường và Cương Thi Đội Nón.
 - Màn hồ sen có ô nước và yêu cầu bệ Liên Diệp; màn đêm không có Linh Khí rơi từ trời; màn sương che tầm nhìn ở ba cột phải.
 - Màn mái nhà hiện có bộ ô mái ngói riêng về mặt hình ảnh; chưa có cơ chế chậu trồng/độ dốc riêng.
 
