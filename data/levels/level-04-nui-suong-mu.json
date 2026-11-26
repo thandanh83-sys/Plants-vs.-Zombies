@@ -3,7 +3,7 @@
   "environment": "fog",
   "background": "res://assets/backgrounds/nui-suong-mu.png",
   "starting_sun": 100,
-  "available_plants": ["nhat-nguyet-thao", "truc-tien", "doc-vu-nam", "tam-tien-truc", "hong-lien-no"],
+  "available_plants": ["nhat-nguyet-thao", "truc-tien", "doc-vu-nam", "tam-tien-truc", "hong-lien-no", "song-tien-truc", "dia-loi-phu", "tran-son-an"],
   "special_mechanics": ["fog_covers_three_right_columns"],
   "waves": [
     {"wave_number": 1, "zombies": ["cuong-thi-thuong", "cuong-thi-cam-co"], "count": 8, "interval": 2.6},
