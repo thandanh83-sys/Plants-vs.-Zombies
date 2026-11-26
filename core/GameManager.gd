@@ -3,7 +3,6 @@ extends Node
 signal sun_changed(value: int)
 signal state_changed(state: String)
 signal plant_food_changed(charges: int)
-signal plant_food_dropped(world_position: Vector2)
 
 var sun := 50
 var plant_food_charges := 1
