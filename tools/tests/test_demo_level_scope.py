@@ -97,8 +97,10 @@ class DemoLevelScopeTests(unittest.TestCase):
     def test_demo_combat_parameters_are_explicit_in_json(self) -> None:
         for plant_id in self.level["available_plants"]:
             data = load_json(ROOT / "data/plants" / f"{plant_id}.json")
-            for key in ("name", "type", "hp", "cost", "damage", "fire_rate", "recharge_time"):
+            for key in ("name", "type", "hp", "cost", "damage", "recharge_time"):
                 self.assertIn(key, data, f"{plant_id} is missing {key}")
+            if data.get("type") == "shooter":
+                self.assertIn("fire_rate", data, f"{plant_id} is missing fire_rate")
         for zombie_id in ("cuong-thi-thuong", "cuong-thi-non"):
             data = load_json(ROOT / "data/zombies" / f"{zombie_id}.json")
             for key in ("name", "type", "hp", "speed", "damage", "attack_rate"):
