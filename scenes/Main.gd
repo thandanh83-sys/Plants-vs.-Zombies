@@ -11,6 +11,7 @@ var plant_food_mode := false
 var level_selector: OptionButton
 var level_start_button: Button
 var background_texture: TextureRect
+var logo_texture_rect: TextureRect
 var restart_button: Button
 var _starting_level := false
 var _level_run_id := 0
@@ -96,7 +97,22 @@ func _build_background() -> void:
 	add_child(background_texture)
 
 func _build_hud() -> void:
+	_build_logo()
 	sun_label = Label.new()
+
+func _build_logo() -> void:
+	var logo_path: String = DataLoader.get_ui_asset("logo", "")
+	if logo_path.is_empty() or not ResourceLoader.exists(logo_path):
+		return
+	logo_texture_rect = TextureRect.new()
+	logo_texture_rect.name = "GameLogo"
+	logo_texture_rect.position = Vector2(36, 205)
+	logo_texture_rect.size = Vector2(210, 210)
+	logo_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	logo_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	logo_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	logo_texture_rect.texture = load(logo_path) as Texture2D
+	add_child(logo_texture_rect)
 	sun_label.position = Vector2(20, 16)
 	sun_label.size = Vector2(160, 34)
 	sun_label.add_theme_font_size_override("font_size", 22)
@@ -245,6 +261,8 @@ func _apply_safe_area() -> void:
 	_safe_right = maxf(0.0, float(screen_size.x - safe_rect.end.x) * scale_x)
 	_safe_bottom = maxf(0.0, float(screen_size.y - safe_rect.end.y) * scale_y)
 
+	if is_instance_valid(logo_texture_rect):
+		logo_texture_rect.position = Vector2(36.0 + _safe_left, 205.0 + _safe_top)
 	sun_label.position = Vector2(20.0 + _safe_left, 16.0 + _safe_top)
 	plant_food_button.position = Vector2(175.0 + _safe_left, 12.0 + _safe_top)
 	state_label.position = Vector2(20.0 + _safe_left, 56.0 + _safe_top)
@@ -596,7 +614,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_linh_khi_dropped(world_position: Vector2, amount: int) -> void:
 	var button := Button.new()
-	button.text = "✦"
+	var pickup_icon_path: String = DataLoader.get_ui_asset("linh_khi", "")
+	var pickup_texture: Texture2D = load(pickup_icon_path) as Texture2D if not pickup_icon_path.is_empty() and ResourceLoader.exists(pickup_icon_path) else null
+	if pickup_texture != null:
+		button.icon = pickup_texture
+		button.expand_icon = true
+		button.text = ""
+	else:
+		button.text = "✦"
 	button.position = world_position - Vector2(22, 22)
 	button.size = Vector2(44, 44)
 	button.tooltip_text = "%d Linh Khí" % amount
