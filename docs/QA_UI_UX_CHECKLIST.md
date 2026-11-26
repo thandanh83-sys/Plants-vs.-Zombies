@@ -14,7 +14,7 @@ Phạm vi: kiểm thử thủ công trong Godot Editor và bản Web/mobile. CI 
 - [ ] Vào màn từ khởi động, menu chọn màn và bản đồ: luôn xuất hiện giao diện chọn đội hình trước khi trận bắt đầu.
 - [ ] Mỗi màn chọn đúng số thẻ quy định; nút Bắt đầu chỉ bật khi đủ số lượng.
 - [ ] Cây bắt buộc của màn được chọn sẵn, có nhãn BẮT BUỘC và không thể bỏ chọn.
-- [ ] Màn hồ sen luôn có Nhật Nguyệt Thảo và Liên Diệp; màn đêm luôn có Dạ Quang Nấm trong đội hình.
+- [ ] Màn hồ sen luôn có Nhật Nguyệt Thảo và Liên Diệp; màn đêm luôn có Nguyệt Quang Nấm để tạo Linh Khí.
 - [ ] Nút Đội hình đề xuất giữ lại các cây bắt buộc và điền đủ số ô còn lại.
 - [ ] Đội hình được lưu; mở lại màn và khởi động lại không tạo ra đội hình thiếu cây bắt buộc.
 - [ ] Sau khi trồng, đúng thẻ cây chuyển sang Hồi chiêu; các thẻ khác vẫn chọn được.
