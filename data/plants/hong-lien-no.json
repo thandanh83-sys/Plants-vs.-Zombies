@@ -4,9 +4,16 @@
   "hp": 100,
   "type": "exploder",
   "damage": 220,
+  "trigger_range": 95.0,
+  "abilities": {
+    "area_radius": 150.0,
+    "area": "radius"
+  },
+  "plant_food": "lane_explosion",
+  "plant_food_damage": 1800,
+  "recharge_time": 25,
   "description": "Nổ gây sát thương diện rộng; Linh Đan kích hoạt đại bạo phá dọc một làn.",
   "category": "hoa",
-  "sprite_scale": 1,
-  "plant_food": "lane_explosion",
-  "recharge_time": 25
+  "sprite": "res://assets/plants/hong-lien-no.png",
+  "sprite_scale": 1.0
 }
