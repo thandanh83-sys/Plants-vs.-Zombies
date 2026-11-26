@@ -68,7 +68,7 @@ func start_recharge(plant_id: String) -> void:
 	var data: Dictionary = DataLoader.get_plant(plant_id)
 	if data.is_empty():
 		return
-	var duration := maxf(0.0, float(data.get("recharge_time", 5.0)))
+	var duration := maxf(0.0, float(data.get("recharge_time", _default_recharge_time(data))))
 	if duration <= 0.0:
 		_recharge_remaining.erase(plant_id)
 	else:
@@ -77,6 +77,26 @@ func start_recharge(plant_id: String) -> void:
 
 func get_recharge_remaining(plant_id: String) -> float:
 	return maxf(0.0, float(_recharge_remaining.get(plant_id, 0.0)))
+
+func _default_recharge_time(data: Dictionary) -> float:
+	if int(data.get("cost", 0)) == 0:
+		return 5.0
+	var plant_type := str(data.get("type", "shooter"))
+	var abilities: Dictionary = data.get("abilities", {})
+	if str(abilities.get("attack", "")) == "eat_zombie":
+		return 30.0
+	if abilities.has("removes_obstacles"):
+		return 25.0
+	if plant_type == "exploder":
+		return 25.0
+	if plant_type == "wall":
+		return 15.0
+	if plant_type == "producer":
+		return 7.5
+	if bool(abilities.get("shoot_adjacent_lanes", false)) or int(abilities.get("projectiles_per_attack", 1)) > 1:
+		return 15.0
+	return 7.5
+
 
 func _get_card_text(plant_id: String) -> String:
 	var data: Dictionary = DataLoader.get_plant(plant_id)
