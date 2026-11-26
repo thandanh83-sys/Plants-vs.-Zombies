@@ -43,14 +43,6 @@ var _shake_tween: Tween
 var _overlay_pause_changed := false
 var _overlay_previous_paused := false
 var _overlay_previous_time_scale := 1.0
-var _loadout_level_id := ""
-var _loadout_required := 0
-var _loadout_selection: Array[String] = []
-var _required_seed_ids: Array[String] = []
-var _loadout_buttons: Dictionary = {}
-var _loadout_count_label: Label
-var _loadout_start_button: Button
-var _active_seed_ids: Array[String] = []
 const GAME_SPEEDS := [1.0, 1.5, 2.0]
 
 func _ready() -> void:
@@ -85,7 +77,7 @@ func _ready() -> void:
 	_populate_levels()
 	var first_unlocked := _first_unlocked_level()
 	if not first_unlocked.is_empty():
-		_open_seed_selection(first_unlocked)
+		_start_level(first_unlocked)
 	else:
 		state_label.text = "Chưa có màn chơi hợp lệ trong data/levels."
 
@@ -467,47 +459,15 @@ func _start_selected_level() -> void:
 		return
 	var level_id := str(level_selector.get_item_metadata(index))
 	if SaveSystem.is_level_unlocked(level_id):
-		_open_seed_selection(level_id)
+		_start_level(level_id)
 
 func _clear_sun_pickups() -> void:
 	for pickup in get_tree().get_nodes_in_group("sun_pickups"):
 		pickup.queue_free()
 
-func _start_level(level_id: String, selected_plant_ids: Array = []) -> void:
-	if _starting_level:
+func _start_level(level_id: String) -> void:
+	if _starting_level or not GameManager.start_level(level_id):
 		return
-	var level_preview := DataLoader.get_level(level_id)
-	if level_preview.is_empty():
-		return
-	var plant_pool: Array = level_preview.get("available_plants", [])
-	var seed_slots := maxi(1, int(level_preview.get("seed_slots", DataLoader.get_setting("seed_slots", 6))))
-	var required_values: Array = level_preview.get("required_plants", [])
-	var normalized_selection: Array[String] = []
-	for raw_required in required_values:
-		var required_id := str(raw_required)
-		if not plant_pool.has(required_id) or DataLoader.get_plant(required_id).is_empty():
-			push_error("Level %s has an invalid required Plant: %s" % [level_id, required_id])
-			return
-		if not normalized_selection.has(required_id):
-			normalized_selection.append(required_id)
-	if normalized_selection.size() > seed_slots:
-		push_error("Level %s requires more Plants than the configured seed slots" % level_id)
-		return
-	for raw_id in selected_plant_ids:
-		var plant_id := str(raw_id)
-		if plant_id in plant_pool and not normalized_selection.has(plant_id) and normalized_selection.size() < seed_slots:
-			normalized_selection.append(plant_id)
-	for raw_id in plant_pool:
-		if normalized_selection.size() >= seed_slots:
-			break
-		var plant_id := str(raw_id)
-		if not normalized_selection.has(plant_id):
-			normalized_selection.append(plant_id)
-	if normalized_selection.is_empty() or not GameManager.start_level(level_id):
-		return
-
-	_active_seed_ids = normalized_selection.duplicate()
-	SaveSystem.set_selected_plant_ids(_active_seed_ids)
 	_reset_game_time()
 	_starting_level = true
 	_level_run_id += 1
@@ -523,7 +483,7 @@ func _start_level(level_id: String, selected_plant_ids: Array = []) -> void:
 	plant_food_mode = false
 	plant_food_button.button_pressed = false
 	_load_level_background(GameManager.current_level)
-	CardManager.build_cards(self, _active_seed_ids)
+	CardManager.build_cards(self, GameManager.current_level.get("available_plants", []))
 	if CardManager.container != null:
 		CardManager.container.position = Vector2(330, 62)
 	state_label.text = str(GameManager.current_level.get("name", level_id))
@@ -631,7 +591,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		GameManager.add_sun(cost)
 		return
 	AudioManager.play("plant")
-	CardManager.start_recharge(selected_plant_id)
 	CardManager.clear_selection()
 	selected_plant_id = ""
 
@@ -733,150 +692,7 @@ func _close_overlay() -> void:
 			get_tree().paused = _overlay_previous_paused
 			Engine.time_scale = _overlay_previous_time_scale
 		_overlay_pause_changed = false
-	_loadout_buttons.clear()
-	_loadout_count_label = null
-	_loadout_start_button = null
 	_update_placement_preview()
-
-
-func _open_seed_selection(level_id: String) -> void:
-	if not SaveSystem.is_level_unlocked(level_id):
-		return
-	var level: Dictionary = DataLoader.get_level(level_id)
-	var candidates: Array = level.get("available_plants", [])
-	if candidates.is_empty():
-		state_label.text = "Màn này chưa có danh sách cây hợp lệ."
-		return
-
-	_loadout_level_id = level_id
-	_loadout_required = mini(maxi(1, int(level.get("seed_slots", DataLoader.get_setting("seed_slots", 6)))), candidates.size())
-	_loadout_selection.clear()
-	_loadout_buttons.clear()
-	_required_seed_ids.clear()
-	for raw_required in level.get("required_plants", []):
-		var required_id := str(raw_required)
-		if not candidates.has(required_id) or DataLoader.get_plant(required_id).is_empty():
-			state_label.text = "Dữ liệu màn có cây bắt buộc không hợp lệ: %s" % required_id
-			return
-		if not _required_seed_ids.has(required_id):
-			_required_seed_ids.append(required_id)
-	if _required_seed_ids.size() > _loadout_required:
-		state_label.text = "Số cây bắt buộc vượt quá số ô chọn đội hình."
-		return
-	for required_id in _required_seed_ids:
-		_loadout_selection.append(required_id)
-	var saved_selection: Variant = SaveSystem.save_data.get("selected_plant_ids", [])
-	if saved_selection is Array:
-		for raw_id in saved_selection:
-			var saved_id := str(raw_id)
-			if saved_id in candidates and not _loadout_selection.has(saved_id) and _loadout_selection.size() < _loadout_required:
-				_loadout_selection.append(saved_id)
-	for raw_id in candidates:
-		if _loadout_selection.size() >= _loadout_required:
-			break
-		var candidate_id := str(raw_id)
-		if not _loadout_selection.has(candidate_id):
-			_loadout_selection.append(candidate_id)
-
-	var body := _create_overlay("CHỌN ĐỘI HÌNH")
-	var subtitle := Label.new()
-	subtitle.text = "%s — chọn đúng %d cây trước khi vào trận." % [str(level.get("name", level_id)), _loadout_required]
-	subtitle.add_theme_font_size_override("font_size", 17)
-	body.add_child(subtitle)
-
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(1020, 320)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(scroll)
-	var grid := GridContainer.new()
-	grid.columns = 4
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
-	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(grid)
-
-	for raw_id in candidates:
-		var plant_id := str(raw_id)
-		var data: Dictionary = DataLoader.get_plant(plant_id)
-		if data.is_empty():
-			continue
-		var choice := Button.new()
-		choice.name = "SeedChoice_%s" % plant_id
-		choice.toggle_mode = true
-		choice.button_pressed = _loadout_selection.has(plant_id)
-		choice.custom_minimum_size = Vector2(238, 72)
-		var required_suffix := " — BẮT BUỘC" if _required_seed_ids.has(plant_id) else ""
-		choice.text = "%s%s\n%d Linh Khí" % [str(data.get("name", plant_id)), required_suffix, int(data.get("cost", 0))]
-		choice.tooltip_text = str(data.get("description", ""))
-		var texture: Texture2D = DataLoader.get_plant_sprite(plant_id)
-		if texture != null:
-			choice.icon = texture
-			choice.expand_icon = true
-		choice.pressed.connect(_toggle_loadout_plant.bind(plant_id, choice))
-		grid.add_child(choice)
-		_loadout_buttons[plant_id] = choice
-
-	var footer := HBoxContainer.new()
-	footer.add_theme_constant_override("separation", 12)
-	body.add_child(footer)
-	_loadout_count_label = Label.new()
-	_loadout_count_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	footer.add_child(_loadout_count_label)
-	var reset_button := Button.new()
-	reset_button.text = "Đội hình đề xuất"
-	reset_button.pressed.connect(_reset_loadout_selection.bind(candidates))
-	footer.add_child(reset_button)
-	_loadout_start_button = Button.new()
-	_loadout_start_button.text = "Bắt đầu trận"
-	_loadout_start_button.custom_minimum_size = Vector2(180, 44)
-	_loadout_start_button.pressed.connect(_confirm_seed_selection)
-	footer.add_child(_loadout_start_button)
-	_update_loadout_selection()
-
-func _toggle_loadout_plant(plant_id: String, choice: Button) -> void:
-	if choice.button_pressed:
-		if _loadout_selection.size() >= _loadout_required:
-			choice.button_pressed = false
-			return
-		if not _loadout_selection.has(plant_id):
-			_loadout_selection.append(plant_id)
-	else:
-		if _required_seed_ids.has(plant_id):
-			choice.button_pressed = true
-			return
-		_loadout_selection.erase(plant_id)
-	_update_loadout_selection()
-
-func _reset_loadout_selection(candidates: Array) -> void:
-	_loadout_selection.clear()
-	for required_id in _required_seed_ids:
-		_loadout_selection.append(required_id)
-	for raw_id in candidates:
-		if _loadout_selection.size() >= _loadout_required:
-			break
-		var plant_id := str(raw_id)
-		if not _loadout_selection.has(plant_id):
-			_loadout_selection.append(plant_id)
-	_update_loadout_selection()
-
-func _update_loadout_selection() -> void:
-	if is_instance_valid(_loadout_count_label):
-		var required_note := " • Cây bắt buộc không thể bỏ chọn" if not _required_seed_ids.is_empty() else ""
-		_loadout_count_label.text = "Đã chọn: %d/%d%s" % [_loadout_selection.size(), _loadout_required, required_note]
-	if is_instance_valid(_loadout_start_button):
-		_loadout_start_button.disabled = _loadout_selection.size() != _loadout_required
-	for raw_id in _loadout_buttons:
-		var plant_id := str(raw_id)
-		var choice: Button = _loadout_buttons[plant_id]
-		choice.button_pressed = _loadout_selection.has(plant_id)
-
-func _confirm_seed_selection() -> void:
-	if _loadout_selection.size() != _loadout_required or _loadout_level_id.is_empty():
-		return
-	var level_id := _loadout_level_id
-	var selection: Array[String] = _loadout_selection.duplicate()
-	_close_overlay()
-	_start_level(level_id, selection)
 
 func _open_world_map() -> void:
 	var body := _create_overlay("BẢN ĐỒ VẠN GIỚI")
@@ -911,7 +727,7 @@ func _select_map_level(level_id: String) -> void:
 		if str(level_selector.get_item_metadata(index)) == level_id:
 			level_selector.select(index)
 			break
-	_open_seed_selection(level_id)
+	_start_level(level_id)
 
 func _open_zen_garden() -> void:
 	var body := _create_overlay("VƯỜN THIỀN")
@@ -1129,7 +945,7 @@ func _show_restart_button(label_text: String) -> void:
 	restart_button.position = Vector2(500, 330)
 	restart_button.size = Vector2(280, 64)
 	restart_button.pressed.connect(func():
-		_start_level(GameManager.current_level_id, _active_seed_ids.duplicate())
+		_start_level(GameManager.current_level_id)
 		restart_button.queue_free()
 	)
 	add_child(restart_button)
