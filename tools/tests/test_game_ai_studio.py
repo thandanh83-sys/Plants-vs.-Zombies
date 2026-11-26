@@ -53,6 +53,22 @@ class GameAIStudioTests(unittest.TestCase):
         })
         self.assertTrue(any("Unsupported Plant ability" in item for item in errors))
 
+    def test_zombie_armor_break_speed_ability_is_supported(self):
+        errors = self.validator.validate("zombies", "armored-runner", {
+            "name": "Armored Runner", "hp": 200, "speed": 16, "type": "armored",
+            "armor": {"hp": 100},
+            "abilities": {"speed_after_armor_breaks": 32}
+        })
+        self.assertEqual(errors, [])
+
+    def test_legacy_newspaper_speed_ability_remains_supported(self):
+        errors = self.validator.validate("zombies", "legacy-newspaper", {
+            "name": "Legacy Newspaper", "hp": 200, "speed": 16, "type": "newspaper",
+            "armor": {"hp": 100},
+            "abilities": {"speed_after_newspaper_breaks": 32}
+        })
+        self.assertEqual(errors, [])
+
     def test_growth_stages_must_be_ordered(self):
         errors = self.validator.validate("plants", "new-plant", {
             "name": "New Plant", "cost": 75, "hp": 200, "type": "producer",
