@@ -74,7 +74,6 @@ func _ready() -> void:
 	GameManager.sun_changed.connect(_on_sun_changed)
 	GameManager.state_changed.connect(_on_state_changed)
 	GameManager.plant_food_changed.connect(_on_plant_food_changed)
-	GameManager.plant_food_dropped.connect(_on_plant_food_dropped)
 	GameEvents.screen_shake_requested.connect(_on_screen_shake_requested)
 	GameEvents.player_coins_changed.connect(_on_coins_changed)
 	GameEvents.wave_intensity_changed.connect(AudioManager.set_horde_intensity)
@@ -471,9 +470,8 @@ func _start_selected_level() -> void:
 		_open_seed_selection(level_id)
 
 func _clear_sun_pickups() -> void:
-	for group_name in ["sun_pickups", "plant_food_pickups"]:
-		for pickup in get_tree().get_nodes_in_group(group_name):
-			pickup.queue_free()
+	for pickup in get_tree().get_nodes_in_group("sun_pickups"):
+		pickup.queue_free()
 
 func _start_level(level_id: String, selected_plant_ids: Array = []) -> void:
 	if _starting_level:
@@ -656,25 +654,6 @@ func _on_linh_khi_dropped(world_position: Vector2, amount: int) -> void:
 			button.queue_free()
 	)
 
-func _on_plant_food_dropped(world_position: Vector2) -> void:
-	var pickup := Button.new()
-	pickup.text = "✧"
-	pickup.position = world_position - Vector2(20, 20)
-	pickup.size = Vector2(40, 40)
-	pickup.tooltip_text = "Linh Đan — nhấp để thu thập"
-	pickup.add_to_group("plant_food_pickups")
-	pickup.pressed.connect(func():
-		GameManager.add_plant_food(1)
-		AudioManager.play("collect")
-		pickup.queue_free()
-	)
-	add_child(pickup)
-	var timer := get_tree().create_timer(10.0, false)
-	timer.timeout.connect(func():
-		if is_instance_valid(pickup):
-			pickup.queue_free()
-	)
-
 func _on_card_selected(plant_id: String) -> void:
 	selected_plant_id = plant_id
 	plant_food_mode = false
@@ -770,7 +749,7 @@ func _open_seed_selection(level_id: String) -> void:
 		return
 
 	_loadout_level_id = level_id
-	_loadout_required = mini(maxi(1, int(level.get("seed_slots", DataLoader.get_setting("seed_slots", 6))), candidates.size())
+	_loadout_required = mini(maxi(1, int(level.get("seed_slots", DataLoader.get_setting("seed_slots", 6)))), candidates.size())
 	_loadout_selection.clear()
 	_loadout_buttons.clear()
 	_required_seed_ids.clear()
