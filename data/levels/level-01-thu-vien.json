@@ -3,8 +3,7 @@
   "background": "res://assets/backgrounds/thu-vien-co.png",
   "environment": "day",
   "available_plants": [
-  "required_plants": ["nhat-nguyet-thao"],
-      "nhat-nguyet-thao",
+    "nhat-nguyet-thao",
     "truc-tien",
     "kim-cang-thu",
     "hong-lien-no",
@@ -13,6 +12,7 @@
     "song-tien-truc",
     "thuc-nhan-hoa"
   ],
+  "required_plants": ["nhat-nguyet-thao"],
   "waves": [
     {
       "wave_number": 1,
