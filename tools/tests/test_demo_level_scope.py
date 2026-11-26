@@ -110,6 +110,25 @@ class DemoLevelScopeTests(unittest.TestCase):
         self.assertGreater(float(data.get("abilities", {}).get("area_radius", 0)), 0)
         self.assertGreater(float(data.get("plant_food_damage", 0)), 0)
 
+    def test_card_manager_only_owns_card_ui_and_selection(self) -> None:
+        source = (ROOT / "core/CardManager.gd").read_text(encoding="utf-8")
+        self.assertIn("signal card_selected", source)
+        self.assertNotIn("GameManager.spend_sun(", source)
+        self.assertNotIn("spawn_plant(", source)
+        self.assertNotIn("set_occupied(", source)
+
+    def test_entity_behaviors_do_not_branch_on_specific_entity_ids(self) -> None:
+        plant_source = (ROOT / "behaviors/PlantBehavior.gd").read_text(encoding="utf-8")
+        zombie_source = (ROOT / "behaviors/ZombieBehavior.gd").read_text(encoding="utf-8")
+        self.assertNotRegex(plant_source, r"plant_id\\s*==")
+        self.assertNotRegex(zombie_source, r"zombie_id\\s*==")
+        self.assertIn('plant_data.get("type"', plant_source)
+        self.assertIn('zombie_data.get("abilities"', zombie_source)
+
+    def test_entity_factory_supports_json_behavior_override(self) -> None:
+        source = (ROOT / "core/EntityFactory.gd").read_text(encoding="utf-8")
+        self.assertIn('data.get("behavior_script"', source)
+
     def test_each_plant_has_a_defined_plant_food_effect(self) -> None:
         behavior_source = (ROOT / "behaviors/PlantBehavior.gd").read_text(encoding="utf-8")
         for plant_id in self.level["available_plants"]:
