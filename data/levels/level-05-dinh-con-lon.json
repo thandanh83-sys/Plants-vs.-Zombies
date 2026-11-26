@@ -4,7 +4,8 @@
   "background": "res://assets/backgrounds/dinh-con-lon.png",
   "starting_sun": 125,
   "available_plants": ["nhat-nguyet-thao", "truc-tien", "kim-cang-thu", "liet-hoa-tru", "hoa-long-phu", "tran-son-an", "song-tien-truc", "tam-tien-truc", "dia-loi-phu"],
-  "special_mechanics": ["roof_terrain", "boss_wave"],
+  "required_plants": ["nhat-nguyet-thao"],
+    "special_mechanics": ["roof_terrain", "boss_wave"],
   "waves": [
     {"wave_number": 1, "zombies": ["cuong-thi-thuong", "cuong-thi-non"], "count": 10, "interval": 2.4},
     {"wave_number": 2, "zombies": ["cuong-thi-doi-xo", "cuong-thi-cau-thu"], "count": 12, "interval": 2.0},
