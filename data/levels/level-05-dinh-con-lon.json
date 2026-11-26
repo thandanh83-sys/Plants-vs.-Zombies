@@ -3,13 +3,62 @@
   "environment": "roof",
   "background": "res://assets/backgrounds/dinh-con-lon.png",
   "starting_sun": 125,
-  "available_plants": ["nhat-nguyet-thao", "truc-tien", "kim-cang-thu", "liet-hoa-tru", "hoa-long-phu", "tran-son-an", "song-tien-truc", "tam-tien-truc", "dia-loi-phu"],
-  "required_plants": ["nhat-nguyet-thao"],
-    "special_mechanics": ["roof_terrain", "boss_wave"],
+  "available_plants": [
+    "nhat-nguyet-thao",
+    "truc-tien",
+    "kim-cang-thu",
+    "liet-hoa-tru",
+    "hoa-long-phu",
+    "tran-son-an",
+    "song-tien-truc",
+    "tam-tien-truc",
+    "dia-loi-phu"
+  ],
+  "required_plants": [
+    "nhat-nguyet-thao"
+  ],
+  "special_mechanics": [
+    "roof_terrain",
+    "boss_wave"
+  ],
   "waves": [
-    {"wave_number": 1, "zombies": ["cuong-thi-thuong", "cuong-thi-non"], "count": 10, "interval": 2.4},
-    {"wave_number": 2, "zombies": ["cuong-thi-doi-xo", "cuong-thi-cau-thu"], "count": 12, "interval": 2.0},
-    {"wave_number": 3, "zombies": ["cuong-thi-vu-cong", "cuong-thi-khinh-khi-cau"], "count": 14, "interval": 1.8},
-    {"wave_number": 4, "zombies": ["cuong-thi-cau-thu", "cuong-thi-doi-xo"], "count": 1, "interval": 1.0, "is_final": true, "boss": true}
+    {
+      "wave_number": 1,
+      "zombies": [
+        "cuong-thi-thuong",
+        "cuong-thi-non"
+      ],
+      "count": 10,
+      "interval": 2.4
+    },
+    {
+      "wave_number": 2,
+      "zombies": [
+        "cuong-thi-doi-xo",
+        "cuong-thi-cau-thu"
+      ],
+      "count": 12,
+      "interval": 2
+    },
+    {
+      "wave_number": 3,
+      "zombies": [
+        "cuong-thi-vu-cong",
+        "cuong-thi-khinh-khi-cau"
+      ],
+      "count": 14,
+      "interval": 1.8
+    },
+    {
+      "wave_number": 4,
+      "zombies": [
+        "cuong-thi-cau-thu",
+        "cuong-thi-doi-xo"
+      ],
+      "count": 1,
+      "interval": 1,
+      "is_final": true,
+      "boss": true
+    }
   ]
 }
