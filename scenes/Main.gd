@@ -46,6 +46,7 @@ var _overlay_previous_time_scale := 1.0
 var _loadout_level_id := ""
 var _loadout_required := 0
 var _loadout_selection: Array[String] = []
+var _required_seed_ids: Array[String] = []
 var _loadout_buttons: Dictionary = {}
 var _loadout_count_label: Label
 var _loadout_start_button: Button
@@ -482,18 +483,28 @@ func _start_level(level_id: String, selected_plant_ids: Array = []) -> void:
 		return
 	var plant_pool: Array = level_preview.get("available_plants", [])
 	var seed_slots := maxi(1, int(DataLoader.get_setting("seed_slots", 6)))
+	var required_values: Array = level_preview.get("required_plants", [])
 	var normalized_selection: Array[String] = []
+	for raw_required in required_values:
+		var required_id := str(raw_required)
+		if not plant_pool.has(required_id) or DataLoader.get_plant(required_id).is_empty():
+			push_error("Level %s has an invalid required Plant: %s" % [level_id, required_id])
+			return
+		if not normalized_selection.has(required_id):
+			normalized_selection.append(required_id)
+	if normalized_selection.size() > seed_slots:
+		push_error("Level %s requires more Plants than the configured seed slots" % level_id)
+		return
 	for raw_id in selected_plant_ids:
 		var plant_id := str(raw_id)
 		if plant_id in plant_pool and not normalized_selection.has(plant_id) and normalized_selection.size() < seed_slots:
 			normalized_selection.append(plant_id)
-	if normalized_selection.is_empty():
-		for raw_id in plant_pool:
-			if normalized_selection.size() >= seed_slots:
-				break
-			var plant_id := str(raw_id)
-			if not normalized_selection.has(plant_id):
-				normalized_selection.append(plant_id)
+	for raw_id in plant_pool:
+		if normalized_selection.size() >= seed_slots:
+			break
+		var plant_id := str(raw_id)
+		if not normalized_selection.has(plant_id):
+			normalized_selection.append(plant_id)
 	if normalized_selection.is_empty() or not GameManager.start_level(level_id):
 		return
 
@@ -762,6 +773,19 @@ func _open_seed_selection(level_id: String) -> void:
 	_loadout_required = mini(maxi(1, int(DataLoader.get_setting("seed_slots", 6))), candidates.size())
 	_loadout_selection.clear()
 	_loadout_buttons.clear()
+	_required_seed_ids.clear()
+	for raw_required in level.get("required_plants", []):
+		var required_id := str(raw_required)
+		if not candidates.has(required_id) or DataLoader.get_plant(required_id).is_empty():
+			state_label.text = "Dữ liệu màn có cây bắt buộc không hợp lệ: %s" % required_id
+			return
+		if not _required_seed_ids.has(required_id):
+			_required_seed_ids.append(required_id)
+	if _required_seed_ids.size() > _loadout_required:
+		state_label.text = "Số cây bắt buộc vượt quá số ô chọn đội hình."
+		return
+	for required_id in _required_seed_ids:
+		_loadout_selection.append(required_id)
 	var saved_selection: Variant = SaveSystem.save_data.get("selected_plant_ids", [])
 	if saved_selection is Array:
 		for raw_id in saved_selection:
@@ -802,7 +826,8 @@ func _open_seed_selection(level_id: String) -> void:
 		choice.toggle_mode = true
 		choice.button_pressed = _loadout_selection.has(plant_id)
 		choice.custom_minimum_size = Vector2(238, 72)
-		choice.text = "%s\n%d Linh Khí" % [str(data.get("name", plant_id)), int(data.get("cost", 0))]
+		var required_suffix := " — BẮT BUỘC" if _required_seed_ids.has(plant_id) else ""
+		choice.text = "%s%s\n%d Linh Khí" % [str(data.get("name", plant_id)), required_suffix, int(data.get("cost", 0))]
 		choice.tooltip_text = str(data.get("description", ""))
 		var texture: Texture2D = DataLoader.get_plant_sprite(plant_id)
 		if texture != null:
@@ -837,20 +862,28 @@ func _toggle_loadout_plant(plant_id: String, choice: Button) -> void:
 		if not _loadout_selection.has(plant_id):
 			_loadout_selection.append(plant_id)
 	else:
+		if _required_seed_ids.has(plant_id):
+			choice.button_pressed = true
+			return
 		_loadout_selection.erase(plant_id)
 	_update_loadout_selection()
 
 func _reset_loadout_selection(candidates: Array) -> void:
 	_loadout_selection.clear()
+	for required_id in _required_seed_ids:
+		_loadout_selection.append(required_id)
 	for raw_id in candidates:
 		if _loadout_selection.size() >= _loadout_required:
 			break
-		_loadout_selection.append(str(raw_id))
+		var plant_id := str(raw_id)
+		if not _loadout_selection.has(plant_id):
+			_loadout_selection.append(plant_id)
 	_update_loadout_selection()
 
 func _update_loadout_selection() -> void:
 	if is_instance_valid(_loadout_count_label):
-		_loadout_count_label.text = "Đã chọn: %d/%d" % [_loadout_selection.size(), _loadout_required]
+		var required_note := " • Cây bắt buộc không thể bỏ chọn" if not _required_seed_ids.is_empty() else ""
+		_loadout_count_label.text = "Đã chọn: %d/%d%s" % [_loadout_selection.size(), _loadout_required, required_note]
 	if is_instance_valid(_loadout_start_button):
 		_loadout_start_button.disabled = _loadout_selection.size() != _loadout_required
 	for raw_id in _loadout_buttons:
