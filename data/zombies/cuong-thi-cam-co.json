@@ -5,6 +5,6 @@
   "damage": 20,
   "attack_rate": 1.0,
   "type": "flag",
-  "abilities": {"wave_leader": true},
+  "abilities": {"wave_leader": true, "drops_plant_food": true},
   "description": "Cương thi dẫn đầu, được ưu tiên xuất hiện đầu tiên trong wave."
 }
