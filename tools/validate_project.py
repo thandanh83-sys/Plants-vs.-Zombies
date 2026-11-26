@@ -87,6 +87,9 @@ for plant_id, plant in plants.items():
     sprite = plant.get("sprite", f"res://assets/plants/{plant_id}.png")
     if sprite and not (ROOT / str(sprite).replace("res://", "")).is_file():
         WARNINGS.append(f"Plant sprite not supplied yet: {sprite}")
+    card_sprite = plant.get("card_sprite", "")
+    if card_sprite and not (ROOT / str(card_sprite).replace("res://", "")).is_file():
+        ERRORS.append(f"Plant {plant_id}: card_sprite not found: {card_sprite}")
 
 for zombie_id, zombie in zombies.items():
     for field in ("name", "type", "hp", "speed"):
@@ -193,6 +196,12 @@ else:
         ERRORS.append("game-settings.json: seed_slots must be an integer")
 if not isinstance(ui_assets, dict):
     ERRORS.append("ui-assets.json must contain an object")
+else:
+    for asset_key, asset_path in ui_assets.items():
+        if not isinstance(asset_path, str) or not asset_path.startswith("res://"):
+            ERRORS.append(f"ui-assets.json: '{asset_key}' must be a res:// resource path")
+        elif not (ROOT / asset_path.removeprefix("res://")).is_file():
+            ERRORS.append(f"ui-assets.json: configured asset does not exist: {asset_path}")
 
 for warning in WARNINGS:
     print(f"WARNING: {warning}")
