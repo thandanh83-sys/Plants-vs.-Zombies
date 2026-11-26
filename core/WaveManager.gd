@@ -4,6 +4,7 @@ extends Node
 signal wave_started(wave_number: int)
 signal zombie_spawned(zombie_id: String, lane: int)
 signal all_waves_finished
+signal wave_intensity_changed(active: bool)
 
 var factory: EntityFactory
 var level_data: Dictionary = {}
@@ -27,6 +28,8 @@ func start() -> void:
 func stop() -> void:
 	running = false
 	_run_token += 1
+	wave_intensity_changed.emit(false)
+	GameEvents.wave_intensity_changed.emit(false)
 
 func _run_waves(token: int) -> void:
 	var waves: Array = level_data.get("waves", [])
@@ -41,6 +44,9 @@ func _run_waves(token: int) -> void:
 		var wave: Dictionary = wave_value
 		var wave_number := int(wave.get("wave_number", wave_index + 1))
 		wave_started.emit(wave_number)
+		var is_horde := bool(wave.get("boss", false)) or bool(wave.get("is_final", false)) or bool(wave.get("is_huge_wave", false)) or int(wave.get("count", 0)) >= 10
+		wave_intensity_changed.emit(is_horde)
+		GameEvents.wave_intensity_changed.emit(is_horde)
 		var zombie_ids: Array = wave.get("zombies", [])
 		var leader_ids: Array[String] = []
 		var regular_ids: Array[String] = []
@@ -89,6 +95,8 @@ func _run_waves(token: int) -> void:
 			await get_tree().create_timer(rest, false).timeout
 	if _is_run_active(token):
 		running = false
+		wave_intensity_changed.emit(false)
+		GameEvents.wave_intensity_changed.emit(false)
 		all_waves_finished.emit()
 
 func _is_run_active(token: int) -> bool:

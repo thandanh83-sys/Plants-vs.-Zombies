@@ -77,3 +77,25 @@ Trạng thái thực tế của lần chạy tương ứng với commit này ph�
 - Chưa thêm Zen Garden, Power-ups Pinch/Toss hoặc pre-battle seed chooser: các hệ thống này cần vòng lặp gameplay, dữ liệu tiến trình và UI độc lập; chưa nên giả lập bằng các nút không có logic thật.
 - Hệ thống cooldown thẻ chỉ nên kích hoạt khi dữ liệu Plant có thời gian hồi chiêu được cân bằng và khai báo rõ; hiện không tự gán thời gian mặc định.
 
+
+
+## Bổ sung phần UI/UX nâng cao
+
+- Thêm EventBus dựa trên Godot signals cho rung sân chơi, cường độ nhạc và cập nhật xu.
+- Thêm rung lớp WorldLayer khi cây nổ, xe cắt cỏ kích hoạt hoặc xuất hiện boss; HUD không bị rung theo.
+- Thêm xe cắt cỏ cho từng lane, kích hoạt một lần mỗi màn và tự chạy hết sân.
+- Thêm Vườn Thiền có ba chậu, lưu ID cây/giai đoạn/nhu cầu; chăm sóc đúng công cụ tăng trưởng và nhận xu.
+- Mở rộng SaveSystem với coins, unlocked_plant_ids, zen_garden_pots, tutorial_completed; lưu khi app pause/close.
+- Bổ sung Tutorial hai bước và nút bỏ qua.
+- AudioManager hỗ trợ hai nhạc nền OGG và crossfade theo wave boss/final/đông; nếu chưa có tệp nhạc, tính năng thích ứng không phát nhạc và không ảnh hưởng gameplay.
+- Tạo checklist QA thủ công tại docs/QA_UI_UX_CHECKLIST.md.
+- Bộ sinh lưới Unity không được chuyển nguyên xi: sân Godot tiếp tục do GridManager dựng bằng dữ liệu cấu hình.
+
+## Các giới hạn mới cần xác minh trực tiếp
+
+- Giá trị thưởng Vườn Thiền hiện là 10 xu cho mỗi lần chăm sóc đúng; đây là thông số khởi điểm, chưa được cân bằng.
+- Vườn Thiền hiện dùng UI nút/nhãn mặc định, chưa có animation, sprite dụng cụ hoặc lịch chăm sóc theo thời gian thực.
+- Nhạc thích ứng chỉ hoạt động khi người phát triển thêm đủ hai tệp OGG nêu trong README; repository hiện không chứa các track đó.
+- Xe cắt cỏ dùng hình vẽ dự phòng trong code, chưa có sprite/animation riêng.
+- Tutorial là lớp hướng dẫn không chặn thao tác, chưa có spotlight mask hoặc hand-pointer animation.
+- Rung màn hình hiện áp dụng cho lớp sân chơi bằng tween, không rung HUD.

@@ -9,10 +9,12 @@ config/features=PackedStringArray("4.2", "GL Compatibility")
 
 [autoload]
 DataLoader="*res://core/DataLoader.gd"
+GameEvents="*res://core/GameEvents.gd"
 GameManager="*res://core/GameManager.gd"
 AudioManager="*res://core/AudioManager.gd"
 CardManager="*res://core/CardManager.gd"
 SaveSystem="*res://core/SaveSystem.gd"
+ZenGardenManager="*res://core/ZenGardenManager.gd"
 SunManager="*res://core/SunManager.gd"
 
 [display]

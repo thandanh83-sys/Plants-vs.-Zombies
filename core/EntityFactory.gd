@@ -18,7 +18,7 @@ func spawn_plant(plant_id: String, row: int, column: int, world_position: Vector
 	plant.set_script(script_resource)
 	plant.name = plant_id
 	plant.call("setup", plant_id, data, row, column)
-	get_tree().current_scene.add_child(plant)
+	_get_world_parent().add_child(plant)
 	plant.global_position = world_position
 	return plant
 
@@ -36,7 +36,7 @@ func spawn_zombie(zombie_id: String, lane: int, spawn_position: Vector2 = Vector
 	zombie.set_script(script_resource)
 	zombie.name = zombie_id
 	zombie.call("setup", zombie_id, data, lane)
-	get_tree().current_scene.add_child(zombie)
+	_get_world_parent().add_child(zombie)
 	if spawn_position.x < 0.0:
 		var grid_left := float(DataLoader.get_setting("grid_x", 285.0))
 		var cell_width := float(DataLoader.get_setting("cell_width", 88.0))
@@ -44,3 +44,12 @@ func spawn_zombie(zombie_id: String, lane: int, spawn_position: Vector2 = Vector
 		spawn_position.y = float(DataLoader.get_setting("grid_y", 148.0)) + lane * float(DataLoader.get_setting("cell_height", 80.0)) + 40.0
 	zombie.global_position = spawn_position
 	return zombie
+
+
+func _get_world_parent() -> Node:
+	var current_scene := get_tree().current_scene
+	if current_scene != null:
+		var world_layer := current_scene.find_child("WorldLayer", true, false)
+		if world_layer != null:
+			return world_layer
+	return current_scene

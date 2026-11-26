@@ -33,18 +33,32 @@ var _safe_left := 0.0
 var _safe_right := 0.0
 var _safe_top := 0.0
 var _safe_bottom := 0.0
+var world_layer: Node2D
+var coins_label: Label
+var zen_garden_button: Button
+var tutorial_label: Label
+var tutorial_skip_button: Button
+var _tutorial_step := -1
+var _shake_tween: Tween
+var _overlay_pause_changed := false
+var _overlay_previous_paused := false
+var _overlay_previous_time_scale := 1.0
 const GAME_SPEEDS := [1.0, 1.5, 2.0]
 
 func _ready() -> void:
 	_build_background()
 	_build_hud()
+	_build_tutorial_ui()
 	call_deferred("_apply_safe_area")
+	world_layer = Node2D.new()
+	world_layer.name = "WorldLayer"
+	add_child(world_layer)
 	grid = GridManager.new()
 	grid.name = "GridManager"
-	add_child(grid)
+	world_layer.add_child(grid)
 	factory = EntityFactory.new()
 	factory.name = "EntityFactory"
-	add_child(factory)
+	world_layer.add_child(factory)
 	wave_manager = WaveManager.new()
 	wave_manager.name = "WaveManager"
 	add_child(wave_manager)
@@ -52,6 +66,10 @@ func _ready() -> void:
 	GameManager.sun_changed.connect(_on_sun_changed)
 	GameManager.state_changed.connect(_on_state_changed)
 	GameManager.plant_food_changed.connect(_on_plant_food_changed)
+	GameEvents.screen_shake_requested.connect(_on_screen_shake_requested)
+	GameEvents.player_coins_changed.connect(_on_coins_changed)
+	GameEvents.wave_intensity_changed.connect(AudioManager.set_horde_intensity)
+	_on_coins_changed(SaveSystem.get_coins())
 	CardManager.card_selected.connect(_on_card_selected)
 	SunManager.lin_khi_dropped.connect(_on_linh_khi_dropped)
 	wave_manager.wave_started.connect(_on_wave_started)
@@ -96,6 +114,17 @@ func _build_hud() -> void:
 	state_label.size = Vector2(300, 30)
 	state_label.add_theme_font_size_override("font_size", 16)
 	add_child(state_label)
+	coins_label = Label.new()
+	coins_label.position = Vector2(380, 16)
+	coins_label.size = Vector2(105, 34)
+	coins_label.add_theme_font_size_override("font_size", 18)
+	add_child(coins_label)
+	zen_garden_button = Button.new()
+	zen_garden_button.position = Vector2(490, 12)
+	zen_garden_button.size = Vector2(130, 40)
+	zen_garden_button.text = "Vườn Thiền"
+	zen_garden_button.pressed.connect(_open_zen_garden)
+	add_child(zen_garden_button)
 	level_selector = OptionButton.new()
 	level_selector.position = Vector2(850, 12)
 	level_selector.size = Vector2(245, 40)
@@ -219,6 +248,8 @@ func _apply_safe_area() -> void:
 	sun_label.position = Vector2(20.0 + _safe_left, 16.0 + _safe_top)
 	plant_food_button.position = Vector2(175.0 + _safe_left, 12.0 + _safe_top)
 	state_label.position = Vector2(20.0 + _safe_left, 56.0 + _safe_top)
+	coins_label.position = Vector2(380.0 + _safe_left, 16.0 + _safe_top)
+	zen_garden_button.position = Vector2(490.0 + _safe_left, 12.0 + _safe_top)
 	pause_button.position = Vector2(20.0 + _safe_left, 96.0 + _safe_top)
 	speed_button.position = Vector2(132.0 + _safe_left, 96.0 + _safe_top)
 	shovel_button.position = Vector2(264.0 + _safe_left, 96.0 + _safe_top)
@@ -236,6 +267,89 @@ func _apply_safe_area() -> void:
 		)
 	if is_instance_valid(CardManager.container):
 		CardManager.container.position = Vector2(330.0 + _safe_left, 62.0 + _safe_top)
+	if is_instance_valid(tutorial_label):
+		tutorial_label.position = Vector2(viewport_size.x * 0.5 - 315.0, viewport_size.y - _safe_bottom - 120.0)
+	if is_instance_valid(tutorial_skip_button):
+		tutorial_skip_button.position = Vector2(viewport_size.x * 0.5 + 245.0, viewport_size.y - _safe_bottom - 120.0)
+	if is_instance_valid(tutorial_label):
+		tutorial_label.position = Vector2(viewport_size.x * 0.5 - 329.0, viewport_size.y - _safe_bottom - 48.0)
+	if is_instance_valid(tutorial_skip_button):
+		tutorial_skip_button.position = Vector2(viewport_size.x * 0.5 + 239.0, viewport_size.y - _safe_bottom - 48.0)
+
+func _build_tutorial_ui() -> void:
+	tutorial_label = Label.new()
+	tutorial_label.position = Vector2(311, 620)
+	tutorial_label.size = Vector2(560, 38)
+	tutorial_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tutorial_label.add_theme_font_size_override("font_size", 18)
+	tutorial_label.add_theme_color_override("font_color", Color("fff4ce"))
+	tutorial_label.add_theme_color_override("font_shadow_color", Color(0.08, 0.12, 0.08, 0.9))
+	tutorial_label.add_theme_constant_override("shadow_offset_x", 1)
+	tutorial_label.add_theme_constant_override("shadow_offset_y", 2)
+	tutorial_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tutorial_label.visible = false
+	add_child(tutorial_label)
+	tutorial_skip_button = Button.new()
+	tutorial_skip_button.position = Vector2(879, 620)
+	tutorial_skip_button.size = Vector2(90, 34)
+	tutorial_skip_button.text = "Bỏ qua"
+	tutorial_skip_button.visible = false
+	tutorial_skip_button.pressed.connect(_skip_tutorial)
+	add_child(tutorial_skip_button)
+
+func _begin_tutorial_if_needed() -> void:
+	if SaveSystem.is_tutorial_completed():
+		tutorial_label.visible = false
+		tutorial_skip_button.visible = false
+		return
+	if _tutorial_step < 0:
+		_tutorial_step = 0
+	_update_tutorial_display()
+
+func _advance_tutorial(next_step: int) -> void:
+	if _tutorial_step < 0 or next_step <= _tutorial_step:
+		return
+	_tutorial_step = next_step
+	if _tutorial_step >= 2:
+		_tutorial_step = -1
+		SaveSystem.mark_tutorial_completed()
+		tutorial_label.visible = false
+		tutorial_skip_button.visible = false
+	else:
+		_update_tutorial_display()
+
+func _update_tutorial_display() -> void:
+	if _tutorial_step == 0:
+		tutorial_label.text = "HƯỚNG DẪN 1/2: Chọn một thẻ cây trên thanh hạt giống."
+	elif _tutorial_step == 1:
+		tutorial_label.text = "HƯỚNG DẪN 2/2: Nhấp vào ô trống phù hợp để trồng cây."
+	tutorial_label.visible = _tutorial_step >= 0
+	tutorial_skip_button.visible = _tutorial_step >= 0
+
+func _skip_tutorial() -> void:
+	_tutorial_step = -1
+	SaveSystem.mark_tutorial_completed()
+	tutorial_label.visible = false
+	tutorial_skip_button.visible = false
+
+func _on_screen_shake_requested(duration: float, magnitude: float) -> void:
+	if not is_instance_valid(world_layer):
+		return
+	if _shake_tween != null and _shake_tween.is_running():
+		_shake_tween.kill()
+	world_layer.position = Vector2.ZERO
+	var total_duration := maxf(0.06, duration)
+	var offset_scale := maxf(0.0, magnitude)
+	_shake_tween = create_tween()
+	for index in range(4):
+		var strength := offset_scale * (1.0 - float(index) / 4.0)
+		var offset := Vector2(randf_range(-strength, strength), randf_range(-strength, strength))
+		_shake_tween.tween_property(world_layer, "position", offset, total_duration / 8.0)
+		_shake_tween.tween_property(world_layer, "position", Vector2.ZERO, total_duration / 8.0)
+
+func _on_coins_changed(total: int) -> void:
+	if is_instance_valid(coins_label):
+		coins_label.text = "Xu: %d" % total
 
 func _process(_delta: float) -> void:
 	_update_placement_preview()
@@ -320,6 +434,10 @@ func _cycle_game_speed() -> void:
 func _reset_game_time() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
+	if _shake_tween != null and _shake_tween.is_running():
+		_shake_tween.kill()
+	if is_instance_valid(world_layer):
+		world_layer.position = Vector2.ZERO
 	_speed_index = 0
 	if is_instance_valid(pause_button):
 		pause_button.text = "Tạm dừng"
@@ -331,6 +449,7 @@ func _reset_game_time() -> void:
 		shovel_button.text = "Xẻng"
 
 func _exit_tree() -> void:
+	SaveSystem.save_game()
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 
@@ -357,7 +476,7 @@ func _start_level(level_id: String) -> void:
 	wave_manager.stop()
 	grid.clear_all()
 	grid.configure_level()
-	for node in get_tree().get_nodes_in_group("zombies") + get_tree().get_nodes_in_group("projectiles"):
+	for node in get_tree().get_nodes_in_group("zombies") + get_tree().get_nodes_in_group("projectiles") + get_tree().get_nodes_in_group("lawn_mowers"):
 		node.queue_free()
 	CardManager.clear_selection()
 	selected_plant_id = ""
@@ -369,8 +488,28 @@ func _start_level(level_id: String) -> void:
 		CardManager.container.position = Vector2(330, 62)
 	state_label.text = str(GameManager.current_level.get("name", level_id))
 	wave_manager.setup(factory, GameManager.current_level)
+	_spawn_lawn_mowers()
 	wave_manager.start()
+	_begin_tutorial_if_needed()
 	_starting_level = false
+
+func _spawn_lawn_mowers() -> void:
+	var mower_script := load("res://behaviors/LawnMowerBehavior.gd") as Script
+	if mower_script == null:
+		push_error("Không tải được LawnMowerBehavior.gd")
+		return
+	for lane in range(grid.rows):
+		var first_cell := grid.get_grid_position(lane, 0)
+		var last_cell := grid.get_grid_position(lane, grid.columns - 1)
+		var left_edge := first_cell.x - grid.cell_width * 0.5
+		var spawn_position := Vector2(left_edge - 30.0, first_cell.y)
+		var activation_x := left_edge + grid.cell_width * 0.60
+		var exit_x := last_cell.x + grid.cell_width
+		var mower := Node2D.new()
+		mower.set_script(mower_script)
+		mower.name = "LawnMower_Row_%d" % lane
+		world_layer.add_child(mower)
+		mower.call("setup", lane, spawn_position, activation_x, exit_x)
 
 func _load_level_background(level: Dictionary) -> void:
 	var path := str(level.get("background", ""))
@@ -510,9 +649,15 @@ func _on_state_changed(new_state: String) -> void:
 
 func _create_overlay(title_text: String) -> VBoxContainer:
 	if is_instance_valid(overlay_panel):
-		overlay_panel.queue_free()
+		_close_overlay()
+	_overlay_previous_paused = get_tree().paused
+	_overlay_previous_time_scale = Engine.time_scale
+	_overlay_pause_changed = GameManager.state == "playing"
+	if _overlay_pause_changed:
+		get_tree().paused = true
 	overlay_panel = PanelContainer.new()
 	overlay_panel.name = "GameInfoOverlay"
+	overlay_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	overlay_panel.set_anchors_preset(Control.PRESET_CENTER)
 	overlay_panel.position = Vector2(-540, -235)
 	overlay_panel.size = Vector2(1080, 470)
@@ -542,6 +687,11 @@ func _close_overlay() -> void:
 	if is_instance_valid(overlay_panel):
 		overlay_panel.queue_free()
 	overlay_panel = null
+	if _overlay_pause_changed:
+		if GameManager.state == "playing":
+			get_tree().paused = _overlay_previous_paused
+			Engine.time_scale = _overlay_previous_time_scale
+		_overlay_pause_changed = false
 	_update_placement_preview()
 
 func _open_world_map() -> void:
@@ -578,6 +728,127 @@ func _select_map_level(level_id: String) -> void:
 			level_selector.select(index)
 			break
 	_start_level(level_id)
+
+func _open_zen_garden() -> void:
+	var body := _create_overlay("VƯỜN THIỀN")
+	var summary := Label.new()
+	summary.text = "Xu hiện có: %d — Chăm đúng nhu cầu để cây trưởng thành và nhận 10 xu." % SaveSystem.get_coins()
+	summary.add_theme_font_size_override("font_size", 17)
+	body.add_child(summary)
+	var hint := Label.new()
+	hint.text = "Gieo cây vào chậu trống. Mỗi chậu sẽ yêu cầu một công cụ chăm sóc khác nhau."
+	body.add_child(hint)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(1020, 365)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(scroll)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(row)
+	for pot_index in range(ZenGardenManager.POT_COUNT):
+		_build_zen_garden_pot_card(pot_index, row)
+
+func _build_zen_garden_pot_card(pot_index: int, parent: HBoxContainer) -> void:
+	var pots := ZenGardenManager.get_pots()
+	if pot_index >= pots.size():
+		return
+	var pot: Dictionary = pots[pot_index]
+	var plant_id := str(pot.get("plant_id", ""))
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(310, 320)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(card)
+	var layout := VBoxContainer.new()
+	layout.add_theme_constant_override("separation", 8)
+	card.add_child(layout)
+	var title := Label.new()
+	title.text = "CHẬU %d" % (pot_index + 1)
+	title.add_theme_font_size_override("font_size", 20)
+	layout.add_child(title)
+	var feedback := Label.new()
+	feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	layout.add_child(feedback)
+	if plant_id.is_empty():
+		var selector := OptionButton.new()
+		selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var plant_ids: Array = DataLoader.get_all_plant_ids()
+		for id_value in plant_ids:
+			var id := str(id_value)
+			var plant_data: Dictionary = DataLoader.get_plant(id)
+			selector.add_item(str(plant_data.get("name", id)))
+			selector.set_item_metadata(selector.item_count - 1, id)
+		if selector.item_count > 0:
+			selector.select(0)
+		layout.add_child(selector)
+		var sow_button := Button.new()
+		sow_button.text = "Gieo cây vào chậu"
+		sow_button.pressed.connect(_plant_zen_pot.bind(pot_index, selector, feedback))
+		layout.add_child(sow_button)
+		return
+
+	var plant_data: Dictionary = DataLoader.get_plant(plant_id)
+	var stage := int(pot.get("growth_stage", 1))
+	var need := str(pot.get("need", "water"))
+	var plant_label := Label.new()
+	plant_label.text = "%s\nGiai đoạn: %d/3" % [str(plant_data.get("name", plant_id)), stage]
+	plant_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	plant_label.add_theme_font_size_override("font_size", 18)
+	layout.add_child(plant_label)
+	var need_label := Label.new()
+	need_label.text = "Nhu cầu: %s" % _zen_need_name(need)
+	need_label.add_theme_color_override("font_color", Color("497c42"))
+	layout.add_child(need_label)
+	var tools := GridContainer.new()
+	tools.columns = 2
+	tools.add_theme_constant_override("h_separation", 8)
+	tools.add_theme_constant_override("v_separation", 8)
+	layout.add_child(tools)
+	var tool_data := [
+		["Tưới nước", "water"],
+		["Bón phân", "fertilizer"],
+		["Trừ sâu", "bug_spray"],
+		["Phát nhạc", "music"]
+	]
+	for item in tool_data:
+		var tool_button := Button.new()
+		tool_button.text = str(item[0])
+		tool_button.custom_minimum_size = Vector2(125, 42)
+		tool_button.pressed.connect(_use_zen_garden_tool.bind(pot_index, str(item[1]), feedback))
+		tools.add_child(tool_button)
+
+func _plant_zen_pot(pot_index: int, selector: OptionButton, feedback: Label) -> void:
+	if selector.item_count == 0 or selector.selected < 0:
+		feedback.text = "Không có dữ liệu cây để gieo."
+		return
+	var plant_id := str(selector.get_item_metadata(selector.selected))
+	if ZenGardenManager.plant_seed(pot_index, plant_id):
+		_refresh_zen_garden()
+	else:
+		feedback.text = "Không thể gieo cây vào chậu này."
+
+func _use_zen_garden_tool(pot_index: int, tool_type: String, feedback: Label) -> void:
+	if ZenGardenManager.fulfill_need(pot_index, tool_type):
+		_refresh_zen_garden()
+		return
+	var pots := ZenGardenManager.get_pots()
+	if pot_index >= 0 and pot_index < pots.size():
+		var pot: Dictionary = pots[pot_index]
+		feedback.text = "Chưa đúng công cụ. Cây cần: %s." % _zen_need_name(str(pot.get("need", "")))
+	else:
+		feedback.text = "Chậu không hợp lệ."
+
+func _zen_need_name(need: String) -> String:
+	match need:
+		"water": return "Tưới nước"
+		"fertilizer": return "Bón phân"
+		"bug_spray": return "Thuốc trừ sâu"
+		"music": return "Âm nhạc"
+		_: return "Chưa có"
+
+func _refresh_zen_garden() -> void:
+	_close_overlay()
+	_open_zen_garden()
 
 func _open_almanac(kind: String = "plants") -> void:
 	var body := _create_overlay("SỔ TAY LINH VIÊN — ALMANAC")
