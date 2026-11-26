@@ -65,6 +65,8 @@ func _validate_database() -> void:
 			push_error("Plant %s must define name and type" % id)
 		if int(data.get("cost", -1)) < 0 or float(data.get("hp", 0)) <= 0.0:
 			push_error("Plant %s has invalid cost or hp" % id)
+		if data.has("recharge_time") and float(data.get("recharge_time", -1.0)) < 0.0:
+			push_error("Plant %s has invalid recharge_time" % id)
 		if data.has("abilities") and not data["abilities"] is Dictionary:
 			push_error("Plant %s abilities must be an object" % id)
 		var abilities: Dictionary = data.get("abilities", {})

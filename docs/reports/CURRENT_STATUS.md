@@ -1,6 +1,6 @@
 # Báo cáo rà soát hiện trạng — Vạn Giới Linh Viên
 
-**Nhánh rà soát:** `main`  
+**Nhánh rà soát:** `feat/pvz-core-gameplay-parity` (PR #13, draft)  
 **Mục tiêu:** kiểm tra code, dữ liệu, cấu hình và quy trình xuất Web; không kiểm tra các sprite Plant/Zombie và ảnh nền người dùng đang tự tạo.
 
 ## Phân biệt engine và toolchain
@@ -40,7 +40,7 @@ Các phần nền tảng hiện có: project Godot, scene Main, các Autoload, s
 - Hiệu ứng sương mù hiện chặn khả năng chọn mục tiêu của cây khi zombie còn nằm trong vùng sương; chưa có hiệu ứng che sprite độc lập trên lớp giao diện.
 - Các hiệu ứng hoạt ảnh, âm thanh và cân bằng gameplay cần được kiểm tra trong quá trình chơi thực tế.
 - Không có kiểm thử tự động mô phỏng toàn bộ trận đấu; workflow CI không xác nhận mọi cơ chế đều cân bằng hoặc hoạt động đúng theo cảm nhận người chơi.
-- Sprite Plant/Zombie và ảnh nền vẫn do người dùng tạo và bổ sung thủ công. Không đưa chúng vào danh sách lỗi code.
+- Các sprite đã xác minh cho màn demo gồm Trúc Tiễn, Hồng Liên Nổ, Cương Thi Thường và Cương Thi Đội Nón. Những nhân vật ngoài phạm vi demo vẫn cần được rà soát riêng; ảnh thẻ Hồng Liên Nổ và background Thư Viện Cổ hiện chưa có. Asset thiếu được ghi trong checklist, không bị giả định là đã hoàn tất.
 
 ## Quy trình xác minh
 
@@ -58,9 +58,9 @@ Trạng thái thực tế của lần chạy tương ứng với commit phải �
 
 - Thêm nút tạm dừng và điều chỉnh tốc độ trận đấu 1.0x / 1.5x / 2.0x; các timer gameplay và timer hết hạn vật phẩm được cấu hình để dừng khi pause.
 - Sửa luồng Linh Đan để không trừ lượt khi cây đang bận thực hiện kỹ năng.
-- Thẻ chọn cây ưu tiên sprite riêng của Plant khi ảnh đã được bổ sung, fallback khi chưa có.
+- Thẻ chọn cây ưu tiên `card_sprite`, tiếp đến đường dẫn `assets/ui/seed-packet/<plant-id>.png`, sprite Plant và cuối cùng ảnh thẻ dùng chung nếu được cấu hình hợp lệ.
 - Lưu kỷ lục Linh Khí còn lại khi hoàn thành màn.
-- Bỏ tham chiếu logo bị thiếu khỏi cấu hình UI; seed packet và Linh Khí vẫn được cấu hình riêng.
+- Đồng bộ `ui-assets.json` với các file thực tế: logo và Linh Khí có đường dẫn hợp lệ; bỏ đường dẫn seed-packet dùng chung vốn không tồn tại.
 - Thêm AI Content Studio chạy ngoài runtime Godot: 12 Agent, MasterAI, DataHub, PromptBuilder, QA Reviewer, validator và memory cục bộ.
 - Bản nháp AI mặc định lưu trong `.game_ai/drafts/`; chỉ cài vào data/ khi có cờ `--install` và đã qua validator/QA.
 - Tích hợp kiểm thử unittest cho công cụ AI vào GitHub Actions. Kiểm thử không gọi API bên ngoài.
@@ -79,7 +79,7 @@ Trạng thái thực tế của lần chạy tương ứng với commit phải �
 
 ## Bổ sung phần UI/UX nâng cao
 
-- Thêm EventBus dựa trên Godot signals cho rung sân chơi, cường độ nhạc và cập nhật xu.
+- Dùng `core/GameEvents.gd` (đã tồn tại) cho rung sân chơi, cường độ nhạc và cập nhật xu; không tạo EventBus trùng lặp.
 - Thêm rung lớp WorldLayer khi cây nổ, xe cắt cỏ kích hoạt hoặc xuất hiện boss; HUD không bị dịch chuyển.
 - Thêm xe cắt cỏ cho từng lane, kích hoạt một lần mỗi màn và tự chạy hết sân.
 - Thêm Vườn Thiền có ba chậu, lưu ID cây/giai đoạn/nhu cầu; chăm sóc đúng công cụ tăng trưởng và nhận xu.
@@ -103,3 +103,16 @@ Trạng thái thực tế của lần chạy tương ứng với commit phải �
 - CI xác minh Python tests, JSON, Godot import/parser, headless startup và HTML5 export.
 - CI **không** xác minh Unity, Blender, Aseprite, phần mềm chỉnh ảnh/âm thanh hoặc build của engine khác.
 - Kiểm thử gameplay trực tiếp vẫn cần mở game và thử thao tác trên PC/điện thoại; chưa có bằng chứng QA thiết bị thực tế trong báo cáo này.
+
+
+## Đồng bộ bản demo và kiểm tra kiến trúc — 2026-11-26
+
+- Phạm vi PR #13: một màn Thư Viện Cổ, hai Plant (Trúc Tiễn, Hồng Liên Nổ), hai Zombie (Cương Thi Thường, Cương Thi Đội Nón), ba wave.
+- Đã xác minh bốn sprite nhân vật, logo, biểu tượng Linh Khí và ảnh thẻ Trúc Tiễn có trong nhánh. Ảnh thẻ Hồng Liên Nổ và background Thư Viện Cổ vẫn chưa có; game có fallback nên không khai báo đường dẫn giả.
+- `CardManager` không tiêu Linh Khí và không đặt Plant; nó phát `card_selected`, quản lý hồi chiêu và trạng thái thẻ. Giao dịch đặt cây vẫn do `Main.gd` điều phối.
+- `GameManager` đang sở hữu trạng thái/tài nguyên và phát signal. `GameEvents.gd` phụ trách sự kiện liên hệ thống. Không tạo EventBus mới.
+- `PlantBehavior.gd` và `ZombieBehavior.gd` dùng dữ liệu `type`/`abilities`, không có nhánh hành vi theo ID riêng của từng nhân vật trong source đã kiểm tra.
+- `EntityFactory.gd` đã hỗ trợ `behavior_script` trong JSON.
+- Hồng Liên Nổ đã khai báo tầm kích nổ, bán kính và sát thương Linh Đan trong JSON. Validator kiểm tra UI asset manifest và đường dẫn `card_sprite`; unit tests bổ sung kiểm tra đường dẫn và thông số demo.
+- `Main.gd` vẫn là controller lớn. Việc tách UI/Level controller được để ở bước P2, sau khi demo được kiểm thử gameplay để giảm nguy cơ regression.
+- Lần CI thành công trước đó thuộc commit cũ `a0d32b1`; các thay đổi mới phải chờ workflow chạy trên head commit mới trước khi kết luận. CI chỉ xác minh Python/data, Godot import/startup và HTML5 export, không thay thế chơi thử thủ công.

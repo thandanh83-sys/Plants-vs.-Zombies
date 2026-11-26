@@ -51,6 +51,12 @@ for plant_id, plant in plants.items():
             ERRORS.append(f"Plant {plant_id}: hp/cost is invalid")
     except (TypeError, ValueError):
         ERRORS.append(f"Plant {plant_id}: hp/cost must be numeric")
+    if "recharge_time" in plant:
+        try:
+            if float(plant["recharge_time"]) < 0:
+                ERRORS.append(f"Plant {plant_id}: recharge_time cannot be negative")
+        except (TypeError, ValueError):
+            ERRORS.append(f"Plant {plant_id}: recharge_time must be numeric")
     abilities = plant.get("abilities", {})
     if not isinstance(abilities, dict):
         ERRORS.append(f"Plant {plant_id}: abilities must be an object")
@@ -81,6 +87,9 @@ for plant_id, plant in plants.items():
     sprite = plant.get("sprite", f"res://assets/plants/{plant_id}.png")
     if sprite and not (ROOT / str(sprite).replace("res://", "")).is_file():
         WARNINGS.append(f"Plant sprite not supplied yet: {sprite}")
+    card_sprite = plant.get("card_sprite", "")
+    if card_sprite and not (ROOT / str(card_sprite).replace("res://", "")).is_file():
+        ERRORS.append(f"Plant {plant_id}: card_sprite not found: {card_sprite}")
 
 for zombie_id, zombie in zombies.items():
     for field in ("name", "type", "hp", "speed"):
@@ -108,13 +117,38 @@ for zombie_id, zombie in zombies.items():
         WARNINGS.append(f"Zombie sprite not supplied yet: {sprite}")
 
 for level_id, level in levels.items():
-    if not isinstance(level.get("available_plants"), list):
+    available_plants = level.get("available_plants", [])
+    if not isinstance(available_plants, list):
         ERRORS.append(f"Level {level_id}: available_plants must be an array")
-    if not isinstance(level.get("waves"), list):
-        ERRORS.append(f"Level {level_id}: waves must be an array")
-    for plant_id in level.get("available_plants", []):
+        available_plants = []
+    if len(available_plants) != len(set(available_plants)):
+        ERRORS.append(f"Level {level_id}: available_plants contains duplicate IDs")
+    for plant_id in available_plants:
         if plant_id not in plants:
             ERRORS.append(f"Level {level_id}: unknown plant '{plant_id}'")
+
+    required_plants = level.get("required_plants", [])
+    if not isinstance(required_plants, list):
+        ERRORS.append(f"Level {level_id}: required_plants must be an array")
+        required_plants = []
+    if len(required_plants) != len(set(required_plants)):
+        ERRORS.append(f"Level {level_id}: required_plants contains duplicate IDs")
+    for plant_id in required_plants:
+        if plant_id not in available_plants:
+            ERRORS.append(f"Level {level_id}: required Plant '{plant_id}' is not in available_plants")
+        elif plant_id not in plants:
+            ERRORS.append(f"Level {level_id}: unknown required Plant '{plant_id}'")
+
+    if isinstance(settings, dict):
+        try:
+            slots = int(settings.get("seed_slots", 6))
+            if len(required_plants) > slots:
+                ERRORS.append(f"Level {level_id}: required_plants exceeds configured seed_slots")
+        except (TypeError, ValueError):
+            pass
+
+    if not isinstance(level.get("waves"), list):
+        ERRORS.append(f"Level {level_id}: waves must be an array")
     wave_list = level.get("waves", [])
     has_boss_wave = False
     for wave_number, wave in enumerate(wave_list, start=1):
@@ -153,8 +187,21 @@ for level_id, level in levels.items():
 
 if not isinstance(settings, dict):
     ERRORS.append("game-settings.json must contain an object")
+else:
+    try:
+        seed_slots = int(settings.get("seed_slots", 6))
+        if seed_slots < 1 or seed_slots > 10:
+            ERRORS.append("game-settings.json: seed_slots must be between 1 and 10")
+    except (TypeError, ValueError):
+        ERRORS.append("game-settings.json: seed_slots must be an integer")
 if not isinstance(ui_assets, dict):
     ERRORS.append("ui-assets.json must contain an object")
+else:
+    for asset_key, asset_path in ui_assets.items():
+        if not isinstance(asset_path, str) or not asset_path.startswith("res://"):
+            ERRORS.append(f"ui-assets.json: '{asset_key}' must be a res:// resource path")
+        elif not (ROOT / asset_path.removeprefix("res://")).is_file():
+            ERRORS.append(f"ui-assets.json: configured asset does not exist: {asset_path}")
 
 for warning in WARNINGS:
     print(f"WARNING: {warning}")

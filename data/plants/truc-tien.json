@@ -15,5 +15,7 @@
   "description": "Bắn giọt mực tấn công kẻ địch phía trước.",
   "category": "van",
   "sprite": "res://assets/plants/truc-tien.png",
-  "sprite_scale": 1.0
+  "sprite_scale": 1,
+  "card_sprite": "res://assets/ui/seed-packet/truc-tien.png",
+  "recharge_time": 7.5
 }
