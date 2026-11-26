@@ -19,6 +19,7 @@ var has_summoned := false
 var is_boss := false
 var is_wave_leader := false
 var has_armor_break_speed_applied := false
+var defeated := false
 var status_label: Label
 var _slow_factor := 0.5
 var _hit_flash_tween: Tween
@@ -188,6 +189,8 @@ func _summon_support() -> void:
 		entity_factory.spawn_zombie(summon_id, clampi(lane + offset, 0, row_count - 1))
 
 func take_damage(amount: float) -> void:
+	if defeated:
+		return
 	var remaining := maxf(0.0, amount)
 	if remaining <= 0.0:
 		return
@@ -210,6 +213,9 @@ func take_damage(amount: float) -> void:
 		if faster_speed > 0.0:
 			base_speed = faster_speed
 	if hp <= 0.0:
+		defeated = true
+		if is_boss or bool(_abilities().get("drops_plant_food", false)):
+			GameManager.plant_food_dropped.emit(global_position)
 		remove_from_group("zombies")
 		queue_free()
 
