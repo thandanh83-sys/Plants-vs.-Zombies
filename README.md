@@ -35,6 +35,14 @@ Game tower-defense 2D có runtime hiện tại chạy trên **Godot 4.2+ / GDScr
 - Input đặt cây và dùng xẻng hỗ trợ cả click chuột và chạm màn hình.
 - HUD được sắp xếp theo kích thước viewport; dự án sử dụng chế độ stretch `canvas_items` với aspect `expand`.
 
+## Vòng chơi, đội hình và hồi chiêu
+
+- Trước khi vào mỗi màn, chọn đội hình gồm tối đa 6 cây từ danh sách màn cung cấp. Cây được đánh dấu **BẮT BUỘC** là điều kiện chiến thuật của màn (ví dụ cây tạo Linh Khí ở màn đêm, Liên Diệp ở màn hồ sen).
+- Bộ cây đã chọn được lưu và gợi ý lại ở màn kế tiếp; có thể thay đổi trước khi bắt đầu.
+- Sau khi đặt, thẻ cây bước vào hồi chiêu. Thời gian mặc định được phân tầng theo vai trò (cây miễn phí nhanh hơn, cây chắn chậm hơn, cây nổ/đặc biệt lâu hơn); dữ liệu từng Plant có thể ghi đè bằng trường `recharge_time`.
+- Cương Thi dẫn đầu có thể rơi Linh Đan. Nhấp vật phẩm để nhặt và cộng lượt dùng; vật phẩm biến mất sau một khoảng thời gian nếu không thu thập.
+- Đây là các cơ chế nền tảng theo hướng PVZ; chỉ số hồi chiêu, giá cây, sát thương và nhịp wave vẫn cần cân bằng qua chơi thử thực tế.
+
 ## Cơ chế hiện có
 
 - Cây sản xuất Linh Khí; Nguyệt Quang Nấm tăng sản lượng theo các mốc trưởng thành trong JSON.
