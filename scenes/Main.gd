@@ -179,7 +179,7 @@ func _build_hud() -> void:
 	almanac_button = Button.new()
 	almanac_button.position = Vector2(640, 12)
 	almanac_button.size = Vector2(100, 40)
-	almanac_button.text = "Almanac"
+	almanac_button.text = "Bách khoa"
 	almanac_button.pressed.connect(_open_almanac.bind("plants"))
 	add_child(almanac_button)
 
@@ -759,7 +759,7 @@ func _open_world_map() -> void:
 	hint.text = "Chọn một vùng đã mở khóa để tiếp tục hành trình."
 	body.add_child(hint)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(1020, 365)
+	scroll.custom_minimum_size = Vector2(maxf(260.0, overlay_panel.size.x - 60.0), maxf(180.0, overlay_panel.size.y - 150.0))
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
 	var row := HBoxContainer.new()
@@ -798,7 +798,7 @@ func _open_zen_garden() -> void:
 	hint.text = "Gieo cây vào chậu trống. Mỗi chậu sẽ yêu cầu một công cụ chăm sóc khác nhau."
 	body.add_child(hint)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(1020, 365)
+	scroll.custom_minimum_size = Vector2(maxf(260.0, overlay_panel.size.x - 60.0), maxf(180.0, overlay_panel.size.y - 150.0))
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
 	var row := HBoxContainer.new()
@@ -910,17 +910,17 @@ func _refresh_zen_garden() -> void:
 	_open_zen_garden()
 
 func _open_almanac(kind: String = "plants") -> void:
-	var body := _create_overlay("SỔ TAY LINH VIÊN — ALMANAC")
+	var body := _create_overlay("BÁCH KHOA LINH VIÊN")
 	var tabs := HBoxContainer.new()
 	body.add_child(tabs)
 	var plants_tab := Button.new()
-	plants_tab.text = "Plant"
+	plants_tab.text = "Linh Thực"
 	plants_tab.toggle_mode = true
 	plants_tab.button_pressed = kind == "plants"
 	plants_tab.pressed.connect(_open_almanac.bind("plants"))
 	tabs.add_child(plants_tab)
 	var zombies_tab := Button.new()
-	zombies_tab.text = "Zombie"
+	zombies_tab.text = "Cương Thi"
 	zombies_tab.toggle_mode = true
 	zombies_tab.button_pressed = kind == "zombies"
 	zombies_tab.pressed.connect(_open_almanac.bind("zombies"))
@@ -931,7 +931,7 @@ func _open_almanac(kind: String = "plants") -> void:
 	content.add_theme_constant_override("separation", 18)
 	body.add_child(content)
 	var list_scroll := ScrollContainer.new()
-	list_scroll.custom_minimum_size = Vector2(320, 365)
+	list_scroll.custom_minimum_size = Vector2(minf(320.0, maxf(120.0, overlay_panel.size.x * 0.32)), maxf(180.0, overlay_panel.size.y - 150.0))
 	list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(list_scroll)
 	var list := VBoxContainer.new()
