@@ -28,7 +28,7 @@ Phạm vi: kiểm thử thủ công trong Godot Editor và bản Web/mobile. CI 
 - [ ] Nhặt Linh Đan tăng đúng một lượt; không nhặt thì vật phẩm tự biến mất theo thời hạn.
 - [ ] Chuyển màn hoặc chơi lại xóa các vật phẩm Linh Đan còn sót.
 
-## 2. Pause và tốc độ
+## 4. Pause và tốc độ
 - [ ] Chuyển tốc độ 1.0x → 1.5x → 2.0x, sau đó Pause/Resume: tốc độ trước khi Pause phải được giữ nguyên.
 - [ ] Khi Pause, zombie, đạn, wave, rơi Linh Khí và thời gian hiệu ứng gameplay phải dừng.
 - [ ] Mở Almanac/Bản đồ/Vườn Thiền khi đang chơi: gameplay tạm dừng; đóng panel phải khôi phục đúng trạng thái pause và tốc độ trước đó.
