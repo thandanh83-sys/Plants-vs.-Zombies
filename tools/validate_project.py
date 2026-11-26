@@ -51,6 +51,12 @@ for plant_id, plant in plants.items():
             ERRORS.append(f"Plant {plant_id}: hp/cost is invalid")
     except (TypeError, ValueError):
         ERRORS.append(f"Plant {plant_id}: hp/cost must be numeric")
+    if "recharge_time" in plant:
+        try:
+            if float(plant["recharge_time"]) < 0:
+                ERRORS.append(f"Plant {plant_id}: recharge_time cannot be negative")
+        except (TypeError, ValueError):
+            ERRORS.append(f"Plant {plant_id}: recharge_time must be numeric")
     abilities = plant.get("abilities", {})
     if not isinstance(abilities, dict):
         ERRORS.append(f"Plant {plant_id}: abilities must be an object")
@@ -91,6 +97,11 @@ for zombie_id, zombie in zombies.items():
             ERRORS.append(f"Zombie {zombie_id}: hp/speed is invalid")
     except (TypeError, ValueError):
         ERRORS.append(f"Zombie {zombie_id}: hp/speed must be numeric")
+    zombie_abilities = zombie.get("abilities", {})
+    if not isinstance(zombie_abilities, dict):
+        ERRORS.append(f"Zombie {zombie_id}: abilities must be an object")
+    elif "drops_plant_food" in zombie_abilities and not isinstance(zombie_abilities["drops_plant_food"], bool):
+        ERRORS.append(f"Zombie {zombie_id}: drops_plant_food must be boolean")
     armor = zombie.get("armor", {})
     if not isinstance(armor, dict):
         ERRORS.append(f"Zombie {zombie_id}: armor must be an object")
@@ -153,6 +164,13 @@ for level_id, level in levels.items():
 
 if not isinstance(settings, dict):
     ERRORS.append("game-settings.json must contain an object")
+else:
+    try:
+        seed_slots = int(settings.get("seed_slots", 6))
+        if seed_slots < 1 or seed_slots > 10:
+            ERRORS.append("game-settings.json: seed_slots must be between 1 and 10")
+    except (TypeError, ValueError):
+        ERRORS.append("game-settings.json: seed_slots must be an integer")
 if not isinstance(ui_assets, dict):
     ERRORS.append("ui-assets.json must contain an object")
 
