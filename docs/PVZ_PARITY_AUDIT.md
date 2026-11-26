@@ -6,6 +6,19 @@ Mục tiêu là tái tạo **cảm giác chơi và các hệ thống chức năn
 
 Không sao chép mã nguồn, sprite, âm thanh, tên nhân vật, lời thoại, màn hình hoặc bố cục độc quyền của Plants vs. Zombies. "Giống" ở đây là tương đương về chức năng và nhịp chơi, không phải bản sao tài sản trí tuệ.
 
+## Phạm vi đang triển khai trước mắt
+
+Không phát triển đồng thời toàn bộ chiến dịch. Bản dựng hiện tại chỉ kiểm tra một lát cắt dọc hoàn chỉnh:
+
+- **Màn:** Thư Viện Cổ.
+- **2 Plant:** Trúc Tiễn và Hồng Liên Nổ.
+- **2 Zombie:** Cương Thi Thường và Cương Thi Đội Nón.
+- **3 wave:** wave đầu chỉ có Cương Thi Thường; wave 2 và 3 phối hợp hai loại.
+- **Mục tiêu kiểm thử:** đặt cây, tiêu Linh Khí, hồi chiêu, bắn đạn, nổ diện rộng, dùng Linh Đan, thắng/thua và chơi lại.
+- **Asset:** cả bốn nhân vật có sprite trong repository; nền màn hiện dùng nền màu dự phòng vì chưa có tranh nền riêng.
+
+Các level 2–5 được giữ nguyên dữ liệu từ `main`, không đưa thêm nội dung vào đợt này. Những hệ thống nhiều thế giới, shop, mini-game, Survival/Endless, nhiệm vụ và Arena được hoãn cho tới khi màn mẫu đạt yêu cầu chơi thử.
+
 ## Mốc tham chiếu
 
 - Plants vs. Zombies 1 có Adventure, Mini-Games, Puzzle, Survival và Zen Garden; Adventure đi qua các môi trường ngày, đêm, sương mù, hồ bơi và mái nhà, đồng thời có Almanac và cửa hàng của Crazy Dave. Nguồn: trang game chính thức trên Steam: https://store.steampowered.com/app/3590/Plants_vs_Zombies/
@@ -20,8 +33,8 @@ Không sao chép mã nguồn, sprite, âm thanh, tên nhân vật, lời thoại
 | Đặt Plant, giá tài nguyên | Có | Có Linh Khí, thẻ Plant | Đã có |
 | Hồi chiêu Seed Packet | Có | Chưa có hồi chiêu sau khi trồng | Đã thêm hồi chiêu theo vai trò; có thể cấu hình từng Plant |
 | Chọn đội hình trước màn | Có | Tự hiện toàn bộ cây khả dụng | Đã thêm chọn tối đa 6 cây trước màn |
-| Cây bắt buộc theo địa hình | Các màn có yêu cầu chiến thuật | Có màn đêm/hồ nước nhưng chưa khóa điều kiện đội hình | Đã khai báo cây bắt buộc theo màn |
-| Rơi Plant Food/thu thập | PvZ2 có Plant Food | Có sẵn lượt Linh Đan nhưng chưa có vật phẩm rơi từ kẻ địch | Đã thêm vật phẩm Linh Đan rơi từ Cương Thi dẫn đầu/Boss và thao tác nhặt |
+| Đội hình trước màn | Chọn một nhóm Seed Packet trước trận | Trước đây toàn bộ cây khả dụng tự hiện trên thanh | Bản demo hiện chọn đúng 2 Plant, giới hạn theo level JSON |
+| Plant Food / Linh Đan | PvZ2 có Plant Food | Game có lượt Linh Đan ban đầu | Bản demo có hiệu ứng riêng cho Trúc Tiễn và Hồng Liên Nổ; chưa dùng cơ chế Zombie rơi vật phẩm |
 | Đợt tấn công, tăng áp lực | Có | Có wave theo JSON và Boss cơ bản | Đã có nền tảng; cần bổ sung wave đa pha/định hình tốt hơn |
 | Kẻ địch có vai trò khác nhau | Có | 10 loại dữ liệu; giáp, nhảy, bay, triệu hồi, dẫn đầu | Đã có nền tảng; cần nhiều biến thể và cân bằng hơn |
 | Môi trường | Ngày/đêm/sương/hồ/mái | Có 5 loại môi trường logic/hình vẽ cơ bản | Có nền tảng; mái chưa có chậu/độ dốc gameplay, sương chưa có lớp phủ hình ảnh độc lập |
@@ -31,7 +44,7 @@ Không sao chép mã nguồn, sprite, âm thanh, tên nhân vật, lời thoại
 | Mini-Games / Puzzle / Survival | Có trong PvZ1; PvZ2 có minigames/challenge | Chưa có các mode tách biệt | Chưa làm |
 | Shop / nâng cấp Plant | Crazy Dave Shop ở PvZ1; Seed Packet upgrades ở PvZ2 | Có coins và trường unlocked_plant_ids nhưng chưa có shop/upgrade loop hoàn chỉnh | Chưa làm |
 | Nhiệm vụ / sự kiện / Endless / Arena | PvZ2 có | Chưa có | Chưa làm |
-| Chiến dịch dài, nhiều thế giới | PvZ1 có 50 level Adventure; PvZ2 nhiều thế giới và hàng trăm level | 5 màn | Chưa đạt quy mô nội dung |
+| Chiến dịch dài, nhiều thế giới | PvZ1 có 50 level Adventure; PvZ2 nhiều thế giới và hàng trăm level | 5 màn trong dữ liệu hiện có | Đang hoãn; chỉ tập trung hoàn thiện một màn mẫu |
 | Hình ảnh, hoạt ảnh, âm thanh | Bộ asset được sản xuất hoàn chỉnh | Mới có 2 ảnh Plant, 2 ảnh Zombie và một số UI; background/audio còn thiếu | Cần sản xuất asset nguyên bản |
 | Boss & thử thách cuối vùng | Có | Màn 5 có cờ boss cơ bản | Mới ở mức sơ khai; cần boss nhiều pha, pattern và phần thưởng vùng |
 
