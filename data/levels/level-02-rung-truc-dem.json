@@ -3,12 +3,50 @@
   "environment": "night",
   "background": "res://assets/backgrounds/rung-truc-dem.png",
   "starting_sun": 50,
-  "available_plants": ["da-quang-nam", "nguyet-quang-nam", "truc-tien", "han-bang-tien", "hong-lien-no", "tran-hon-phu", "dia-loi-phu", "tam-tien-truc", "doc-vu-nam"],
-  "required_plants": ["da-quang-nam"],
-    "special_mechanics": ["no_sky_sun", "graves"],
+  "available_plants": [
+    "da-quang-nam",
+    "nguyet-quang-nam",
+    "truc-tien",
+    "han-bang-tien",
+    "hong-lien-no",
+    "tran-hon-phu",
+    "dia-loi-phu",
+    "tam-tien-truc",
+    "doc-vu-nam"
+  ],
+  "required_plants": [
+    "da-quang-nam"
+  ],
+  "special_mechanics": [
+    "no_sky_sun",
+    "graves"
+  ],
   "waves": [
-    {"wave_number": 1, "zombies": ["cuong-thi-thuong"], "count": 6, "interval": 3.0},
-    {"wave_number": 2, "zombies": ["cuong-thi-thuong", "cuong-thi-cam-co"], "count": 8, "interval": 2.5},
-    {"wave_number": 3, "zombies": ["cuong-thi-non", "cuong-thi-cam-sao"], "count": 10, "interval": 2.2}
+    {
+      "wave_number": 1,
+      "zombies": [
+        "cuong-thi-thuong"
+      ],
+      "count": 6,
+      "interval": 3
+    },
+    {
+      "wave_number": 2,
+      "zombies": [
+        "cuong-thi-thuong",
+        "cuong-thi-cam-co"
+      ],
+      "count": 8,
+      "interval": 2.5
+    },
+    {
+      "wave_number": 3,
+      "zombies": [
+        "cuong-thi-non",
+        "cuong-thi-cam-sao"
+      ],
+      "count": 10,
+      "interval": 2.2
+    }
   ]
 }
