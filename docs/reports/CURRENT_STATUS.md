@@ -40,7 +40,7 @@ Các phần nền tảng hiện có: project Godot, scene Main, các Autoload, s
 - Hiệu ứng sương mù hiện chặn khả năng chọn mục tiêu của cây khi zombie còn nằm trong vùng sương; chưa có hiệu ứng che sprite độc lập trên lớp giao diện.
 - Các hiệu ứng hoạt ảnh, âm thanh và cân bằng gameplay cần được kiểm tra trong quá trình chơi thực tế.
 - Không có kiểm thử tự động mô phỏng toàn bộ trận đấu; workflow CI không xác nhận mọi cơ chế đều cân bằng hoặc hoạt động đúng theo cảm nhận người chơi.
-- Sprite Plant/Zombie và ảnh nền vẫn do người dùng tạo và bổ sung thủ công. Không đưa chúng vào danh sách lỗi code.
+- Các sprite đã xác minh cho màn demo gồm Trúc Tiễn, Hồng Liên Nổ, Cương Thi Thường và Cương Thi Đội Nón. Những nhân vật ngoài phạm vi demo vẫn cần được rà soát riêng; ảnh thẻ Hồng Liên Nổ và background Thư Viện Cổ hiện chưa có. Asset thiếu được ghi trong checklist, không bị giả định là đã hoàn tất.
 
 ## Quy trình xác minh
 
