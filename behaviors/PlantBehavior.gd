@@ -275,7 +275,7 @@ func activate_plant_food() -> bool:
 						target.take_damage(999999.0)
 						eaten += 1
 			"lane_explosion":
-				_explode(maxf(damage, float(plant_data.get("plant_food_damage", 1800.0))), 0.0, "lane")
+				_explode(maxf(damage, 1800.0), 0.0, "lane")
 			"heavy_smash":
 				var nearest := _nearest_zombie()
 				if nearest != null:

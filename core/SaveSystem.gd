@@ -11,7 +11,6 @@ const DEFAULT_DATA := {
 	"best_sun": 0,
 	"coins": 0,
 	"unlocked_plant_ids": [],
-	"selected_plant_ids": [],
 	"zen_garden_pots": [],
 	"tutorial_completed": false
 }
@@ -49,8 +48,6 @@ func load_game() -> Dictionary:
 		save_data["completed_levels"] = []
 	if not (save_data["unlocked_plant_ids"] is Array):
 		save_data["unlocked_plant_ids"] = []
-	if not (save_data["selected_plant_ids"] is Array):
-		save_data["selected_plant_ids"] = []
 	if not (save_data["zen_garden_pots"] is Array):
 		save_data["zen_garden_pots"] = []
 	if save_data["unlocked_levels"].is_empty():
@@ -102,16 +99,6 @@ func unlock_plant(plant_id: String) -> bool:
 	save_data["unlocked_plant_ids"] = unlocked
 	save_game()
 	return true
-
-func set_selected_plant_ids(plant_ids: Array) -> void:
-	var selected: Array[String] = []
-	for raw_id in plant_ids:
-		var plant_id := str(raw_id)
-		if plant_id.is_empty() or selected.has(plant_id) or DataLoader.get_plant(plant_id).is_empty():
-			continue
-		selected.append(plant_id)
-	save_data["selected_plant_ids"] = selected
-	save_game()
 
 func mark_tutorial_completed() -> void:
 	save_data["tutorial_completed"] = true
