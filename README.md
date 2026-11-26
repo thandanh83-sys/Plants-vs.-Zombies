@@ -144,3 +144,23 @@ godot --headless --path . --quit
 ```
 
 Kiểm thử gameplay trực tiếp vẫn cần mở game và thử thao tác. CI chỉ xác nhận import, khởi động headless, kiểm tra dữ liệu và xuất Web; không thay thế kiểm thử cân bằng/gameplay bằng người chơi.
+
+
+## Vườn Thiền, xe cắt cỏ và phản hồi trận đấu
+
+- Xe cắt cỏ xuất hiện ở mỗi làn, tự kích hoạt khi zombie tiến đến mép sân và chỉ dùng một lần trong mỗi lượt màn.
+- Nổ cây và xe cắt cỏ phát tín hiệu rung lớp sân chơi; HUD không bị dịch chuyển.
+- Vườn Thiền có ba chậu lưu cây, giai đoạn phát triển và nhu cầu chăm sóc. Dùng đúng công cụ mới tăng trưởng và nhận xu.
+- Tutorial lần đầu hướng dẫn chọn thẻ rồi đặt cây; có thể bỏ qua.
+- Save JSON được mở rộng để lưu xu, cây đã mở khóa, trạng thái Vườn Thiền và Tutorial; lưu khi ứng dụng tạm dừng/thoát.
+- EventBus dùng Godot signals để gửi yêu cầu rung, thay đổi nhạc theo wave và cập nhật xu mà không buộc gameplay tham chiếu trực tiếp đến HUD.
+
+### Nhạc nền thích ứng (tùy chọn)
+
+Thêm hai tệp OGG nếu có nhạc phù hợp:
+- `assets/audio/music-normal.ogg` — nhạc nền bình thường.
+- `assets/audio/music-horde.ogg` — nhạc nền cao trào.
+
+AudioManager sẽ crossfade khi wave boss, wave cuối hoặc wave có từ 10 zombie trở lên. Nếu chưa có hai tệp này, game vẫn chạy bình thường; các SFX tổng hợp hiện có tiếp tục hoạt động.
+
+Checklist kiểm thử thủ công: `docs/QA_UI_UX_CHECKLIST.md`.

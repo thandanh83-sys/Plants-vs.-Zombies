@@ -202,7 +202,8 @@ func _shoot() -> void:
 		for shot_index in range(projectile_count):
 			var projectile := Area2D.new()
 			projectile.set_script(projectile_script)
-			get_tree().current_scene.add_child(projectile)
+			var world_parent: Node = get_parent() if get_parent() != null else get_tree().current_scene
+			world_parent.add_child(projectile)
 			projectile.setup(damage, target_lane, piercing, effect, color, knockback, slow_factor, duration, projectile_style)
 			projectile.global_position = global_position + Vector2(28, -6 + shot_index * 5)
 
@@ -223,13 +224,15 @@ func _try_eat_zombie() -> void:
 
 func _explode(amount: float, radius: float, area: String) -> void:
 	AudioManager.play("explosion")
+	GameEvents.screen_shake_requested.emit(0.22, 7.0)
 	var effect_script := load("res://behaviors/EffectBehavior.gd") as Script
 	if effect_script != null:
+		var world_parent: Node = get_parent() if get_parent() != null else get_tree().current_scene
 		var effect_controller := Node.new()
 		effect_controller.set_script(effect_script)
-		get_tree().current_scene.add_child(effect_controller)
+		world_parent.add_child(effect_controller)
 		effect_controller.connect("finished", Callable(effect_controller, "queue_free"))
-		effect_controller.call("play_effect", get_tree().current_scene, global_position, Color("f08b45"))
+		effect_controller.call("play_effect", world_parent, global_position, Color("f08b45"))
 	if area == "lane":
 		for target in get_tree().get_nodes_in_group("zombies"):
 			if target.lane == lane:
