@@ -5,7 +5,8 @@
   "starting_sun": 75,
   "water_lanes": [1, 2],
   "available_plants": ["nhat-nguyet-thao", "truc-tien", "lien-diep", "thuy-nam", "han-bang-tien", "song-tien-truc", "tam-tien-truc", "dia-loi-phu", "thuc-nhan-hoa"],
-  "special_mechanics": ["two_water_lanes", "lily_pad_required"],
+  "required_plants": ["nhat-nguyet-thao", "lien-diep"],
+    "special_mechanics": ["two_water_lanes", "lily_pad_required"],
   "waves": [
     {"wave_number": 1, "zombies": ["cuong-thi-thuong"], "count": 8, "interval": 2.8},
     {"wave_number": 2, "zombies": ["cuong-thi-non", "cuong-thi-doi-xo"], "count": 10, "interval": 2.4},
