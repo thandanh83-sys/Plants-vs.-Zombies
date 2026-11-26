@@ -1,5 +1,7 @@
 extends Control
 
+const VGLTheme = preload("res://core/UITheme.gd")
+
 var grid: GridManager
 var factory: EntityFactory
 var wave_manager: WaveManager
@@ -24,6 +26,9 @@ var wave_progress: ProgressBar
 var progress_caption: Label
 var wave_banner: Label
 var overlay_panel: PanelContainer
+var overlay_backdrop: ColorRect
+var top_hud_panel: PanelContainer
+var wave_panel: PanelContainer
 var ghost_preview: Node2D
 var ghost_sprite: Sprite2D
 var ghost_fallback: Polygon2D
@@ -47,6 +52,7 @@ var _overlay_previous_time_scale := 1.0
 const GAME_SPEEDS := [1.0, 1.5, 2.0]
 
 func _ready() -> void:
+	theme = VGLTheme.create_theme()
 	_build_background()
 	_build_hud()
 	_build_tutorial_ui()
@@ -97,6 +103,13 @@ func _build_background() -> void:
 	add_child(background_texture)
 
 func _build_hud() -> void:
+	top_hud_panel = PanelContainer.new()
+	top_hud_panel.name = "TopHudPanel"
+	top_hud_panel.position = Vector2(12, 8)
+	top_hud_panel.size = Vector2(1256, 132)
+	top_hud_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(top_hud_panel)
+
 	sun_label = Label.new()
 	sun_label.position = Vector2(20, 16)
 	sun_label.size = Vector2(160, 34)
@@ -166,7 +179,7 @@ func _build_hud() -> void:
 	almanac_button = Button.new()
 	almanac_button.position = Vector2(640, 12)
 	almanac_button.size = Vector2(100, 40)
-	almanac_button.text = "Almanac"
+	almanac_button.text = "Bách khoa"
 	almanac_button.pressed.connect(_open_almanac.bind("plants"))
 	add_child(almanac_button)
 
@@ -176,6 +189,13 @@ func _build_hud() -> void:
 	map_button.text = "Bản đồ"
 	map_button.pressed.connect(_open_world_map)
 	add_child(map_button)
+
+	wave_panel = PanelContainer.new()
+	wave_panel.name = "WaveProgressPanel"
+	wave_panel.position = Vector2(922, 628)
+	wave_panel.size = Vector2(340, 76)
+	wave_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(wave_panel)
 
 	wave_progress = ProgressBar.new()
 	wave_progress.position = Vector2(940, 665)
@@ -261,6 +281,11 @@ func _apply_safe_area() -> void:
 	_safe_right = maxf(0.0, float(screen_size.x - safe_rect.end.x) * scale_x)
 	_safe_bottom = maxf(0.0, float(screen_size.y - safe_rect.end.y) * scale_y)
 
+	if is_instance_valid(top_hud_panel):
+		top_hud_panel.position = Vector2(12.0 + _safe_left, 8.0 + _safe_top)
+		top_hud_panel.size = Vector2(maxf(320.0, viewport_size.x - _safe_left - _safe_right - 24.0), 132.0)
+	if is_instance_valid(wave_panel):
+		wave_panel.position = Vector2(viewport_size.x - _safe_right - 358.0, viewport_size.y - _safe_bottom - 92.0)
 	if is_instance_valid(logo_texture_rect):
 		logo_texture_rect.position = Vector2(36.0 + _safe_left, 205.0 + _safe_top)
 	sun_label.position = Vector2(20.0 + _safe_left, 16.0 + _safe_top)
@@ -285,10 +310,6 @@ func _apply_safe_area() -> void:
 		)
 	if is_instance_valid(CardManager.container):
 		CardManager.container.position = Vector2(330.0 + _safe_left, 62.0 + _safe_top)
-	if is_instance_valid(tutorial_label):
-		tutorial_label.position = Vector2(viewport_size.x * 0.5 - 315.0, viewport_size.y - _safe_bottom - 120.0)
-	if is_instance_valid(tutorial_skip_button):
-		tutorial_skip_button.position = Vector2(viewport_size.x * 0.5 + 245.0, viewport_size.y - _safe_bottom - 120.0)
 	if is_instance_valid(tutorial_label):
 		tutorial_label.position = Vector2(viewport_size.x * 0.5 - 329.0, viewport_size.y - _safe_bottom - 48.0)
 	if is_instance_valid(tutorial_skip_button):
@@ -680,13 +701,23 @@ func _create_overlay(title_text: String) -> VBoxContainer:
 	_overlay_pause_changed = GameManager.state == "playing"
 	if _overlay_pause_changed:
 		get_tree().paused = true
+	overlay_backdrop = ColorRect.new()
+	overlay_backdrop.name = "OverlayBackdrop"
+	overlay_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay_backdrop.color = Color(0.025, 0.055, 0.04, 0.68)
+	overlay_backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay_backdrop.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay_backdrop.z_index = 99
+	add_child(overlay_backdrop)
+
 	overlay_panel = PanelContainer.new()
 	overlay_panel.name = "GameInfoOverlay"
 	overlay_panel.process_mode = Node.PROCESS_MODE_ALWAYS
-	overlay_panel.set_anchors_preset(Control.PRESET_CENTER)
-	overlay_panel.position = Vector2(-540, -235)
-	overlay_panel.size = Vector2(1080, 470)
-	overlay_panel.custom_minimum_size = Vector2(1080, 470)
+	var viewport_size := get_viewport_rect().size
+	var panel_size := Vector2(minf(1080.0, viewport_size.x - 36.0), minf(620.0, viewport_size.y - 36.0))
+	overlay_panel.size = panel_size
+	overlay_panel.custom_minimum_size = panel_size
+	overlay_panel.position = (viewport_size - panel_size) * 0.5
 	overlay_panel.z_index = 100
 	add_child(overlay_panel)
 
@@ -711,7 +742,10 @@ func _create_overlay(title_text: String) -> VBoxContainer:
 func _close_overlay() -> void:
 	if is_instance_valid(overlay_panel):
 		overlay_panel.queue_free()
+	if is_instance_valid(overlay_backdrop):
+		overlay_backdrop.queue_free()
 	overlay_panel = null
+	overlay_backdrop = null
 	if _overlay_pause_changed:
 		if GameManager.state == "playing":
 			get_tree().paused = _overlay_previous_paused
@@ -725,7 +759,7 @@ func _open_world_map() -> void:
 	hint.text = "Chọn một vùng đã mở khóa để tiếp tục hành trình."
 	body.add_child(hint)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(1020, 365)
+	scroll.custom_minimum_size = Vector2(maxf(260.0, overlay_panel.size.x - 60.0), maxf(180.0, overlay_panel.size.y - 150.0))
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
 	var row := HBoxContainer.new()
@@ -764,7 +798,7 @@ func _open_zen_garden() -> void:
 	hint.text = "Gieo cây vào chậu trống. Mỗi chậu sẽ yêu cầu một công cụ chăm sóc khác nhau."
 	body.add_child(hint)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(1020, 365)
+	scroll.custom_minimum_size = Vector2(maxf(260.0, overlay_panel.size.x - 60.0), maxf(180.0, overlay_panel.size.y - 150.0))
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
 	var row := HBoxContainer.new()
@@ -876,17 +910,17 @@ func _refresh_zen_garden() -> void:
 	_open_zen_garden()
 
 func _open_almanac(kind: String = "plants") -> void:
-	var body := _create_overlay("SỔ TAY LINH VIÊN — ALMANAC")
+	var body := _create_overlay("BÁCH KHOA LINH VIÊN")
 	var tabs := HBoxContainer.new()
 	body.add_child(tabs)
 	var plants_tab := Button.new()
-	plants_tab.text = "Plant"
+	plants_tab.text = "Linh Thực"
 	plants_tab.toggle_mode = true
 	plants_tab.button_pressed = kind == "plants"
 	plants_tab.pressed.connect(_open_almanac.bind("plants"))
 	tabs.add_child(plants_tab)
 	var zombies_tab := Button.new()
-	zombies_tab.text = "Zombie"
+	zombies_tab.text = "Cương Thi"
 	zombies_tab.toggle_mode = true
 	zombies_tab.button_pressed = kind == "zombies"
 	zombies_tab.pressed.connect(_open_almanac.bind("zombies"))
@@ -897,7 +931,7 @@ func _open_almanac(kind: String = "plants") -> void:
 	content.add_theme_constant_override("separation", 18)
 	body.add_child(content)
 	var list_scroll := ScrollContainer.new()
-	list_scroll.custom_minimum_size = Vector2(320, 365)
+	list_scroll.custom_minimum_size = Vector2(minf(320.0, maxf(120.0, overlay_panel.size.x * 0.32)), maxf(180.0, overlay_panel.size.y - 150.0))
 	list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(list_scroll)
 	var list := VBoxContainer.new()

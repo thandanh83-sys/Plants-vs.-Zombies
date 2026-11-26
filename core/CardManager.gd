@@ -11,7 +11,7 @@ func build_cards(parent: Control, plant_ids: Array) -> void:
 		container.queue_free()
 	container = HBoxContainer.new()
 	container.name = "PlantCards"
-	container.add_theme_constant_override("separation", 8)
+	container.add_theme_constant_override("separation", 6)
 	parent.add_child(container)
 	_buttons.clear()
 	var packet_path: String = DataLoader.get_ui_asset("seed_packet", "")
@@ -23,7 +23,9 @@ func build_cards(parent: Control, plant_ids: Array) -> void:
 			continue
 		var button := Button.new()
 		button.name = plant_id
-		button.custom_minimum_size = Vector2(132, 72)
+		button.custom_minimum_size = Vector2(104, 72)
+		button.add_theme_font_size_override("font_size", 12)
+		button.add_theme_constant_override("h_separation", 4)
 		button.text = "%s\n%s Linh Khí" % [str(data.get("name", plant_id)), str(data.get("cost", 0))]
 		button.toggle_mode = true
 		var card_path := str(data.get("card_sprite", "res://assets/ui/seed-packet/%s.png" % plant_id))
