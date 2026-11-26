@@ -1,6 +1,17 @@
 # Vạn Giới Linh Viên
 
-Game tower-defense 2D viết bằng GDScript cho **Godot 4.2+**. Dự án dùng JSON để khai báo cây, cương thi và màn chơi; sprite có thể bổ sung sau mà không cần thay đổi code nếu giữ đúng tên file.
+Game tower-defense 2D có runtime hiện tại chạy trên **Godot 4.2+ / GDScript**. Tuy nhiên, toàn bộ quy trình phát triển không bị giới hạn ở GDScript hay riêng Godot: dữ liệu, hình ảnh, âm thanh, công cụ tự động hóa, thiết kế nội dung và các pipeline bên ngoài có thể dùng nhiều định dạng/phần mềm khác nhau.
+
+> **Phân biệt quan trọng:** Godot là engine đang chạy game trong repository này. Unity, Blender, Aseprite, Krita, công cụ AI và các phần mềm khác có thể tham gia quy trình tạo nội dung hoặc làm pipeline riêng; chúng không tự động trở thành runtime của project nếu chưa có project tích hợp và cấu hình build tương ứng.
+
+## Công nghệ và công cụ
+
+- **Runtime hiện tại:** Godot 4.2+, GDScript, scene/resource Godot.
+- **Dữ liệu game:** JSON cho Plant, Zombie, level và cấu hình.
+- **Tooling/QA:** Python 3 cho validator, AI Content Studio và unit tests.
+- **Web:** HTML shell/CSS/JavaScript hỗ trợ giao diện xuất bản; Godot chịu trách nhiệm export game HTML5.
+- **Art/audio:** PNG và OGG hiện được nạp trong game; file nguồn có thể được tạo/chỉnh sửa bằng công cụ đồ họa/âm thanh phù hợp.
+- **Engine/phần mềm bên ngoài:** Unity, Blender, Aseprite, Krita, Photoshop, Audacity hoặc DAW có thể được dùng khi cần. Xem [Development Toolchain](docs/DEVELOPMENT_TOOLCHAIN.md) để biết ranh giới tích hợp và định dạng trao đổi.
 
 ## Chạy bằng Godot
 
@@ -110,17 +121,17 @@ Giữ nguyên ID trong tên file JSON. Nếu ảnh chưa có, game dùng hình �
 
 Repository có bộ công cụ AI hỗ trợ phát triển nội dung, lấy cảm hứng từ kiến trúc Multi-Agent của Văn Hiến và bộ quy tắc/validator của Prompt. Công cụ gồm MasterAI, 12 Agent chuyên môn, DataHub, bộ tạo prompt, QA Reviewer, validator dữ liệu và bộ nhớ cục bộ. Công cụ chỉ dùng trong quy trình phát triển, không chạy trong trận đấu và không được đóng gói vào Web export.
 
-Tài liệu: docs/AI_CONTENT_STUDIO.md.
+Tài liệu: [docs/AI_CONTENT_STUDIO.md](docs/AI_CONTENT_STUDIO.md).
 
 Liệt kê Agent và kiểm tra dữ liệu:
 
 ~~~bash
 python tools/game_ai_studio.py agents
 python tools/game_ai_studio.py inspect --kind plants
-python tools/game_ai_studio.py lint "Tạo Plant mới cho Godot, xuất JSON, không đổi ID"
+python tools/game_ai_studio.py lint "Tạo Plant mới, xuất JSON theo schema hiện tại, không đổi ID"
 ~~~
 
-Muốn gọi AI, cấu hình GAME_AI_API_KEY, GAME_AI_MODEL và tùy chọn GAME_AI_BASE_URL trong môi trường máy phát triển. Không lưu khóa trong Git. AI tạo bản nháp trước; chỉ cài vào data/ sau khi đã xem xét kết quả.
+Muốn gọi AI, cấu hình `GAME_AI_API_KEY`, `GAME_AI_MODEL` và tùy chọn `GAME_AI_BASE_URL` trong môi trường máy phát triển. Không lưu khóa trong Git. AI tạo bản nháp trước; chỉ cài vào `data/` sau khi đã xem xét kết quả.
 
 ## Kiểm thử
 
@@ -131,11 +142,6 @@ python -m unittest discover -s tools/tests -v
 python3 tools/validate_project.py
 ~~~
 
-
-```bash
-python3 tools/validate_project.py
-```
-
 Kiểm tra import/runtime bằng Godot:
 
 ```bash
@@ -143,8 +149,7 @@ godot --headless --editor --path . --quit
 godot --headless --path . --quit
 ```
 
-Kiểm thử gameplay trực tiếp vẫn cần mở game và thử thao tác. CI chỉ xác nhận import, khởi động headless, kiểm tra dữ liệu và xuất Web; không thay thế kiểm thử cân bằng/gameplay bằng người chơi.
-
+Kiểm thử gameplay trực tiếp vẫn cần mở game và thử thao tác. CI hiện kiểm tra Python, JSON, Godot import, khởi động headless và xuất Web; nó không tự động kiểm thử Unity hoặc các phần mềm ngoài khác.
 
 ## Vườn Thiền, xe cắt cỏ và phản hồi trận đấu
 
@@ -164,3 +169,7 @@ Thêm hai tệp OGG nếu có nhạc phù hợp:
 AudioManager sẽ crossfade khi wave boss, wave cuối hoặc wave có từ 10 zombie trở lên. Nếu chưa có hai tệp này, game vẫn chạy bình thường; các SFX tổng hợp hiện có tiếp tục hoạt động.
 
 Checklist kiểm thử thủ công: `docs/QA_UI_UX_CHECKLIST.md`.
+
+## Quy trình phát triển đa công cụ
+
+Godot/GDScript là runtime hiện tại, không phải giới hạn của toàn bộ dự án. Có thể sử dụng phần mềm và định dạng khác ở các khâu thiết kế, tạo asset, xử lý âm thanh, tự động hóa, kiểm thử hoặc tạo prototype độc lập. Xem [docs/DEVELOPMENT_TOOLCHAIN.md](docs/DEVELOPMENT_TOOLCHAIN.md) để biết công cụ nào đang thực sự có mặt, công cụ nào là lựa chọn mở rộng và cách trao đổi file mà không làm hỏng project.
