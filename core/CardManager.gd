@@ -30,8 +30,10 @@ func build_cards(parent: Control, plant_ids: Array) -> void:
 		button.custom_minimum_size = Vector2(132, 72)
 		button.text = _get_card_text(plant_id)
 		button.toggle_mode = true
+		var card_path := str(data.get("card_sprite", "res://assets/ui/seed-packet/%s.png" % plant_id))
+		var card_texture: Texture2D = load(card_path) as Texture2D if not card_path.is_empty() and ResourceLoader.exists(card_path) else null
 		var plant_texture: Texture2D = DataLoader.get_plant_sprite(plant_id)
-		var card_icon: Texture2D = plant_texture if plant_texture != null else packet
+		var card_icon: Texture2D = card_texture if card_texture != null else (plant_texture if plant_texture != null else packet)
 		if card_icon != null:
 			button.icon = card_icon
 			button.expand_icon = true
